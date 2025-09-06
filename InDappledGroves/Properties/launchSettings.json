@@ -1,10 +1,10 @@
 {
   "profiles": {
-    "indappledgroves": {
-      "commandName": "Project",
-      "commandLineArgs": "--dataPath=\"C:\\Users\\vinte\\AppData\\Roaming\\VintagestoryData_Modding\" --addModPath=\"C:\\Users\\vinte\\source\\repos\\InDappledGroves\\InDappledGroves\\bin\\Debug\" --addOrigin=\"C:\\Users\\vinte\\source\\repos\\InDappledGroves\\InDappledGroves\\assets\"",
-      "workingDirectory": "C:\\Users\\vinte\\AppData\\Roaming\\Vintagestory\\1.20",
-      "nativeDebugging": false
+    "1.21-Launcher": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\vinte\\AppData\\Roaming\\Vintagestory\\1.21\\vintagestory.exe",
+      "commandLineArgs": "--dataPath=\"C:\\Users\\vinte\\AppData\\Roaming\\VintagestoryData_Modding\" --addModPath=\"C:\\Users\\vinte\\source\\repos\\\\archived\\InDappledGroves\\InDappledGroves\\bin\\Debug\" --addOrigin=\"C:\\Users\\vinte\\source\\repos\\Archived\\InDappledGroves\\InDappledGroves\\assets\"",
+      "workingDirectory": "C:\\Users\\vinte\\AppData\\Roaming\\Vintagestory\\1.21"
     }
   }
 }

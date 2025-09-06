@@ -102,6 +102,40 @@ namespace InDappledGroves.Util.RecipeTools
                 return 100;
             }
 
+            private bool OutputIsObject(JToken token)
+            {
+                JToken output = token["output"];
+                return output != null && output.Type == JTokenType.Object;
+            }
+
+            private JsonItemStack[] NormalizeOutput(JToken token, AssetLocation recipeLoc)
+            {
+                if (token == null)
+                {
+                    api.World.Logger.Error("Recipe {0} has no output defined.", recipeLoc);
+                    return Array.Empty<JsonItemStack>();
+                }
+
+                // Case 1: Already an array
+                if (token.Type == JTokenType.Array)
+                {
+                    return token.ToObject<JsonItemStack[]>();
+                }
+
+                // Case 2: Single object -> wrap
+                if (token.Type == JTokenType.Object)
+                {   
+                    
+                    api.World.Logger.Error("Recipe {0}: output is not an array. Recipe still loaded, but please update output to an array, even if it contains a single object.", recipeLoc);
+                    JsonItemStack single = token.ToObject<JsonItemStack>();
+                    return new JsonItemStack[] { single };
+                }
+
+                // Case 3: Invalid type -> skip
+                api.World.Logger.Error("Skipping recipe {0}: output is neither array nor object.", recipeLoc);
+                return Array.Empty<JsonItemStack>();
+            }
+
             public override void AssetsFinalize(ICoreAPI capi)
             {
                 IDGRecipeRegistry.Create();
@@ -138,35 +172,67 @@ namespace InDappledGroves.Util.RecipeTools
                 int ignored = 0;
                 int orphaned = 0;
                 Dictionary<string,int> recipeList = new Dictionary<string,int>();
-                foreach (var val in files)
+                foreach (KeyValuePair<AssetLocation, JToken> val in files)
                 {
                     if (val.Value is JObject)
                     {
-                        BasicWorkstationRecipe rec = val.Value.ToObject<BasicWorkstationRecipe>();
-                        if (!rec.Enabled) continue;
-                        if (rec.RequiredWorkstation == null) continue;
-                        LoadWorkStationRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
-                        if(!recipeList.TryAdd(rec.RequiredWorkstation, 1))
+                        JObject obj = (JObject)val.Value;
+                        if (OutputIsObject(obj))
                         {
-                            recipeList[rec.RequiredWorkstation]++;
-                        };
-                    }
-                    if (val.Value is JArray)
-                    {
-                        foreach (var token in val.Value as JArray)
+                            api.World.Logger.Error("Skipping workstation recipe {0}: 'output' invalid.", val.Key);
+                            ignored++;
+                            continue;
+                        }
+                        try
                         {
-                            BasicWorkstationRecipe rec = token.ToObject<BasicWorkstationRecipe>();
+                            BasicWorkstationRecipe rec = obj.ToObject<BasicWorkstationRecipe>();
+
+                            // Manually normalize Output
+                            rec.Output = NormalizeOutput(obj["output"], val.Key);
+
                             if (!rec.Enabled) continue;
-                            if (rec.RequiredWorkstation == "none") { orphaned++; continue; };
                             LoadWorkStationRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
-                            if (!recipeList.TryAdd(rec.RequiredWorkstation, 1))
+                            if (rec.RequiredWorkstation == null) { orphaned++; continue; }
+                            LoadWorkStationRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
+                            if (!recipeList.TryAdd(rec.RequiredWorkstation, 1)) recipeList[rec.RequiredWorkstation]++;
+                        }
+                        catch (Exception ex)
+                        {
+                            api.World.Logger.Error("Skipping ground recipe {0}: {1}", val.Key, ex.Message);
+                            ignored++;
+                        }
+                     }
+                    else if (val.Value is JArray)
+                    {
+                        int idx = 0;
+                        foreach (JToken token in (JArray)val.Value)
+                        {
+                            if (OutputIsObject(token))
                             {
-                                recipeList[rec.RequiredWorkstation]++;
-                            };
+                                api.World.Logger.Error("Skipping workstation recipe {0}[{1}]: 'output' invalid.", val.Key, idx);
+                                ignored++;
+                                idx++;
+                                continue;
+                            }
+
+                            try
+                            {
+                                BasicWorkstationRecipe rec = token.ToObject<BasicWorkstationRecipe>();
+                                if (!rec.Enabled) { idx++; continue; }
+                                if (rec.RequiredWorkstation == "none") { orphaned++; idx++; continue; }
+                                LoadWorkStationRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
+                                if (!recipeList.TryAdd(rec.RequiredWorkstation, 1)) recipeList[rec.RequiredWorkstation]++;
+                            }
+                            catch (Exception ex)
+                            {
+                                api.World.Logger.Error("Skipping workstation recipe {0}[{1}]: {2}", val.Key, idx, ex.Message);
+                                ignored++;
+                            }
+                            idx++;
                         }
                     }
                 }
-                foreach(KeyValuePair<string,int> kvp in recipeList)
+                foreach (KeyValuePair<string,int> kvp in recipeList)
                 {
                     api.World.Logger.Event("{1} {0} recipes loaded", kvp.Key, kvp.Value);
                 }
@@ -224,7 +290,9 @@ namespace InDappledGroves.Util.RecipeTools
                             }
 
                             rec.ReturnStack.FillPlaceHolder(val2.Key, variants[i % variants.Length]);
-                            rec.Output.FillPlaceHolder(val2.Key, variants[i % variants.Length]);
+                            for (int k = 0; k < rec.Output.Length; k++) {
+                                rec.Output[k].FillPlaceHolder(val2.Key, variants[i % variants.Length]);
+                            }
                         }
 
                         first = false;
@@ -336,29 +404,59 @@ namespace InDappledGroves.Util.RecipeTools
                 int ignored = 0;
                 int orphaned = 0;
                 Dictionary<string, int> recipeList = new Dictionary<string, int>();
-                foreach (var val in files)
+                foreach (KeyValuePair<AssetLocation, JToken> val in files)
                 {
                     if (val.Value is JObject)
                     {
-                        ComplexWorkstationRecipe rec = val.Value.ToObject<ComplexWorkstationRecipe>();
-                        if (!rec.Enabled) continue;
-                        LoadComplexWorkstationRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
-                        if (!recipeList.TryAdd(rec.RequiredWorkstation, 1))
+                        JObject obj = (JObject)val.Value;
+                        if (OutputIsObject(obj))
                         {
-                            recipeList[rec.RequiredWorkstation]++;
-                        };
-                    }
-                    if (val.Value is JArray)
-                    {
-                        foreach (var token in val.Value as JArray)
+                            api.World.Logger.Error("Skipping complex workstation recipe {0}: 'output' must be an array.", val.Key);
+                            ignored++;
+                            continue;
+                        }
+
+                        try
                         {
-                            ComplexWorkstationRecipe rec = token.ToObject<ComplexWorkstationRecipe>();
+                            ComplexWorkstationRecipe rec = obj.ToObject<ComplexWorkstationRecipe>();
+                            rec.Output = NormalizeOutput(obj["output"], val.Key);
+
                             if (!rec.Enabled) continue;
                             LoadComplexWorkstationRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
-                            if (!recipeList.TryAdd(rec.RequiredWorkstation, 1))
+                            if (!recipeList.TryAdd(rec.RequiredWorkstation, 1)) recipeList[rec.RequiredWorkstation]++;
+                        }
+                        catch (Exception ex)
+                        {
+                            api.World.Logger.Error("Skipping complex workstation recipe {0}: {1}", val.Key, ex.Message);
+                            ignored++;
+                        }
+                    }
+                    else if (val.Value is JArray)
+                    {
+                        int idx = 0;
+                        foreach (JToken token in (JArray)val.Value)
+                        {
+                            if (OutputIsObject(token))
                             {
-                                recipeList[rec.RequiredWorkstation]++;
-                            };
+                                api.World.Logger.Error("Skipping complex workstation recipe {0}[{1}]: 'output' must be an array.", val.Key, idx);
+                                ignored++;
+                                idx++;
+                                continue;
+                            }
+
+                            try
+                            {
+                                ComplexWorkstationRecipe rec = token.ToObject<ComplexWorkstationRecipe>();
+                                if (!rec.Enabled) { idx++; continue; }
+                                LoadComplexWorkstationRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
+                                if (!recipeList.TryAdd(rec.RequiredWorkstation, 1)) recipeList[rec.RequiredWorkstation]++;
+                            }
+                            catch (Exception ex)
+                            {
+                                api.World.Logger.Error("Skipping complex workstation recipe {0}[{1}]: {2}", val.Key, idx, ex.Message);
+                                ignored++;
+                            }
+                            idx++;
                         }
                     }
                 }
@@ -420,7 +518,10 @@ namespace InDappledGroves.Util.RecipeTools
                             }
 
                             rec.ReturnStack.FillPlaceHolder(val2.Key, variants[i % variants.Length]);
-                            rec.Output.FillPlaceHolder(val2.Key, variants[i % variants.Length]);
+                            for (int k = 0; k < rec.Output.Length; k++)
+                            {
+                                rec.Output[k].FillPlaceHolder(val2.Key, variants[i % variants.Length]);
+                            }
                         }
 
                         first = false;
@@ -468,19 +569,54 @@ namespace InDappledGroves.Util.RecipeTools
                 {
                     if (val.Value is JObject)
                     {
-                        GroundRecipe rec = val.Value.ToObject<GroundRecipe>();
-                        if (!rec.Enabled) continue;
-
-                        LoadGroundRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
-                    }
-                    if (val.Value is JArray)
-                    {
-                        foreach (var token in val.Value as JArray)
+                        JObject obj = (JObject)val.Value;
+                        if (OutputIsObject(obj))
                         {
-                            GroundRecipe rec = token.ToObject<GroundRecipe>();
-                            if (!rec.Enabled) continue;
+                            api.World.Logger.Error("Skipping ground recipe {0}: 'output' is not valid.", val.Key);
+                            ignored++;
+                            continue;
+                        }
+                        try
+                        {
+                            GroundRecipe rec = obj.ToObject<GroundRecipe>();
 
+                            // Manually normalize Output
+                            rec.Output = NormalizeOutput(obj["output"], val.Key);
+
+                            if (!rec.Enabled) continue;
                             LoadGroundRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
+                        }
+                        catch (Exception ex)
+                        {
+                            api.World.Logger.Error("Skipping ground recipe {0}: {1}", val.Key, ex.Message);
+                            ignored++;
+                        }
+                    }
+                    else if (val.Value is JArray)
+                    {
+                        int idx = 0;
+                        foreach (JToken token in (JArray)val.Value)
+                        {
+                            if (OutputIsObject(token))
+                            {
+                                api.World.Logger.Error("Skipping ground recipe {0}[{1}]: 'output' must be an array.", val.Key, idx);
+                                ignored++;
+                                idx++;
+                                continue;
+                            }
+
+                            try
+                            {
+                                GroundRecipe rec = token.ToObject<GroundRecipe>();
+                                if (!rec.Enabled) { idx++; continue; }
+                                LoadGroundRecipe(val.Key, rec, ref recipeQuantity, ref ignored);
+                            }
+                            catch (Exception ex)
+                            {
+                                api.World.Logger.Error("Skipping ground recipe {0}[{1}]: {2}", val.Key, idx, ex.Message);
+                                ignored++;
+                            }
+                            idx++;
                         }
                     }
                 }
@@ -538,7 +674,10 @@ namespace InDappledGroves.Util.RecipeTools
                             }
 
                             rec.ReturnStack.FillPlaceHolder(val2.Key, variants[i % variants.Length]);
-                            rec.Output.FillPlaceHolder(val2.Key, variants[i % variants.Length]);
+                            for (int k = 0; k < rec.Output.Length; k++)
+                            {
+                                rec.Output[k].FillPlaceHolder(val2.Key, variants[i % variants.Length]);
+                            }
                         }
 
                         first = false;
@@ -667,24 +806,28 @@ namespace InDappledGroves.Util.RecipeTools
 
             public WorkStationIngredient[] Ingredients;
 
-            public JsonItemStack Output = new JsonItemStack() { Code = new AssetLocation("air"), Type = EnumItemClass.Block, Quantity = 0 };
+            public JsonItemStack[] Output = new JsonItemStack[] { new JsonItemStack { Code = new AssetLocation("air"), Type = EnumItemClass.Block, Quantity = 0 } };
 
             public JsonItemStack ReturnStack = new JsonItemStack() { Code = new AssetLocation("air"), Type = EnumItemClass.Block, Quantity = 0 };
 
-            public ItemStack TryCraftNow(ICoreAPI api, ItemSlot inputslots)
+            public ItemStack[] TryCraftNow(ICoreAPI api, ItemSlot inputslots)
             {
 
                 var matched = pairInput(inputslots);
 
-                ItemStack mixedStack = Output.ResolvedItemstack.Clone();
-                mixedStack.StackSize = getOutputSize(matched);
-
-                if (mixedStack.StackSize <= 0) return null;
-
+                ItemStack[] mixedStack = new ItemStack[Output.Length];
+                    
+                for(int i = 0; i<Output.Length;i++)
+                {
+                    ItemStack tempstack = Output[i].ResolvedItemstack.Clone();
+                    tempstack.StackSize = getOutputSize(matched) * tempstack.StackSize;
+                    if (tempstack.StackSize <= 0) continue;
+                    mixedStack[i] = tempstack;
+                }
 
                 foreach (var val in matched)
                 {
-                    val.Key.TakeOut(val.Value.Quantity * (mixedStack.StackSize / Output.StackSize));
+                    val.Key.TakeOut(val.Value.Quantity * (mixedStack[0].StackSize / Output[0].StackSize));
                     val.Key.MarkDirty();
                 }
 
@@ -776,12 +919,12 @@ namespace InDappledGroves.Util.RecipeTools
                 }
 
                 outQuantityMul = 1;
-                return Output.StackSize * outQuantityMul;
+                return outQuantityMul;
             }
 
-            public string GetOutputName()
+            public string GetOutputName(JsonItemStack jstack)
             {
-                return Lang.Get("indappledgroves:Will make {0}", Output.ResolvedItemstack.GetName());
+                return Lang.Get("indappledgroves:Will make {0}", jstack.ResolvedItemstack.GetName());
             }
 
             public bool Resolve(IWorldAccessor world, string sourceForErrorLogging)
@@ -793,7 +936,10 @@ namespace InDappledGroves.Util.RecipeTools
                     ok &= Ingredients[i].Resolve(world, sourceForErrorLogging);
                 }
 
-                ok &= Output.Resolve(world, sourceForErrorLogging);
+                foreach (JsonItemStack jstack in Output)
+                {
+                    ok &= jstack.Resolve(world, sourceForErrorLogging);
+                }
 
                 if(ReturnStack.Quantity == 0 && ReturnStack.Code.ToString() != "air")
                 {
@@ -822,7 +968,12 @@ namespace InDappledGroves.Util.RecipeTools
                     Ingredients[i].ToBytes(writer);
                 }
 
-                Output.ToBytes(writer);
+                writer.Write(Output.Length);
+                for (int i = 0; i < Output.Length; i++)
+                {
+                    Output[i].ToBytes(writer);
+                }
+
                 ReturnStack.ToBytes(writer);
             }
 
@@ -845,9 +996,14 @@ namespace InDappledGroves.Util.RecipeTools
                     Ingredients[i].Resolve(resolver, Code.ToString() + " (FromBytes)");
                 }
 
-                Output = new JsonItemStack();
-                Output.FromBytes(reader, resolver.ClassRegistry);
-                Output.Resolve(resolver, Code.ToString() + " (FromBytes)");
+                Output = new JsonItemStack[reader.ReadInt32()];
+                for (int j = 0; j < Output.Length; j++)
+                {
+                    Output[j].FromBytes(reader, resolver.ClassRegistry);
+                    Output[j].Resolve(resolver, Code.ToString() + " (FromBytes)");
+                }
+                
+                
                 ReturnStack = new JsonItemStack();
                 ReturnStack.FromBytes(reader, resolver.ClassRegistry);
                 ReturnStack.Resolve(resolver, Code.ToString() + " (FromBytes)");
@@ -864,7 +1020,7 @@ namespace InDappledGroves.Util.RecipeTools
                 return new BasicWorkstationRecipe()
                 {
 
-                    Output = Output.Clone(),
+                    Output = Output,
                     ReturnStack = ReturnStack.Clone(),
                     Code = Code,
                     IngredientMaterial = IngredientMaterial,
@@ -908,7 +1064,11 @@ namespace InDappledGroves.Util.RecipeTools
                             {
                                 string code = world.Blocks[i].Code.Path.Substring(wildcardStartLen);
                                 string codepart = code.Substring(0, code.Length - wildcardEndLen);
-                                if (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart)) continue;
+                                if (
+                                    (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart))
+                                    && 
+                                    (ingred.SkipVariants != null && ingred.SkipVariants.Contains(codepart))
+                                    ) continue;
 
                                 codes.Add(codepart);
 
@@ -925,7 +1085,11 @@ namespace InDappledGroves.Util.RecipeTools
                             {
                                 string code = world.Items[i].Code.Path.Substring(wildcardStartLen);
                                 string codepart = code.Substring(0, code.Length - wildcardEndLen);
-                                if (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart)) continue;
+                                if (
+                                    (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart))
+                                    &&
+                                    (ingred.SkipVariants != null && ingred.SkipVariants.Contains(codepart))
+                                    ) continue;
 
                                 codes.Add(codepart);
                             }
@@ -958,7 +1122,12 @@ namespace InDappledGroves.Util.RecipeTools
                     Ingredients[i].ToBytes(writer);
                 }
 
-                Output.ToBytes(writer);
+                writer.Write(Output.Length);
+                for (int i = 0; i < Output.Length; i++)
+                {
+                    Output[i].ToBytes(writer);
+                }
+
                 ReturnStack.ToBytes(writer);
             }
 
@@ -981,9 +1150,14 @@ namespace InDappledGroves.Util.RecipeTools
                     Ingredients[i].Resolve(resolver, Code.ToString() + " (FromBytes)");
                 }
 
-                Output = new JsonItemStack();
-                Output.FromBytes(reader, resolver.ClassRegistry);
-                Output.Resolve(resolver, Code.ToString() + " (FromBytes)");
+                Output = new JsonItemStack[reader.ReadInt32()];
+                for (int j = 0; j < Output.Length; j++)
+                {
+                    Output[j] = new JsonItemStack();
+                    Output[j].FromBytes(reader, resolver.ClassRegistry);
+                    Output[j].Resolve(resolver, Code.ToString() + " (FromBytes)");
+                }
+
                 ReturnStack = new JsonItemStack();
                 ReturnStack.FromBytes(reader, resolver.ClassRegistry);
                 ReturnStack.Resolve(resolver, Code.ToString() + " (FromBytes)");
@@ -999,7 +1173,7 @@ namespace InDappledGroves.Util.RecipeTools
                 return new BasicWorkstationRecipe()
                 {
 
-                    Output = Output.Clone(),
+                    Output = Output,
                     ReturnStack = ReturnStack.Clone(),
                     Code = Code,
                     IngredientMaterial = IngredientMaterial,
@@ -1042,7 +1216,11 @@ namespace InDappledGroves.Util.RecipeTools
                             {
                                 string code = world.Blocks[i].Code.Path.Substring(wildcardStartLen);
                                 string codepart = code.Substring(0, code.Length - wildcardEndLen);
-                                if (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart)) continue;
+                                if (
+                                    (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart))
+                                    &&
+                                    (ingred.SkipVariants != null && ingred.SkipVariants.Contains(codepart))
+                                    ) continue;
 
                                 codes.Add(codepart);
 
@@ -1059,7 +1237,11 @@ namespace InDappledGroves.Util.RecipeTools
                             {
                                 string code = world.Items[i].Code.Path.Substring(wildcardStartLen);
                                 string codepart = code.Substring(0, code.Length - wildcardEndLen);
-                                if (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart)) continue;
+                                if (
+                                    (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart))
+                                    &&
+                                    (ingred.SkipVariants != null && ingred.SkipVariants.Contains(codepart))
+                                    ) continue;
 
                                 codes.Add(codepart);
                             }
@@ -1102,7 +1284,11 @@ namespace InDappledGroves.Util.RecipeTools
                 {
                     Ingredients[i].ToBytes(writer);
                 }
-                Output.ToBytes(writer);
+                writer.Write(Output.Length);
+                for (int i = 0; i < Output.Length; i++)
+                {
+                    Output[i].ToBytes(writer);
+                }
                 ReturnStack.ToBytes(writer);
             }
 
@@ -1126,9 +1312,14 @@ namespace InDappledGroves.Util.RecipeTools
                     Ingredients[i].Resolve(resolver, RequiredWorkstation + " Recipe (FromBytes)");
                 }
 
-                Output = new JsonItemStack();
-                Output.FromBytes(reader, resolver.ClassRegistry);
-                Output.Resolve(resolver, RequiredWorkstation + " Recipe (FromBytes)");
+                Output = new JsonItemStack[reader.ReadInt32()];
+                for (int j = 0; j < Output.Length; j++)
+                {
+                    Output[j] = new JsonItemStack();
+                    Output[j].FromBytes(reader, resolver.ClassRegistry);
+                    Output[j].Resolve(resolver, Code.ToString() + " (FromBytes)");
+                }
+
                 ReturnStack = new JsonItemStack();
                 ReturnStack.FromBytes(reader, resolver.ClassRegistry);
                 ReturnStack.Resolve(resolver, RequiredWorkstation + " Recipe (FromBytes)");
@@ -1155,7 +1346,7 @@ namespace InDappledGroves.Util.RecipeTools
                 return new ComplexWorkstationRecipe()
                 {
 
-                    Output = Output.Clone(),
+                    Output = Output,
                     ReturnStack = ReturnStack.Clone(),
                     Code = Code,
                     IngredientMaterial = IngredientMaterial,
@@ -1173,174 +1364,6 @@ namespace InDappledGroves.Util.RecipeTools
             }
         }
 
-        #region Very Complex Workstation Workspace
-        //public class ProcessModifier : IByteSerializable
-        //{
-        //    public CraftingRecipeIngredient[] Inputs;
-
-        //    public CraftingRecipeIngredient GetMatch(ItemStack stack)
-        //    {
-        //        if (stack == null) return null;
-
-        //        for (int i = 0; i < Inputs.Length; i++)
-        //        {
-        //            if (Inputs[i].SatisfiesAsIngredient(stack)) return Inputs[i];
-        //        }
-
-        //        return null;
-        //    }
-
-        //    public bool Resolve(IWorldAccessor world, string debug)
-        //    {
-        //        bool ok = true;
-
-        //        for (int i = 0; i < Inputs.Length; i++)
-        //        {
-        //            ok &= Inputs[i].Resolve(world, debug);
-        //        }
-
-        //        return ok;
-        //    }
-
-        //    public void FromBytes(BinaryReader reader, IWorldAccessor resolver)
-        //    {
-        //        Inputs = new CraftingRecipeIngredient[reader.ReadInt32()];
-
-        //        for (int i = 0; i < Inputs.Length; i++)
-        //        {
-        //            Inputs[i] = new CraftingRecipeIngredient();
-        //            Inputs[i].FromBytes(reader, resolver);
-        //            Inputs[i].Resolve(resolver, "Workstation Ingredient (FromBytes)");
-        //        }
-        //    }
-
-        //    public void ToBytes(BinaryWriter writer)
-        //    {
-        //        writer.Write(Inputs.Length);
-        //        for (int i = 0; i < Inputs.Length; i++)
-        //        {
-        //            Inputs[i].ToBytes(writer);
-        //        }
-        //    }
-
-        //    public WorkStationIngredient Clone()
-        //    {
-        //        CraftingRecipeIngredient[] newings = new CraftingRecipeIngredient[Inputs.Length];
-
-        //        for (int i = 0; i < Inputs.Length; i++)
-        //        {
-        //            newings[i] = Inputs[i].Clone();
-        //        }
-
-        //        return new WorkStationIngredient()
-        //        {
-        //            Inputs = newings
-        //        };
-        //    }
-        //}
-
-
-        //public class VeryComplexWorkstationRecipe : WorkstationRecipe
-        //{
-        //    //A Place To Work Through Implementing An Array of Process Modifers
-        //    public string Code = "SplitterRecipe";
-
-        //    public string ToolMode { get; set; } = "pounding";
-
-        //    public string RequiredWorkstation = "logsplitter";
-
-        //    public string Animation = "axesplit-fp";
-
-        //    //public ProcessModifier[] ProcessModifiers;
-
-        //    public string BladeType { get; set; } = "single"; //Can be single, cross, or any bladetype introduced later.
-
-        //    public void ToBytes(BinaryWriter writer)
-        //    {
-        //        writer.Write(Code);
-        //        writer.Write(BaseToolDmg);
-        //        writer.Write(ToolMode);
-        //        writer.Write(RequiredWorkstation);
-        //        writer.Write(Animation);
-        //        writer.Write(BladeType);
-        //        writer.Write(IngredientMaterial);
-        //        writer.Write(IngredientResistance);
-        //        writer.Write(Ingredients.Length);
-        //        for (int i = 0; i < Ingredients.Length; i++)
-        //        {
-        //            Ingredients[i].ToBytes(writer);
-        //        }
-        //        //for (int i = 0; i < ProcessModifiers.Length; i++)
-        //        //{
-        //        //    ProcessModifiers[i].ToBytes(writer);
-        //        //}
-
-        //        Output.ToBytes(writer);
-        //        ReturnStack.ToBytes(writer);
-        //    }
-
-        //    public void FromBytes(BinaryReader reader, IWorldAccessor resolver)
-        //    {
-        //        Code = reader.ReadString();
-        //        BaseToolDmg = reader.ReadInt32();
-        //        ToolMode = reader.ReadString();
-        //        RequiredWorkstation = reader.ReadString();
-        //        Animation = reader.ReadString();
-        //        BladeType = reader.ReadString();
-        //        IngredientMaterial = reader.ReadInt32();
-        //        IngredientResistance = reader.ReadDouble();
-        //        Ingredients = new WorkStationIngredient[reader.ReadInt32()];
-
-        //        for (int i = 0; i < Ingredients.Length; i++)
-        //        {
-        //            Ingredients[i] = new WorkStationIngredient();
-        //            Ingredients[i].FromBytes(reader, resolver);
-        //            Ingredients[i].Resolve(resolver, RequiredWorkstation + " Recipe (FromBytes)");
-        //        }
-
-        //        for (int i = 0; i < ProcessModifiers.Length; i++)
-        //        {
-        //            ProcessModifiers[i] = new ProcessModifier();
-        //            ProcessModifiers[i].FromBytes(reader, resolver);
-        //            ProcessModifiers[i].Resolve(resolver, "RequiredWorkstation" + " ProcessModifier (FromBytes)");
-        //        }
-
-        //        Output = new JsonItemStack();
-        //        Output.FromBytes(reader, resolver.ClassRegistry);
-        //        Output.Resolve(resolver, "Log Splitter Recipe (FromBytes)");
-        //        ReturnStack = new JsonItemStack();
-        //        ReturnStack.FromBytes(reader, resolver.ClassRegistry);
-        //        ReturnStack.Resolve(resolver, "Log Splitter Recipe (FromBytes)");
-        //    }
-
-        //    public VeryComplexWorkstationRecipe Clone()
-        //    {
-        //        WorkStationIngredient[] ingredients = new WorkStationIngredient[Ingredients.Length];
-        //        for (int i = 0; i < Ingredients.Length; i++)
-        //        {
-        //            ingredients[i] = Ingredients[i].Clone();
-        //        }
-
-        //        return new VeryComplexWorkstationRecipe()
-        //        {
-
-        //            Output = Output.Clone(),
-        //            ReturnStack = ReturnStack.Clone(),
-        //            Code = Code,
-        //            IngredientMaterial = IngredientMaterial,
-        //            IngredientResistance = IngredientResistance,
-        //            BaseToolDmg = BaseToolDmg,
-        //            ToolMode = ToolMode,
-        //            RequiredWorkstation = RequiredWorkstation,
-        //            Animation = Animation,
-        //            BladeType = BladeType,
-        //            Enabled = Enabled,
-        //            Name = Name,
-        //            Ingredients = ingredients
-        //        };
-        //    }
-        //}
-        #endregion
         public class GroundRecipe : IByteSerializable
         {
             public string Code = "groundRecipe";
@@ -1356,24 +1379,28 @@ namespace InDappledGroves.Util.RecipeTools
 
             public GroundIngredient[] Ingredients;
 
-            public JsonItemStack Output = new JsonItemStack() { Code = new AssetLocation("air"), Type = EnumItemClass.Block, Quantity = 0 };
+            public JsonItemStack[] Output = new JsonItemStack[] { new JsonItemStack() { Code = new AssetLocation("air"), Type = EnumItemClass.Block, Quantity = 0 } };
 
             public JsonItemStack ReturnStack = new JsonItemStack() { Code = new AssetLocation("air"), Type = EnumItemClass.Block, Quantity = 0 };
 
-            public ItemStack TryCraftNow(ICoreAPI api, ItemSlot inputslots)
+            public ItemStack[] TryCraftNow(ICoreAPI api, ItemSlot inputslots)
             {
 
                 var matched = pairInput(inputslots);
 
-                ItemStack mixedStack = Output.ResolvedItemstack.Clone();
-                mixedStack.StackSize = getOutputSize(matched);
+                ItemStack[] mixedStack = new ItemStack[Output.Length];
 
-                if (mixedStack.StackSize <= 0) return null;
-
+                for (int i = 0; i < Output.Length; i++)
+                {
+                    ItemStack tempstack = Output[i].ResolvedItemstack.Clone();
+                    tempstack.StackSize = getOutputSize(matched) * tempstack.StackSize;
+                    if (tempstack.StackSize <= 0) continue;
+                    mixedStack[i] = tempstack;
+                }
 
                 foreach (var val in matched)
                 {
-                    val.Key.TakeOut(val.Value.Quantity * (mixedStack.StackSize / Output.StackSize));
+                    val.Key.TakeOut(val.Value.Quantity * (mixedStack[0].StackSize / Output[0].StackSize));
                     val.Key.MarkDirty();
                 }
 
@@ -1465,12 +1492,12 @@ namespace InDappledGroves.Util.RecipeTools
                 }
 
                 outQuantityMul = 1;
-                return Output.StackSize * outQuantityMul;
+                return outQuantityMul;
             }
 
-            public string GetOutputName()
+            public string GetOutputName(JsonItemStack jstack)
             {
-                return Lang.Get("indappledgroves:Will make {0}", Output.ResolvedItemstack.GetName());
+                return Lang.Get("indappledgroves:Will make {0}", jstack.ResolvedItemstack.GetName());
             }
 
             public bool Resolve(IWorldAccessor world, string sourceForErrorLogging)
@@ -1482,7 +1509,10 @@ namespace InDappledGroves.Util.RecipeTools
                     ok &= Ingredients[i].Resolve(world, sourceForErrorLogging);
                 }
 
-                ok &= Output.Resolve(world, sourceForErrorLogging);
+                foreach (JsonItemStack jstack in Output)
+                {
+                    ok &= jstack.Resolve(world, sourceForErrorLogging);
+                }
 
                 if (ReturnStack.Quantity == 0 && ReturnStack.Code.ToString() != "air")
                 {
@@ -1508,7 +1538,11 @@ namespace InDappledGroves.Util.RecipeTools
                     Ingredients[i].ToBytes(writer);
                 }
 
-                Output.ToBytes(writer);
+                writer.Write(Output.Length);
+                for (int i = 0; i < Output.Length; i++)
+                {
+                    Output[i].ToBytes(writer);
+                }
                 ReturnStack.ToBytes(writer);
             }
 
@@ -1528,10 +1562,15 @@ namespace InDappledGroves.Util.RecipeTools
                     Ingredients[i].Resolve(resolver, "Ground Recipe (FromBytes)");
                 }
 
-                //Output = new JsonItemStack();
-                Output.FromBytes(reader, resolver.ClassRegistry);
-                Output.Resolve(resolver, "Ground Recipe (FromBytes)");
-                //ReturnStack = new JsonItemStack();
+                Output = new JsonItemStack[reader.ReadInt32()];
+                for (int j = 0; j < Output.Length; j++)
+                {
+                    Output[j] = new JsonItemStack();
+                    Output[j].FromBytes(reader, resolver.ClassRegistry);
+                    Output[j].Resolve(resolver, Code.ToString() + " (FromBytes)");
+                }
+
+                ReturnStack = new JsonItemStack();
                 ReturnStack.FromBytes(reader, resolver.ClassRegistry);
                 ReturnStack.Resolve(resolver, "Ground Recipe Return Stack Not Resolved", true);
             }
@@ -1554,7 +1593,7 @@ namespace InDappledGroves.Util.RecipeTools
                     Animation = Animation,
                     Sound = Sound,
                     Ingredients = ingredients,
-                    Output = Output.Clone(),
+                    Output = Output,
                     ReturnStack = ReturnStack.Clone(),
 
                 };
@@ -1587,7 +1626,11 @@ namespace InDappledGroves.Util.RecipeTools
                             {
                                 string code = world.Blocks[i].Code.Path.Substring(wildcardStartLen);
                                 string codepart = code.Substring(0, code.Length - wildcardEndLen);
-                                if (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart)) continue;
+                                if (
+                                    (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart))
+                                    &&
+                                    (ingred.SkipVariants != null && ingred.SkipVariants.Contains(codepart))
+                                    ) continue;
 
                                 codes.Add(codepart);
 
@@ -1604,7 +1647,11 @@ namespace InDappledGroves.Util.RecipeTools
                             {
                                 string code = world.Items[i].Code.Path.Substring(wildcardStartLen);
                                 string codepart = code.Substring(0, code.Length - wildcardEndLen);
-                                if (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart)) continue;
+                                if (
+                                    (ingred.AllowedVariants != null && !ingred.AllowedVariants.Contains(codepart))
+                                    &&
+                                    (ingred.SkipVariants != null && ingred.SkipVariants.Contains(codepart))
+                                    ) continue;
 
                                 codes.Add(codepart);
                             }

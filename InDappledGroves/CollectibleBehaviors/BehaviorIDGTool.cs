@@ -2,6 +2,7 @@
 using InDappledGroves.Util.Config;
 using InDappledGroves.Util.Handlers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using Vintagestory.API.Client;
@@ -146,131 +147,170 @@ namespace InDappledGroves.CollectibleBehaviors
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handHandling, ref EnumHandling handling)
         {
+            if (byEntity.Controls.CtrlKey || blockSel == null) { handHandling = EnumHandHandling.PreventDefault; return; }
 
+            // Resolve recipe for this block + current tool mode
+            Inventory[0].Itemstack = new ItemStack(api.World.BlockAccessor.GetBlock(blockSel.Position, 0));
+            string curTMode = GetToolModeName(slot.Itemstack);
+            GroundRecipe recipe = GetMatchingGroundRecipe(Inventory[0], curTMode);
+            if (recipe == null) return;
+            ItemStack stack = slot.Itemstack;
+            Block recipeBlock = api.World.BlockAccessor.GetBlock(blockSel.Position, 0);
+            float toolModeMod = GetToolModeMod(slot.Itemstack);
+            if (toolModeMod <= 0f) toolModeMod = 1f;
 
-            if (!byEntity.Controls.CtrlKey) { 
-                string curTMode = "";
+            float resistance = recipeBlock.Resistance * IDGToolConfig.Current.baseGroundRecipeResistanceMult;
 
-
-                curTMode = GetToolModeName(slot.Itemstack); 
-                toolModeMod = GetToolModeMod(slot.Itemstack) == 0?1f: GetToolModeMod(slot.Itemstack);
-
-                if (blockSel == null)  return;
-
-                Inventory[0].Itemstack = new ItemStack(api.World.BlockAccessor.GetBlock(blockSel.Position, 0));
-
-                recipe = GetMatchingGroundRecipe(Inventory[0], curTMode);
-
-                if (recipe == null) return;
-                workAnimation = recipe.Animation;
-                resistance = Inventory[0].Itemstack.Block.Resistance * IDGToolConfig.Current.baseGroundRecipeResistanceMult;
-
-                recipeBlock = api.World.BlockAccessor.GetBlock(blockSel.Position, 0);
-
-                recipePos = blockSel.Position;
-
-                if (slot.Itemstack.Attributes.GetInt("durability") < recipe.BaseToolDmg && slot.Itemstack.Attributes.GetInt("durability") != 0)
-                {
-                    capi.TriggerIngameError(this, "toolittledurability", Lang.Get("indappledgroves:toolittledurability", recipe.BaseToolDmg));
-                    return;
-                }
-
-                byEntity.StartAnimation(workAnimation);
-
-                playNextSound = 0.25f;
-                handHandling = EnumHandHandling.Handled;
+            // Durability gate (leave on client too if you want UX, but server decides)
+            if (slot.Itemstack.Attributes.GetInt("durability") < recipe.BaseToolDmg && slot.Itemstack.Attributes.GetInt("durability") != 0)
+            {
+                (api as ICoreClientAPI)?.TriggerIngameError(this, "toolittledurability", Lang.Get("indappledgroves:toolittledurability", recipe.BaseToolDmg));
                 return;
             }
-            handHandling = EnumHandHandling.PreventDefault;
-            base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handHandling, ref handling);
+
+            // --- write the whole job into the item’s temp attributes ---
+            ITreeAttribute w = GetWork(slot.Itemstack);
+            w.SetString("anim", recipe.Animation);
+            w.SetInt("x", blockSel.Position.X);
+            w.SetInt("y", blockSel.Position.Y);
+            w.SetInt("z", blockSel.Position.Z);
+            w.SetInt("blockId", recipeBlock.Id);
+            w.SetFloat("resistance", resistance);
+            w.SetFloat("lastUsed", 0f);
+            w.SetFloat("totalUsed", 0f);
+            w.SetFloat("toolModeMod", toolModeMod);
+            w.SetFloat("nextSoundAt", 0.25f);
+            w.SetBool("complete", false);
+            // optional: store recipe identity needed at complete time
+            w.SetString("recipeCode", recipe.Code ?? curTMode);
+
+            // Server starts (replicated) animation once
+            byEntity.StartAnimation(w.GetString("anim"));
+
+            handHandling = EnumHandHandling.Handled;
         }
 
-        public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandling handling)
+        public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity,
+                                        BlockSelection blockSel, EntitySelection entitySel, ref EnumHandling handling)
         {
-            if (blockSel == null || recipe == null) return false;
-            if (!byEntity.Controls.CtrlKey && blockSel?.Position == recipePos && api.World.BlockAccessor.GetBlock(blockSel.Position) == recipeBlock)
+            if (blockSel == null) return false;
+
+            ITreeAttribute w = slot.Itemstack.TempAttributes.GetTreeAttribute("idgWork");
+            if (w == null) return false;
+
+            // Validate target: same pos & same block id (prevents carry-over to other blocks)
+            BlockPos target = new BlockPos(w.GetInt("x"), w.GetInt("y"), w.GetInt("z"));
+
+            if (!target.Equals(blockSel.Position)) { byEntity.StopAnimation(w.GetString("anim")); return false; }
+            if (api.World.BlockAccessor.GetBlock(target).Id != w.GetInt("blockId")) { 
+                byEntity.StopAnimation(w.GetString("anim")); return false; }
+
+            // Advance timers/progress
+            float last = w.GetFloat("lastUsed");
+            float dt = secondsUsed - last; if (dt < 0f) dt = 0f;
+            w.SetFloat("lastUsed", secondsUsed);
+
+            // Use current mining speed (server-authoritative)
+            float curSpd = slot.Itemstack.Collectible.GetMiningSpeed(slot.Itemstack, blockSel,
+                             api.World.BlockAccessor.GetBlock(target), byEntity as IPlayer);
+            float toolModeMod = w.GetFloat("toolModeMod", 1f);
+            float dmgPerSecond = curSpd * toolModeMod * IDGToolConfig.Current.baseGroundRecipeMiningSpdMult;
+
+            float total = w.GetFloat("totalUsed") + dt;
+            w.SetFloat("totalUsed", total);
+
+            float resistance = w.GetFloat("resistance");
+            float curDamage = total * dmgPerSecond;
+
+            // Server: sounds and completion
+            if (api.Side == EnumAppSide.Server)
             {
-                if (recipePos != null)
+                float nextSoundAt = w.GetFloat("nextSoundAt", 0.25f);
+                if (secondsUsed >= nextSoundAt)
                 {
-
-                    if ((api.Side.IsServer() && playNextSound < secondsUsed))
-                    {
-                        api.World.PlaySoundAt(new AssetLocation(recipe.Sound), recipePos.X, recipePos.Y, recipePos.Z, null, true, 32, 1f);
-                        playNextSound += .5f;
-                    }
-
-                    //Accumulate damage over time from current tools mining speed.
-
-
-                    //update lastSecondsUsed to this cycle
-                    lastSecondsUsed = secondsUsed - lastSecondsUsed < 0 ? 0 : lastSecondsUsed;
-                    float curMiningSpeed = slot.Itemstack.Collectible.GetMiningSpeed(slot.Itemstack, blockSel, Inventory[0].Itemstack.Block, byEntity as IPlayer);
-                    curDmgFromMiningSpeed = (curMiningSpeed * toolModeMod) * IDGToolConfig.Current.baseGroundRecipeMiningSpdMult;
-                    totalSecondsUsed += secondsUsed - lastSecondsUsed;
-                    //if seconds used + curDmgFromMiningSpeed is greater than resistance, output recipe and break cycle
-                    float curMiningDamage = totalSecondsUsed * curDmgFromMiningSpeed;
-                    lastSecondsUsed = secondsUsed;
-
-
-                    if (api.Side == EnumAppSide.Server) {
-                        if (curMiningDamage >= resistance && secondsUsed >0.25f)
-                        {
-
-                            SpawnOutput(recipe, recipePos);
-                            api.World.BlockAccessor.SetBlock(ReturnStackId(recipe, recipePos), recipePos);
-                            api.World.BlockAccessor.TriggerNeighbourBlockUpdate(recipePos);
-                            byEntity.StartAnimation(workAnimation);
-                            recipeComplete = true;
-                            curDmgFromMiningSpeed = 0;
-                            totalSecondsUsed = 0;
-                            return false;
-                        }
-                    }
-                    WeatherSystemBase modSystem = byEntity.World.Api.ModLoader.GetModSystem<WeatherSystemBase>(true);
-                    double windspeed = (modSystem != null) ? modSystem.WeatherDataSlowAccess.GetWindSpeed(byEntity.SidedPos.XYZ) : 0.0;
-                    if (byEntity.Api.World.Side == EnumAppSide.Client)
-                    {
-                        BehaviorIDGTool.dustParticles.Color = Inventory[0].Itemstack.Collectible.GetRandomColor(byEntity.World.Api as ICoreClientAPI, Inventory[0].Itemstack);
-                        BehaviorIDGTool.dustParticles.Color |= -16777216;
-                        BehaviorIDGTool.dustParticles.MinPos.Set((double)blockSel.Position.X, (double)blockSel.Position.Y+.25f, (double)blockSel.Position.Z);
-                        BehaviorIDGTool.dustParticles.Pos.Set((double)blockSel.Position.X, (double)blockSel.Position.Y, (double)blockSel.Position.Z);
-                        BehaviorIDGTool.dustParticles.MinQuantity = 1f;
-                        BehaviorIDGTool.dustParticles.AddQuantity = 4f;
-                        BehaviorIDGTool.dustParticles.GravityEffect = 0.8f;
-                        BehaviorIDGTool.dustParticles.ParticleModel = EnumParticleModel.Cube;
-                        BehaviorIDGTool.dustParticles.MinVelocity.Set(-0.4f + (float)windspeed, -0.4f, -0.4f);
-                        BehaviorIDGTool.dustParticles.AddVelocity.Set(0.8f + (float)windspeed, 1.2f, 0.8f);
-                        byEntity.World.SpawnParticles(BehaviorIDGTool.dustParticles, null);
-                    }
+                    // play your recipe sound here (you can store the path in the blob if needed)
+                    w.SetFloat("nextSoundAt", nextSoundAt + 0.5f);
                 }
-                handling = EnumHandling.Handled;
-                return true;
+
+                if (curDamage >= resistance && secondsUsed > 0.25f)
+                {
+                    // Perform SpawnOutput + block swap
+                    GroundRecipe recipe = GetMatchingGroundRecipe(Inventory[0], GetToolModeName(slot.Itemstack));
+                    if (recipe != null)
+                    {
+                        SpawnOutput(recipe, target, byEntity);
+                        api.World.BlockAccessor.SetBlock(ReturnStackId(recipe, target), target);
+                        api.World.BlockAccessor.TriggerNeighbourBlockUpdate(target);
+                    }
+
+                    w.SetBool("complete", true);
+                    handling = EnumHandling.Handled;
+                    return false;
+                }
             }
-            byEntity.StopAnimation(workAnimation);
-            return false;
+
+            if (api.Side == EnumAppSide.Client)
+            {
+                var p = new SimpleParticleProperties
+                {
+                    MinPos = new Vec3d(blockSel.Position.X, blockSel.Position.Y + 0.25, blockSel.Position.Z),
+                    AddPos = new Vec3d(1, 1, 1),
+                    MinQuantity = 1,
+                    AddQuantity = 4,
+                    GravityEffect = 0.8f,
+                    ParticleModel = EnumParticleModel.Cube,
+                    LifeLength = 0.5f,
+                    MinVelocity = new Vec3f(-0.4f, -0.4f, -0.4f),
+                    AddVelocity = new Vec3f(0.8f, 1.2f, 0.8f),
+                    MinSize = 0.2f,
+                    MaxSize = 0.5f,
+                    Color = slot.Itemstack.Collectible.GetRandomColor(api as ICoreClientAPI, Inventory[0].Itemstack) | unchecked((int)0xFF000000)
+                };
+                byEntity.World.SpawnParticles(p, null);
+            }
+
+            handling = EnumHandling.Handled;
+            return true;
         }
 
         public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandling handling)
         {
-            if (recipeComplete)
-            {
-                slot.Itemstack.Collectible.DamageItem(api.World, byEntity, slot, recipe.BaseToolDmg);
-                byEntity.StopAnimation(workAnimation);
-            }
+            var w = slot.Itemstack.TempAttributes.GetTreeAttribute("idgWork");
+            string anim = w?.GetString("anim") ?? "axechop";
+
             if (blockSel != null)
             {
-                api.World.BlockAccessor.MarkBlockDirty(blockSel?.Position);
-                byEntity.StopAnimation(workAnimation);
+                api.World.BlockAccessor.MarkBlockDirty(blockSel.Position);
             }
-            curDmgFromMiningSpeed = 0;
-            recipeComplete = false;
-            byEntity.StopAnimation(workAnimation);
+
+            if (anim.Length > 0)
+            {
+                byEntity.StopAnimation(anim);
+            }
+
+            // If the job completed, apply base tool damage once
+            bool complete = w?.GetBool("complete") == true;
+            if (complete)
+            {
+                // Re-lookup recipe at stop (or store what you need in the blob at Start)
+                GroundRecipe recipeAtStop = GetMatchingGroundRecipe(Inventory[0], GetToolModeName(slot.Itemstack));
+                if (recipeAtStop != null)
+                {
+                    slot.Itemstack.Collectible.DamageItem(api.World, byEntity, slot, recipeAtStop.BaseToolDmg);
+                }
+            }
+            ClearWork(slot.Itemstack);
         }
 
-        public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason, ref EnumHandling handling)
+        public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity,BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason reason, ref EnumHandling handling)
         {
-            byEntity.StopAnimation(workAnimation);
-            return base.OnHeldInteractCancel(secondsUsed, slot, byEntity, blockSel, entitySel, cancelReason, ref handling);
+            ITreeAttribute w = slot.Itemstack.TempAttributes.GetTreeAttribute("idgWork");
+            if (w != null)
+            {
+                byEntity.StopAnimation(w.GetString("anim"));
+                ClearWork(slot.Itemstack);
+            }
+            return base.OnHeldInteractCancel(secondsUsed, slot, byEntity, blockSel, entitySel, reason, ref handling);
         }
 
 
@@ -306,12 +346,19 @@ namespace InDappledGroves.CollectibleBehaviors
             return 0;
         }
 
-        public void SpawnOutput(GroundRecipe recipe, BlockPos pos)
+        public void SpawnOutput(GroundRecipe recipe, BlockPos pos, EntityAgent byEntity)
         {
-            int j = recipe.Output.StackSize;
-            for (int i = j; i > 0; i--)
+            foreach (JsonItemStack stack in recipe.Output)
             {
-                api.World.SpawnItemEntity(new ItemStack(recipe.Output.ResolvedItemstack.Collectible), pos.ToVec3d(), new Vec3d(0.05f, 0.1f, 0.05f));
+                int j = stack.ResolvedItemstack.StackSize;
+                if (!byEntity.TryGiveItemStack(new ItemStack(stack.ResolvedItemstack.Collectible, j)))
+                {
+
+                    for (int i = j; i > 0; i--)
+                    {
+                        byEntity.World.SpawnItemEntity(new ItemStack(stack.ResolvedItemstack.Collectible), pos.ToVec3d(), new Vec3d(0.05f, 0.1f, 0.05f));
+                    }
+                }
             }
         }
 
@@ -356,6 +403,15 @@ namespace InDappledGroves.CollectibleBehaviors
             return false;
         }
 
+        private static ITreeAttribute GetWork(ItemStack stack)
+        {
+            return stack.TempAttributes.GetOrAddTreeAttribute("idgWork");
+        }
+
+        private static void ClearWork(ItemStack stack)
+        {
+            stack.TempAttributes.RemoveAttribute("idgWork");
+        }
 
         #region Recipe Processing
         public GroundRecipe GetMatchingGroundRecipe(IWorldAccessor world, ItemSlot slot, string curTMode)

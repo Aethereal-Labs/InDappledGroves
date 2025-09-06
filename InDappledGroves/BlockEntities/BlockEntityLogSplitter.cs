@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Datastructures;
+using Vintagestory.API.MathTools;
 
 namespace InDappledGroves.BlockEntities
 {
@@ -17,7 +18,7 @@ namespace InDappledGroves.BlockEntities
             float[][] tfMatrices = new float[Inventory.Count][];
             for (int index = 0; index < Inventory.Count; index++)
             {
-
+                
                 ItemSlot itemSlot = this.Inventory[index];
                 JsonObject jsonObject;
                 if (itemSlot == null)

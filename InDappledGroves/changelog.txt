@@ -1,4 +1,35 @@
-﻿1.20-v2.1.2-rc.1
+﻿1.21-v2.3.0-rc.1
+	- Sounds have returned to the workstation processing.
+	- Workstations can now return more than one itemstack per recipe, 
+	  for instance, chopping log slabs into firewood could return sticks as well, 
+	  if one so chose. There is no default use of this ability, it was put in place for modders.
+	  For instance: WearAndTear will add a sawdust drop to sawing recipes as a secondary drop from sawbucks 
+	  and/or ground recipes.
+		- Workstations now *require* an array for their output, even if it only creates one item. 
+		  Will alert you in logs if this isn't complied with.
+		- EntityItems that come in contact with certain faces of workstations 
+		  will attempt to load themselves into the workstation.
+		- Accordingly, all workstation recipes have now been updated with array outputs. 
+
+1.21-v2.2.1-rc.1
+	- Added config option to disable sapling spacing
+		- Recipes will attempt to deliver the output to player's inventory before 
+		spawning them as itementities.  Visually lacking, but is peak convenience.
+		- Workstations are now (theoretically) hopper compliant.
+		- Workstations will only accept items from hoppers that are part of a valid recipe for that workstation.
+
+1.21-v2.2.0
+	- Corrected IDGTreeSeed not syncing inventory slot when seed was planted
+	- Fixed long standing issue with two people not being able to do a ground recipe on a server while using the same type of tool
+	- Updated config file to include versioning and allow the distance at which tree saplings can be planted next to each other.
+	  - The default is 3 horizontal, 10 vertical. This prevents the "mass production" method of planting trees directly 
+		next to each other so they can all be cut down at once. However, in larger trees, the leaves will remain connected,
+		and will be cut down all at once. Considering implementing a per-tree version of this setting.
+
+1.21-v2.1.2-rc.2
+	- Updated IDGTreeSeed to inherit ItemTreeSeed and removed OnBeforeRender method from IDGTreeSeed.
+
+1.20-v2.1.2-rc.1
 	- Ensured all recipes from all supported mods work for chopping block and logsplitter.
 	- Four missing textures from Floralzones family of mods added appropriately.
 	- Address issue where blockSel being null can cause Null Crash

@@ -2,10 +2,7 @@
 using ProtoBuf;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
-using Vintagestory.API.Config;
 using Vintagestory.API.Server;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace InDappledGroves.Util.Network
 {
@@ -18,6 +15,7 @@ namespace InDappledGroves.Util.Network
                 .RegisterMessageType(typeof(NetworkApiTestMessage))
                 .RegisterMessageType(typeof(NetworkApiTestResponse))
                 .RegisterMessageType(typeof(ToolConfigFromServerMessage))
+                .RegisterMessageType(typeof(TreeConfigFromServerMessage))
                 .RegisterMessageType(typeof(OnPlayerLoginMessage));
             ; 
         }
@@ -29,10 +27,12 @@ namespace InDappledGroves.Util.Network
             clientApi = capi;
 
             clientChannel = capi.Network.GetChannel("idgnetwork")
-                .SetMessageHandler<ToolConfigFromServerMessage>(RecieveToolConfigAction);
+                .SetMessageHandler<ToolConfigFromServerMessage>(RecieveToolConfigAction)
+                .SetMessageHandler<TreeConfigFromServerMessage>(RecieveTreeConfigAction);
             ;
 
         }
+
 
         //SetToolConfigValues received from Server
         private void RecieveToolConfigAction(ToolConfigFromServerMessage toolConfig)
@@ -41,11 +41,26 @@ namespace InDappledGroves.Util.Network
 
             //Set Client Tool Config Settings from Server
             InDappledGroves.baseWorkstationMiningSpdMult = toolConfig.baseWorkstationMiningSpdMult;
+            InDappledGroves.baseWorkstationResistanceMult = toolConfig.baseWorkstationResistanceMult;
             InDappledGroves.baseGroundRecipeMiningSpdMult = toolConfig.baseGroundRecipeMiningSpdMult;
+            InDappledGroves.baseGroundRecipeResistaceMult = toolConfig.baseGroundRecipeResistanceMul;
 
-            //Set Client TreeConfigSettings from Server
-            IDGTreeConfig.Current.TreeFellingMultiplier = toolConfig.TreeFellingMultiplier;
+            IDGToolConfig.Current.baseWorkstationMiningSpdMult = toolConfig.baseWorkstationMiningSpdMult;
+            IDGToolConfig.Current.baseWorkstationResistanceMult = toolConfig.baseWorkstationResistanceMult;
+            IDGToolConfig.Current.baseGroundRecipeMiningSpdMult = toolConfig.baseGroundRecipeResistanceMul;
+            IDGToolConfig.Current.baseGroundRecipeResistanceMult = toolConfig.baseGroundRecipeMiningSpdMult;
+            IDGToolConfig.Current.ConfigVersion = toolConfig.ConfigVersion;
+        }
 
+        private void RecieveTreeConfigAction(TreeConfigFromServerMessage treeConfig)
+        {
+            //Fired when the server sends the TreeConfig information to the player's client after login
+
+            //Set Client Tree Config Settings from Server
+            IDGTreeConfig.Current.ConfigVersion = treeConfig.TreeFellingMultiplier;
+            IDGTreeConfig.Current.MinHorizontalSaplingDistance = treeConfig.MinHorizontalSaplingDistance;
+            IDGTreeConfig.Current.MinVerticalSaplingDistance = treeConfig.MinVerticalSaplingDistance;
+            IDGTreeConfig.Current.ConfigVersion = treeConfig.ConfigVersion;
         }
 
         #endregion
@@ -74,18 +89,7 @@ namespace InDappledGroves.Util.Network
         private void OnPlayerJoin(IServerPlayer fromPlayer, OnPlayerLoginMessage packet)
         {
             serverChannel.SendPacket(new ToolConfigFromServerMessage(), fromPlayer);
-        }
-
-       
-
-        private void OnClientMessage(IPlayer fromPlayer, NetworkApiTestResponse networkMessage)
-        {
-            serverApi.SendMessageToGroup(
-                GlobalConstants.GeneralChatGroup,
-                "Received following response from " + fromPlayer.PlayerName + ": " + networkMessage.response,
-                EnumChatType.Notification
-            );
-
+            serverChannel.SendPacket(new TreeConfigFromServerMessage(), fromPlayer);
         }
 
         #endregion
@@ -107,6 +111,7 @@ namespace InDappledGroves.Util.Network
         [ProtoContract]
         class ToolConfigFromServerMessage
         {
+
             [ProtoMember(1)]
             public float baseWorkstationMiningSpdMult = IDGToolConfig.Current.baseWorkstationMiningSpdMult;
             [ProtoMember(2)]
@@ -114,9 +119,33 @@ namespace InDappledGroves.Util.Network
             [ProtoMember(3)]
             public float baseGroundRecipeMiningSpdMult = IDGToolConfig.Current.baseGroundRecipeMiningSpdMult;
             [ProtoMember(4)]
-            public float TreeFellingMultiplier = IDGTreeConfig.Current.TreeFellingMultiplier;
+            public float baseGroundRecipeResistanceMul = IDGToolConfig.Current.baseGroundRecipeResistanceMult;
+            [ProtoMember(5)]
+            public float ConfigVersion = IDGToolConfig.Current.ConfigVersion;
 
         }
+
+        [ProtoContract]
+        class TreeConfigFromServerMessage
+        {
+            [ProtoMember(1)]
+            public float TreeFellingMultiplier = IDGTreeConfig.Current.TreeFellingMultiplier;
+            //Rate at which Tree Hollows Update
+
+            [ProtoMember(2)]
+            public bool SaplingSpacingEnabled = IDGTreeConfig.Current.SaplingSpacingEnabled;
+
+            [ProtoMember(3)]
+            public int MinHorizontalSaplingDistance = IDGTreeConfig.Current.MinHorizontalSaplingDistance;
+
+            [ProtoMember(4)]
+            public int MinVerticalSaplingDistance = IDGTreeConfig.Current.MinVerticalSaplingDistance;
+
+            [ProtoMember(5)]
+            public float ConfigVersion = IDGTreeConfig.Current.ConfigVersion;
+
+        }
+
 
         [ProtoContract]
         class OnPlayerLoginMessage
@@ -126,3 +155,4 @@ namespace InDappledGroves.Util.Network
         }
     }
 }
+

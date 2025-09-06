@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InDappledGroves.Util.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,11 @@ using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
+using Vintagestory.GameContent;
 
 namespace InDappledGroves.Items
 {
-    public class IDGTreeSeed : Item
+    public class IDGTreeSeed : ItemTreeSeed
     {
         // Token: 0x06001616 RID: 5654 RVA: 0x000D1A28 File Offset: 0x000CFC28
         public override void OnLoaded(ICoreAPI api)
@@ -45,23 +47,6 @@ namespace InDappledGroves.Items
             });
         }
 
-        // Token: 0x06001617 RID: 5655 RVA: 0x000D1ABC File Offset: 0x000CFCBC
-        public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
-        {
-            base.OnBeforeRender(capi, itemstack, target, ref renderinfo);
-            if (this.isMapleSeed && target == EnumItemRenderTarget.Ground)
-            {
-                EntityItem ei = (renderinfo.InSlot as EntityItemSlot).Ei;
-                if (!ei.Collided && !ei.Swimming)
-                {
-                    renderinfo.Transform = renderinfo.Transform.Clone();
-                    renderinfo.Transform.Rotation.X = -90f;
-                    renderinfo.Transform.Rotation.Y = (float)((double)capi.World.ElapsedMilliseconds % 360.0) * 2f;
-                    renderinfo.Transform.Rotation.Z = 0f;
-                }
-            }
-        }
-
         // Token: 0x06001618 RID: 5656 RVA: 0x000D1B7C File Offset: 0x000CFD7C
         public override void OnHeldInteractStart(ItemSlot itemslot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handHandling)
         {
@@ -70,29 +55,40 @@ namespace InDappledGroves.Items
                 base.OnHeldInteractStart(itemslot, byEntity, blockSel, entitySel, firstEvent, ref handHandling);
                 return;
             }
-
-            bool foundSapling = false;
-            //checkPos is adjusting to position of placement, rather than Pos of targetblock.
-            BlockPos checkPos = blockSel.Position.UpCopy();
-            byEntity.Api.World.BlockAccessor.WalkBlocks(checkPos.AddCopy(-2, -2, 2), checkPos.AddCopy(2, 2, -2), delegate (Block block, int x, int y, int z)
+            if (IDGTreeConfig.Current.SaplingSpacingEnabled)
             {
-                if (block.Code.FirstCodePart() == "sapling" || block.FirstCodePart() == "log" && block.FirstCodePart(1) == "grown")
-                {
-                    foundSapling = true;
-                }
-            });
+                bool foundSapling = false;
 
-            if (foundSapling)
-            {
-                if (api is ICoreClientAPI capi)
+                //checkPos is adjusting to position of placement, rather than Pos of targetblock.
+                BlockPos checkPos = blockSel.Position.UpCopy();
+                byEntity.Api.World.BlockAccessor.WalkBlocks(checkPos.AddCopy(
+                    -IDGTreeConfig.Current.MinHorizontalSaplingDistance,
+                    -IDGTreeConfig.Current.MinVerticalSaplingDistance,
+                    IDGTreeConfig.Current.MinHorizontalSaplingDistance),
+                    checkPos.AddCopy(
+                    IDGTreeConfig.Current.MinHorizontalSaplingDistance,
+                    IDGTreeConfig.Current.MinVerticalSaplingDistance,
+                    -IDGTreeConfig.Current.MinHorizontalSaplingDistance),
+                    delegate (Block block, int x, int y, int z)
                 {
-                    capi.TriggerIngameError("ItemTreeSapling", "tooCloseToGrownTreeOrSapling", "Cannot Plant So Close To Another Tree or Sapling.");
-                }
-                handHandling = EnumHandHandling.NotHandled;
-                base.OnHeldInteractStart(itemslot, byEntity, blockSel, entitySel, firstEvent, ref handHandling);
-                return;
-            };
+                    if (block.Code.FirstCodePart() == "sapling" || block.FirstCodePart() == "log" && block.FirstCodePart(1) == "grown")
+                    {
+                        foundSapling = true;
+                    }
+                });
 
+                if (foundSapling)
+                {
+                    if (api is ICoreClientAPI capi)
+                    {
+                        capi.TriggerIngameError("ItemTreeSapling", "tooCloseToGrownTreeOrSapling", "Cannot Plant So Close To Another Tree or Sapling.");
+                    }
+                    handHandling = EnumHandHandling.NotHandled;
+
+                    return;
+                }
+                ;
+            }
 
             string treetype = this.Variant["type"];
             Block saplBlock = byEntity.World.GetBlock(AssetLocation.Create("sapling-" + treetype + "-free", this.Code.Domain));
@@ -140,8 +136,8 @@ namespace InDappledGroves.Items
                         itemslot.TakeOut(1);
                         itemslot.MarkDirty();
                     }
+                    handHandling = EnumHandHandling.PreventDefault;
                 }
-                handHandling = EnumHandHandling.PreventDefault;
             }
         }
 

@@ -17,7 +17,19 @@ namespace InDappledGroves.Util.Config
         [ProtoMember(1)]
         public float TreeFellingMultiplier { get; set; }
         //Rate at which Tree Hollows Update
-      
+
+        public bool SaplingSpacingEnabled { get; set; }
+
+        [ProtoMember(2)]
+        public int MinHorizontalSaplingDistance { get; set; }
+        
+        [ProtoMember(3)]
+        public int MinVerticalSaplingDistance { get; set; }
+
+        [ProtoMember(4)]
+        public float ConfigVersion { get; set; }
+
+
         public IDGTreeConfig()
         { }
 
@@ -25,10 +37,14 @@ namespace InDappledGroves.Util.Config
 
         public static IDGTreeConfig GetDefault()
         {
-            IDGTreeConfig defaultConfig = new()
-            {
-                TreeFellingMultiplier = 1
-            };
+            IDGTreeConfig defaultConfig = new();
+
+            defaultConfig.TreeFellingMultiplier = 1;
+            defaultConfig.SaplingSpacingEnabled = true;
+            defaultConfig.MinHorizontalSaplingDistance = 3;
+            defaultConfig.MinVerticalSaplingDistance = 10;
+            defaultConfig.ConfigVersion = 1.1f;
+
             return defaultConfig;
         }
 
@@ -40,8 +56,16 @@ namespace InDappledGroves.Util.Config
                 var Config = api.LoadModConfig<IDGTreeConfig>("indappledgroves/treeconfig.json");
                 if (Config != null)
                 {
-                    api.Logger.Notification("Mod Config successfully loaded.");
-                    IDGTreeConfig.Current = Config;
+                    if (Config.ConfigVersion == GetDefault().ConfigVersion)
+                    {
+                        api.Logger.Notification("Mod Config successfully loaded.");
+                        IDGTreeConfig.Current = Config;
+                    }
+                    else
+                    {
+                        api.Logger.Notification("Tree Config Versions Do Not Match, Updating To Current Default");
+                        IDGTreeConfig.Current = IDGTreeConfig.GetDefault();
+                    }
                 }
                 else
                 {

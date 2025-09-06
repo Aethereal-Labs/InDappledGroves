@@ -9,6 +9,7 @@
   "attributes": {
     "inventoryclass": "logsplitter",
     "attributetransformcode": "idgLogSplitterTransform",
+    "acceptFromFaces": ["up"],
 		"handbook": {
 			"groupBy": ["logsplitter-*-east"],
       "extraSections": [

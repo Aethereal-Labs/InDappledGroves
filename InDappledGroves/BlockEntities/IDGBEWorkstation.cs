@@ -1,6 +1,7 @@
 ﻿using InDappledGroves.CollectibleBehaviors;
 using InDappledGroves.Util.Handlers;
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using Vintagestory.API.Client;
@@ -18,7 +19,11 @@ namespace InDappledGroves.BlockEntities
 {
     public class IDGBEWorkstation : BlockEntityDisplay
     {
-		public override InventoryBase Inventory { get; }
+		public override InventoryBase Inventory { get
+            {
+                return inventory;
+            } 
+        }
 
         protected InventoryGeneric inventory;
 
@@ -38,14 +43,35 @@ namespace InDappledGroves.BlockEntities
 
         public ItemSlot ProcessModifierSlot { get { return Block.Attributes["workstationproperties"]["workstationtype"].ToString() == "complex" ? Inventory[Block.Attributes["workstationproperties"]["slottypes"]["processmodifier0"].AsInt()] : null; } }
 
+        public BlockFacing[] PushFaces = new BlockFacing[0];
 
+        // Token: 0x04000778 RID: 1912
+        public BlockFacing[] AcceptFromFaces = new BlockFacing[0];
 
         public IDGBEWorkstation()
 		{
             //Must initialize inventory in derived classes
-            Inventory = new InventoryDisplayed(this, 2, InventoryClassName + "-slot", null, null);
+            inventory = new InventoryDisplayed(this, 2, InventoryClassName + "-slot", null, null);
 
+            this.inventory.OnGetAutoPushIntoSlot = new GetAutoPushIntoSlotDelegate(this.GetAutoPushIntoSlot);           
         }
+
+        public override void OnBlockPlaced(ItemStack byItemStack = null)
+        {
+            base.OnBlockPlaced(byItemStack);
+        }
+        public ItemSlot GetAutoPushIntoSlot(BlockFacing atBlockFace, ItemSlot fromSlot)
+        {
+            WorkstationRecipe recipe;
+            recipeHandler.GetMatchingRecipes(Api.World, fromSlot, "any", Block.Attributes["inventoryclass"].ToString(), this.workstationtype, out recipe);
+            if (recipe == null || InputSlot.StackSize >= InputSlot.MaxSlotStackSize || !this.AcceptFromFaces.Contains(atBlockFace))
+            {
+                return null;
+            }
+            return InputSlot;
+        }
+
+
 
 		public override void Initialize(ICoreAPI api)
         {
@@ -54,6 +80,26 @@ namespace InDappledGroves.BlockEntities
             {
                 recipeHandler = new RecipeHandler(api, this);
             }
+            if (Block.Attributes["pushFaces"].Exists)
+            {
+                string[] faces2 = base.Block.Attributes["pushFaces"].AsArray<string>(null, null);
+                this.PushFaces = new BlockFacing[faces2.Length];
+                for (int j = 0; j < faces2.Length; j++)
+                {
+                    this.PushFaces[j] = BlockFacing.FromCode(faces2[j]);
+                }
+            }
+            if (Block.Attributes["acceptFromFaces"].Exists)
+            {
+                string[] faces3 = base.Block.Attributes["acceptFromFaces"].AsArray<string>(null, null);
+                this.AcceptFromFaces = new BlockFacing[faces3.Length];
+                for (int k = 0; k < faces3.Length; k++)
+                {
+                    this.AcceptFromFaces[k] = BlockFacing.FromCode(faces3[k]);
+                }
+            }
+            Inventory[0].MaxSlotStackSize = 1;
+            Inventory[1].MaxSlotStackSize = 1;
             this.capi = (api as ICoreClientAPI);
         }
 
@@ -127,7 +173,7 @@ namespace InDappledGroves.BlockEntities
 
         public virtual bool TryPut(IPlayer byPlayer, ItemSlot slot, ItemSlot targetSlot)
         {
-            if (targetSlot.Empty)
+            if (targetSlot != null && targetSlot.Empty)
             {
                 Block block = slot.Itemstack.Block;
                 int num3 = slot.TryPutInto(this.Api.World, targetSlot, 1);
@@ -145,7 +191,10 @@ namespace InDappledGroves.BlockEntities
                         assetLocation = (sounds?.Place);
                     }
                     AssetLocation assetLocation2 = assetLocation;
-                    this.Api.World.PlaySoundAt(assetLocation2 ?? new AssetLocation("sounds/player/build"), byPlayer.Entity, byPlayer, true, 16f, 1f);
+                    if (byPlayer != null)
+                    {
+                        this.Api.World.PlaySoundAt(assetLocation2 ?? new AssetLocation("sounds/player/build"), byPlayer.Entity, byPlayer, true, 16f, 1f);
+                    }
                 };
                 updateMeshes();
                 MarkDirty(true);
@@ -225,7 +274,7 @@ namespace InDappledGroves.BlockEntities
             float[][] tfMatrices = new float[Inventory.Count][];
             for (int index = 0; index < Inventory.Count; index++)
             {
-
+                
                 ItemSlot itemSlot = this.Inventory[index];
                 JsonObject jsonObject;
                if (itemSlot == null)
@@ -275,7 +324,8 @@ namespace InDappledGroves.BlockEntities
                         } else {
                             tfMatrices[index] = new Matrixf().Translate(0.5, 0.5, 0.5).RotateYDeg(this.Block.Shape.rotateY).Translate(-0.5, -0.5, -0.5).Values;
                         }
-                    }
+                        
+                    }                    
                 }
             }
             return tfMatrices;
@@ -344,9 +394,14 @@ namespace InDappledGroves.BlockEntities
             
             if (retrRecipe != null)
             {
-                ItemStack resolvedItemStack = retrRecipe.Output.ResolvedItemstack;
+
+                for(int i = 0; i <retrRecipe.Output.Length; i++)
+                {
+                    ItemStack resolvedItemStack = retrRecipe.Output[i].ResolvedItemstack;
+                    dsc.AppendLine(Lang.GetMatching("indappledgroves:recipeoutputstack") + " " + resolvedItemStack.StackSize + " " + resolvedItemStack.Collectible.GetHeldItemName(resolvedItemStack));
+                }
                 ItemStack resolvedReturnStack = retrRecipe.ReturnStack.ResolvedItemstack ?? null;
-                dsc.AppendLine(Lang.GetMatching("indappledgroves:recipeoutputstack") + " " + resolvedItemStack.StackSize + " " + resolvedItemStack.Collectible.GetHeldItemName(resolvedItemStack));
+                
                 if(resolvedReturnStack.Id != 0) 
                 { dsc.AppendLine("& " + resolvedReturnStack.StackSize + " " + resolvedReturnStack.Collectible.GetHeldItemName(resolvedReturnStack)); }
                 if (recipeHandler.recipe != null)

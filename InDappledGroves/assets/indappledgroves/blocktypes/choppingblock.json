@@ -9,6 +9,7 @@
    "attributes": {
     "inventoryclass": "choppingblock",
     "attributetransformcode": "idgChoppingBlockTransform",
+    "acceptFromFaces": ["up"],
 		"handbook": {
 			"groupBy": ["choppingblock-*-east"],
       "extraSections": [

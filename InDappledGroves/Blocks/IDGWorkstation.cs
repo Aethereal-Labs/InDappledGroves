@@ -1,11 +1,15 @@
 ﻿using InDappledGroves.BlockEntities;
 using InDappledGroves.CollectibleBehaviors;
 using InDappledGroves.Util.Handlers;
+using OpenTK.Platform.Windows;
 using System.Globalization;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
+using Vintagestory.GameContent;
+using static InDappledGroves.Util.RecipeTools.IDGRecipeNames;
 
 namespace InDappledGroves.Blocks
 {
@@ -28,7 +32,7 @@ namespace InDappledGroves.Blocks
             IDGBEWorkstation beworkstation = world.BlockAccessor.GetBlockEntity(byPlayer.CurrentBlockSelection.Position) as IDGBEWorkstation;
             if (beworkstation == null)
                 return base.OnBlockInteractStart(world, byPlayer, byPlayer.Entity.BlockSelection);
-
+            
             return true;
         }
 
@@ -48,6 +52,7 @@ namespace InDappledGroves.Blocks
                 {
                     result = beworkstation.handleRecipe(heldCollectible, secondsUsed, world, byPlayer, blockSel);
                 }
+                beworkstation.updateMeshes();
                 beworkstation.MarkDirty(true);
             }
             return result;
@@ -76,6 +81,44 @@ namespace InDappledGroves.Blocks
             return base.OnBlockInteractCancel(secondsUsed, world, byPlayer, blockSel, cancelReason);
         }
 
+        public override void OnEntityCollide(IWorldAccessor world, Entity entity, BlockPos pos, BlockFacing facing, Vec3d collideSpeed, bool isImpact)
+        {
+            
+            EntityItem inWorldItem = entity as EntityItem;
+            IDGBEWorkstation ws;
+            if (inWorldItem != null && world.Side == EnumAppSide.Server)
+            {
+                ws = api.World.BlockAccessor.GetBlockEntity(pos) as IDGBEWorkstation;
+                WorkstationRecipe recipe;
+                if (ws != null)
+                {
+                    ws.recipeHandler.GetMatchingRecipes(entity.Api.World, inWorldItem.Slot, "any", this.Attributes["inventoryclass"].ToString(), ws.workstationtype, out recipe);
+                } else
+                {
+                    return;
+                }
+
+                if (world.Rand.NextDouble() < 0.9)
+                {
+                    return;
+                }
+                if (recipe != null && inWorldItem.Alive)
+                {
+                        ItemSlot wslot = ws.Inventory.GetAutoPushIntoSlot(facing, inWorldItem.Slot);
+                        if (wslot != null)
+                        {
+                            inWorldItem.Slot.TryPutInto(this.api.World, wslot, 1);
+                            if (inWorldItem.Slot.StackSize <= 0)
+                            {
+                                inWorldItem.Itemstack = null;
+                                inWorldItem.Alive = false;
+                            }
+                        }
+                    ws.updateMeshes();
+                    ws.MarkDirty(true);
+                }
+            }
+        }
         public override string GetHeldItemName(ItemStack stack)
         {
             base.GetHeldItemName(stack);
