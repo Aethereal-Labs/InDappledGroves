@@ -25,9 +25,6 @@
 		openSound: "game:sounds/block/basketopen",
 		closeSound: "game:sounds/block/basketclose",
 		types: ["basket"],
-		drop: {
-			basket: true,
-		},
 		quantitySlots: {
 			basket: 8
 		},

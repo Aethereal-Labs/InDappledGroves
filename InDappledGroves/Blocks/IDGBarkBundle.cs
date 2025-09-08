@@ -9,6 +9,11 @@ namespace InDappledGroves.Blocks
 {
     class IDGBarkBundle : Block
     {
+        public override void OnBlockPlaced(IWorldAccessor world, BlockPos blockPos, ItemStack byItemStack = null)
+        {
+            base.OnBlockPlaced(world, blockPos, byItemStack);
+        }
+        
         public override string GetHeldItemName(ItemStack stack) => GetName();
         public override string GetPlacedBlockName(IWorldAccessor world, BlockPos pos) => GetName();
 

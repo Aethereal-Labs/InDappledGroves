@@ -9,6 +9,8 @@ using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Client;
 using System.Reflection;
 using Vintagestory.ServerMods;
+using System.Linq;
+using System.Collections.Generic;
 
 
 namespace InDappledGroves.Util.HarmonyPatches
@@ -23,48 +25,63 @@ namespace InDappledGroves.Util.HarmonyPatches
 
         public override void Start(ICoreAPI api)
         {
-            //PatchGame();
+            PatchGame();
             base.Start(api);
         }
-        //private void PatchGame()
-        //{
-        //    harmony = new Harmony(harmonyId);
-        //    harmony.Patch(typeof(ItemTreeSeed).GetMethod("OnHeldUseStart", BindingFlags.Instance | BindingFlags.Public),
-        //        postfix: new HarmonyMethod(typeof(IDGHarmonyModSystem).GetMethod("onHeldUseStartPrefix", BindingFlags.Static | BindingFlags.Public))
-        //    );
-        //    harmony.PatchAll();
-        //}
+        private void PatchGame()
+        {
+            harmony = new Harmony(harmonyId);
+            harmony.Patch(typeof(ItemHammer).GetMethod("GetToolModes", BindingFlags.Instance | BindingFlags.Public),
+                prefix: new HarmonyMethod(typeof(IDGHarmonyModSystem).GetMethod("onHammerToolModesPrefix", BindingFlags.Static | BindingFlags.Public))
+            );
+            harmony.PatchAll();
+        }
 
 
-        //[HarmonyPostfix]
-        //[HarmonyPatch(typeof(ItemTreeSeed), "OnHeldUseStart")]
-        //public static void onHeldUseStartPrefix(ItemTreeSeed __instance, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumHandInteract useType, bool firstEvent, ref EnumHandHandling handling)
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ItemHammer), "GetToolModes")]
+        public static bool onHammerToolModesPrefix(ItemHammer __instance, ItemSlot slot, IClientPlayer forPlayer, BlockSelection blockSel, ref SkillItem[] __result)
+        {
+            var hammerToolModes = AccessTools.FieldRefAccess<ItemHammer, SkillItem[]>("toolModes");
 
-        //{
-        //    bool foundSapling = false;
-        //    byEntity.Api.World.BlockAccessor.WalkBlocks(blockSel.Position.AddCopy(-1, -1, -1), blockSel.Position.AddCopy(1, 1, 1), delegate (Block block, int x, int y, int z)
-        //    {
-        //        if (block.Code.FirstCodePart() == "sapling")
-        //        {
-        //            foundSapling = true;
+            if (blockSel == null)
+            {
+                __result = null;
+                return false;
+            }
 
-        //        }
-        //    });
+            for (int i = 0; i < __instance.CollectibleBehaviors.Length; i++)
+            {
+                SkillItem[] result = __instance.CollectibleBehaviors[i].GetToolModes(slot, forPlayer, blockSel);
+                List<SkillItem> newToolModes = hammerToolModes(__instance).ToList();
 
-        //    if (foundSapling)
-        //    {
-        //        handling = EnumHandHandling.NotHandled;
-        //    };
-        //}
+                if (result != null)
+                {
 
-  
-        //public override void Dispose()
-        //{
-        //    harmony?.UnpatchAll();
-        //    harmony = null;
-        //    sapi = null;
-        //    thisBlockAccessor = null;
+                    if (!(forPlayer.Entity.World.BlockAccessor.GetBlock(blockSel.Position) is BlockAnvil))
+                    {
+                        __result = result;
+                        return false;
+                    }
+                    else
+                    {
+                        //newToolModes.AddRange(result);
+                        __result = newToolModes.ToArray();
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
 
-        //}
+
+        public override void Dispose()
+        {
+            harmony?.UnpatchAll();
+            harmony = null;
+            sapi = null;
+            thisBlockAccessor = null;
+
+        }
     }
 }

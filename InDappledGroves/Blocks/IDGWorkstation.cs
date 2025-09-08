@@ -15,6 +15,7 @@ namespace InDappledGroves.Blocks
 {
     class IDGWorkstation : Block
     {
+        IDGBEWorkstation beworkstation;
 
         /*TODO: Implement InUseCheck.  If UserUID is not "workstationfree", then 
          * UserUID gets set on BlockEntity when user reaches OnHeldInteractStep method
@@ -29,9 +30,9 @@ namespace InDappledGroves.Blocks
 
         public override bool OnBlockInteractStart(IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel)
         {
-            IDGBEWorkstation beworkstation = world.BlockAccessor.GetBlockEntity(byPlayer.CurrentBlockSelection.Position) as IDGBEWorkstation;
+            beworkstation = world.BlockAccessor.GetBlockEntity(byPlayer.CurrentBlockSelection.Position) as IDGBEWorkstation;
             if (beworkstation == null)
-                return base.OnBlockInteractStart(world, byPlayer, byPlayer.Entity.BlockSelection);
+            return base.OnBlockInteractStart(world, byPlayer, byPlayer.Entity.BlockSelection);
             
             return true;
         }
@@ -40,7 +41,7 @@ namespace InDappledGroves.Blocks
         {
 
             bool result = false;
-            if (blockSel != null && world.BlockAccessor.GetBlockEntity(blockSel.Position) is IDGBEWorkstation beworkstation)
+            if (blockSel != null && beworkstation != null)
             {
                 CollectibleObject heldCollectible = byPlayer.InventoryManager.ActiveHotbarSlot.Itemstack?.Collectible;
 
@@ -52,15 +53,12 @@ namespace InDappledGroves.Blocks
                 {
                     result = beworkstation.handleRecipe(heldCollectible, secondsUsed, world, byPlayer, blockSel);
                 }
-                beworkstation.updateMeshes();
-                beworkstation.MarkDirty(true);
             }
             return result;
         }
 
         public override void OnBlockInteractStop(float secondsUsed, IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel)
         {
-            IDGBEWorkstation beworkstation = world.BlockAccessor.GetBlockEntity(blockSel.Position) as IDGBEWorkstation;
             beworkstation.recipeHandler.playNextSound = 0.5f;
             if (beworkstation.recipeHandler.recipe != null)
             {
@@ -73,7 +71,6 @@ namespace InDappledGroves.Blocks
 
         public override bool OnBlockInteractCancel(float secondsUsed, IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel, EnumItemUseCancelReason cancelReason)
         {
-            IDGBEWorkstation beworkstation = world.BlockAccessor.GetBlockEntity(blockSel.Position) as IDGBEWorkstation;
             if (beworkstation.recipeHandler.recipe != null)
             {
                 byPlayer.Entity.StopAnimation(beworkstation.recipeHandler.recipe.Animation);
@@ -86,6 +83,10 @@ namespace InDappledGroves.Blocks
             
             EntityItem inWorldItem = entity as EntityItem;
             IDGBEWorkstation ws;
+            if (world.Rand.NextDouble() < 0.9)
+            {
+                return;
+            }
             if (inWorldItem != null && world.Side == EnumAppSide.Server)
             {
                 ws = api.World.BlockAccessor.GetBlockEntity(pos) as IDGBEWorkstation;
@@ -96,12 +97,7 @@ namespace InDappledGroves.Blocks
                 } else
                 {
                     return;
-                }
-
-                if (world.Rand.NextDouble() < 0.9)
-                {
-                    return;
-                }
+                }   
                 if (recipe != null && inWorldItem.Alive)
                 {
                         ItemSlot wslot = ws.Inventory.GetAutoPushIntoSlot(facing, inWorldItem.Slot);

@@ -1,4 +1,10 @@
-﻿1.21-v2.3.0-rc.1
+﻿1.21-v2.3.1
+	- Added a Harmony patch to have hammer run through collectibles and gather tool modes. New tool modes are only visible
+	  if the hammer isn't targeting an anvil. 
+	- Cleaned up IDGWorkstation and BehaviorIDGTool to improve performance.
+	  
+
+1.21-v2.3.0-rc.1
 	- Sounds have returned to the workstation processing.
 	- Workstations can now return more than one itemstack per recipe, 
 	  for instance, chopping log slabs into firewood could return sticks as well, 
