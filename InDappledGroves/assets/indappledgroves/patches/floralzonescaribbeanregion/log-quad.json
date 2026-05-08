@@ -1,72 +1,82 @@
-[  
-   {
-      "op": "replace",
-      "path": "/0/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/1/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/2/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/3/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/4/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/5/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/6/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/7/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/8/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   },
-   {
-      "op": "replace",
-      "path": "/9/ingredients/A/code",
-      "value": "indappledgroves:adze-*",
-      "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
-      "side": "server"
-   }
+[
+  {
+    "op": "replace",
+    "path": "/0/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/1/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/2/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/3/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/4/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/5/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/6/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/7/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/8/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  },
+  {
+    "op": "replace",
+    "path": "/9/ingredients/A/code",
+    "value": "indappledgroves:adze-*",
+    "file": "floralzonescaribbeanregion:recipes/grid/wood/log-quad.json",
+    "side": "server",
+    "dependsOn": [ { "modid": "floralzonescaribbeanregion" } ]
+  }
 ]

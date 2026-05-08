@@ -188,7 +188,7 @@ namespace InDappledGroves.BlockEntities
                     else
                     {
                         BlockSounds sounds = block.Sounds;
-                        assetLocation = (sounds?.Place);
+                        assetLocation = (sounds?.Place.Location);
                     }
                     AssetLocation assetLocation2 = assetLocation;
                     if (byPlayer != null)
@@ -218,7 +218,7 @@ namespace InDappledGroves.BlockEntities
 						else
 						{
 							BlockSounds sounds = block.Sounds;
-							assetLocation = (sounds?.Place);
+							assetLocation = (sounds?.Place.Location);
 						}
 						AssetLocation assetLocation2 = assetLocation;
 						this.Api.World.PlaySoundAt(assetLocation2 ?? new AssetLocation("sounds/player/build"), byPlayer.Entity, byPlayer, true, 16f, 1f);

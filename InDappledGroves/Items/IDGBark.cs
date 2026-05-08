@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
+using Vintagestory.Client;
 using Vintagestory.GameContent;
 
 namespace InDappledGroves.Items
@@ -35,57 +37,64 @@ namespace InDappledGroves.Items
         {
             BlockPos pos = blockSel?.Position;
 
-            if (pos != null && api.World.BlockAccessor.GetBlockEntity(pos) is BlockEntityGroundStorage bebgs)
+            if (pos != null && api.World.BlockAccessor.GetBlockEntity(pos) is BlockEntityGroundStorage bebgs && byEntity is EntityPlayer player)
             {
-                if (MatchSlots(bebgs.Inventory, slot))
-                {
-                    // Only modify the world serverside to avoid desyncs.
-                    if (api.World is Vintagestory.API.Server.IServerWorldAccessor)
-                    {
-                        //Deteremine if the block is being placed in water.  This is a temporary patch solution until BehaviorSubmergible gets fully processed.
-                        string bundlestate = api.World.BlockAccessor.GetBlock(blockSel.Position, BlockLayersAccess.Fluid).FirstCodePart() == "water" ? "-soaking" : "-dry";
-                        //Set the resultant block into the world.
-                        api.World.BlockAccessor.SetBlock(api.World.BlockAccessor.GetBlock(new AssetLocation(bebgs.Inventory[0].Itemstack.Collectible.Code.Domain + ":barkbundle-" + slot.Itemstack.Collectible.Variant["bark"] + bundlestate)).BlockId, blockSel.Position);
-                    }
-                    //Consume the last piece of bark on both client and server.
-                    slot.TakeOut(1);
-                    slot.MarkDirty();
-                    handling = EnumHandHandling.Handled;
-                }
-            } else
+                if (bebgs.GetContentStacks()[0]?.Collectible.Code == slot.Itemstack.Collectible.Code && player.Player.InventoryManager.OffhandHotbarSlot?.Itemstack?.Collectible is ItemHammer)
+                    handling = EnumHandHandling.PreventDefault;
+                //return;
+            }
+            else
             {
                 base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handling);
             }
-           
         }
 
-        /// <summary>Matches the slots.</summary>
-        /// <param name="inv">The inventory of the target GroundStorage</param>
-        /// <param name="slot">The players activehotbarslot</param>
-        /// <returns>Returns true if all four groundstorage slots contain the same bark as the player is holding.</returns>
-        private bool MatchSlots(InventoryBase inv, ItemSlot slot)
+        public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
-            if (slot.Empty || slot.Itemstack.Collectible.Variant["state"] != "dry")
+            BlockPos pos = blockSel?.Position;
+
+
+            if (pos != null && api.World.BlockAccessor.GetBlockEntity(pos) is BlockEntityGroundStorage bebgs && byEntity is EntityPlayer player)
             {
-                return false;
-            }
-            if (inv[0].Empty || inv[0].Itemstack.Collectible.Variant["state"] != "dry")
-            {
-                return false;
-            }
-            string firstbarktype = inv[0].Itemstack.Collectible.Variant["bark"];
-            if (slot.Itemstack.Collectible.Variant["bark"] != firstbarktype)
-            {
-                return false;
-            }
-            for (int i = 1; i < inv.Count; i++)
-            {
-                if (inv[i].Empty || inv[i].Itemstack.Collectible.Variant["bark"] != firstbarktype || inv[i].Itemstack.Collectible.Variant["state"] != "dry")
+
+                if (bebgs.Inventory[0].StackSize >= 4)
                 {
-                    return false;
+                    if (api.Side.IsServer())
+                    {
+                        ItemStack stack = new ItemStack(api.World.BlockAccessor.GetBlock(
+                                new AssetLocation("indappledgroves:barkbundle-" +
+                                bebgs.Inventory[0].Itemstack.Collectible.Code.SecondCodePart() +
+                                "-dry")));
+                        ItemStack removedStack = bebgs.Inventory.FirstNonEmptySlot.TakeOut(4);
+                        if (stack != null && player.Player.InventoryManager.TryGiveItemstack(stack))
+                        {
+                            slot.TakeOut(1);
+                            if (stack.StackSize > 0)
+                            {
+                                api.World.SpawnItemEntity(stack, bebgs.Pos);
+                            }
+                            bebgs.updateMeshes();
+                            bebgs.MarkDirty(true);
+                            api.World.Logger.Audit("{0} Took {1}x{2} from Ground storage at {3}.", player.Player.PlayerName, 4, removedStack.Collectible.Code, bebgs.Pos);
+                            if (bebgs.TotalStackSize == 0)
+                            {
+                                api.World.BlockAccessor.SetBlock(0, bebgs.Pos);
+                            }
+
+                            return false;
+                        }
+                    }
                 }
+                else if (bebgs.Inventory[0].MaxSlotStackSize <= 4)
+                {
+                    if(api is ICoreClientAPI capi)
+                    {
+                        capi.TriggerIngameError(this, "toofewbarkinstack", "There's not enough bark in the stack to create a bundle.");
+                    }
+                }
+                
             }
-            return true;
+            return base.OnHeldInteractStep(secondsUsed, slot, byEntity, blockSel, entitySel);
         }
     }
 }

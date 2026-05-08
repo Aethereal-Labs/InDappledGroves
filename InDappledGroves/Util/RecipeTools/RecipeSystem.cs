@@ -10,6 +10,7 @@ using Vintagestory.API.Util;
 using Vintagestory.ServerMods;
 using Vintagestory.GameContent;
 using static InDappledGroves.Util.RecipeTools.IDGRecipeNames.IDGRecipeLoader;
+using Vintagestory.API.Client;
 
 
 namespace InDappledGroves.Util.RecipeTools
@@ -20,7 +21,7 @@ namespace InDappledGroves.Util.RecipeTools
         {
             return "Cheat Code";
         }
-
+        
         public class IDGRecipeRegistry
         {
             private static IDGRecipeRegistry loaded;
@@ -93,13 +94,15 @@ namespace InDappledGroves.Util.RecipeTools
             }
         }
 
-        public class IDGRecipeLoader : RecipeLoader
+        public class IDGRecipeLoader : ModSystem
         {
-            public ICoreServerAPI api;
+            public ICoreAPI api;
 
-            public override double ExecuteOrder()
+            public override bool ShouldLoad(ICoreAPI api)
             {
-                return 100;
+
+                this.api = api;
+                return base.ShouldLoad(api);
             }
 
             private bool OutputIsObject(JToken token)
@@ -136,18 +139,12 @@ namespace InDappledGroves.Util.RecipeTools
                 return Array.Empty<JsonItemStack>();
             }
 
-            public override void AssetsFinalize(ICoreAPI capi)
+            
+            public override void AssetsFinalize(ICoreAPI api)
             {
                 IDGRecipeRegistry.Create();
                 LoadIDGRecipes();
                 base.AssetsFinalize(api);
-            }
-
-            public override void AssetsLoaded(ICoreAPI api)
-            {
-                //override to prevent double loading
-                if (!(api is ICoreServerAPI sapi)) return;
-                this.api = sapi;
             }
 
             public override void Dispose()
@@ -158,7 +155,10 @@ namespace InDappledGroves.Util.RecipeTools
 
             public void LoadIDGRecipes()
             {
-                api.World.Logger.StoryEvent(Lang.Get("indappledgroves:The Tyee and the bullcook..."));
+                if (api is ICoreClientAPI)
+                {
+                    api.Logger.StoryEvent(Lang.Get("indappledgroves:The Tyee and the bullcook..."));
+                }
                 LoadGroundRecipes();
                 LoadWorkStationRecipes();
                 LoadComplexWorkstationRecipes();
@@ -167,7 +167,7 @@ namespace InDappledGroves.Util.RecipeTools
             #region WorkStation Base Recipes
             public void LoadWorkStationRecipes()
             {
-                Dictionary<AssetLocation, JToken> files = api.Assets.GetMany<JToken>(api.Server.Logger, "recipes/workstation/basic");
+                Dictionary<AssetLocation, JToken> files = api.Assets.GetMany<JToken>(api.Logger, "recipes/workstation/basic");
                 int recipeQuantity = 0;
                 int ignored = 0;
                 int orphaned = 0;
@@ -394,12 +394,10 @@ namespace InDappledGroves.Util.RecipeTools
             }
             #endregion
 
-
-
             #region Splitter Recipes
             public void LoadComplexWorkstationRecipes()
             {
-                Dictionary<AssetLocation, JToken> files = api.Assets.GetMany<JToken>(api.Server.Logger, "recipes/workstation/complex");
+                Dictionary<AssetLocation, JToken> files = api.Assets.GetMany<JToken>(api.Logger, "recipes/workstation/complex");
                 int recipeQuantity = 0;
                 int ignored = 0;
                 int orphaned = 0;
@@ -561,7 +559,8 @@ namespace InDappledGroves.Util.RecipeTools
             #region Ground Recipes
             public void LoadGroundRecipes()
             {
-                Dictionary<AssetLocation, JToken> files = api.Assets.GetMany<JToken>(api.Server.Logger, "recipes/ground");
+
+                Dictionary<AssetLocation, JToken> files = api.Assets.GetMany<JToken>(api.Logger, "recipes/ground");
                 int recipeQuantity = 0;
                 int ignored = 0;
 
@@ -1020,8 +1019,6 @@ namespace InDappledGroves.Util.RecipeTools
                 return new BasicWorkstationRecipe()
                 {
 
-                    Output = Output,
-                    ReturnStack = ReturnStack.Clone(),
                     Code = Code,
                     IngredientMaterial = IngredientMaterial,
                     IngredientResistance = IngredientResistance,
@@ -1032,8 +1029,10 @@ namespace InDappledGroves.Util.RecipeTools
                     Sound = Sound,
                     Enabled = Enabled,
                     Name = Name,
-                    Ingredients = ingredients
-                    
+                    Ingredients = ingredients,
+                    Output = Output,
+                    ReturnStack = ReturnStack.Clone(),
+
                 };
             }
 
@@ -1165,6 +1164,10 @@ namespace InDappledGroves.Util.RecipeTools
             public BasicWorkstationRecipe Clone()
             { 
                 WorkStationIngredient[] ingredients = new WorkStationIngredient[Ingredients.Length];
+                for (int i = 0; i < Ingredients.Length; i++)
+                {
+                    Output[i] = Output[i].Clone();
+                }
                 for (int i = 0; i < Ingredients.Length; i++)
                 {
                     ingredients[i] = Ingredients[i].Clone();

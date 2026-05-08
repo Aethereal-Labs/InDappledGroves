@@ -1,9 +1,14 @@
 ﻿
 
-1.21-v2.3.1
+1.21-v2.3.0
 	- Added a Harmony patch to have hammer run through collectibles and gather tool modes. New tool modes are only visible
 	  if the hammer isn't targeting an anvil. 
 	- Cleaned up IDGWorkstation and BehaviorIDGTool to improve performance.
+	- Added Taska's bark piles to aid in compatibility
+	- Changed crafting method for bundles, they now require a bark pile and the same bark in hand.
+		- Currently requires a hammer in the offhand, this is ridiculous. 
+		- Before release will provide a permanent solution.
+
 	  
 
 1.21-v2.3.0-rc.1

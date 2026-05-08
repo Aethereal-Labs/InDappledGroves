@@ -1,0 +1,500 @@
+{
+	//"Tool Interactions and Mode Info Listed Below",
+	"Chopping": "Рубка",
+	"Sawing": "Пиление",
+	"Planing": "Строгание",
+	"Hewing": "Тесание",
+	"Hewing": "Колочение",
+	"itemhelp-axe-chopwood": "Рубить",
+	"itemhelp-saw-sawwood": "Пилить",
+	"itemhelp-adze-hewwood": "Тесать",
+	"itemhelp-tool-planewood": "Строгать",
+	"itemhelp-tool-pound": "Колотить",
+	"toolittledurability": "Вашему инструменту требуется {0} прочности для выполнения этого действия.",
+	"block-board": "Доска",
+	"WorkstationTypeNotDesignated": "Для верстака {0} не указан тип верстака в blocktype",
+	"defaultprocessmodifier": "Модификатор процесса:",
+	"logsplitterprocessor": "Тип лезвия:",
+	"remainingdurability": "Остаток прочности",
+	"LogSplitterNoBladeError": "В колуне нет лезвия",
+	"BladeHeldInSplitter": "Тип лезвия",
+	"BladeDurability": "Прочность лезвия",
+	"Empty": "Пусто",
+	"recipeprogress": "Прогресс рецепта",
+	"workstationholding": "Содержимое",
+	"recipeoutputstack": "Результат",
+	"attributetransformcode": "Код преобразования атрибута",
+	"inventoryclassname": "Имя класса инвентаря",
+	"currenttoolmode": "Текущий режим инструмента",
+	"recipetoolmode": "Режим инструмента для рецепта",
+	"recipeworkstation": "Верстак для рецепта",
+	"game:tabname-indappledgroves": "В Тенистых Рощах",
+	"game:handbook-category-indappledgroves": "В Тенистых Рощах",
+	"block-logsplitter": "Колун",
+	"indappledgroves:item-handbooktitle-splitterblade": "Лезвия для колуна",
+	"indappledgroves:item-handbooktext-splitterblade": "Эти лезвия используются в колуне. Лезвия для пластин (Slab blades) предназначены для изготовления бревенчатых пластин (log slabs), а перекрестные лезвия (cross blades) - для изготовления дров из бревен.",
+	"indappledgroves:block-handbooktitle-pan": "Изготовление с In-Dappled Groves",
+	"indappledgroves:block-handbooktext-pan": "Начните с создания <a href=\"handbooksearch://log slab\">окорённой бревенчатой пластины</a> и размещения ее на <a href=\"handbook://inworldcrafting-indappledgroves\">земле</a>. Затем используйте инструмент в режиме <a href=\"handbook://toolmodes-indappledgroves\">тесания</a> (hewing), чтобы превратить ее в деревянную чашу.",
+	"item-splitterblade-single-tinbronze": "Оловянно-бронзовое лезвие для пластин",
+	"item-splitterblade-single-bismuthbronze": "Висмутово-бронзовое лезвие для пластин",
+	"item-splitterblade-single-blackbronze": "Черно-бронзовое лезвие для пластин",
+	"item-splitterblade-single-iron": "Железное лезвие для пластин",
+	"item-splitterblade-single-meteoriciron": "Метеоритное железное лезвие для пластин",
+	"item-splitterblade-single-steel": "Стальное лезвие для пластин",
+	"item-splitterblade-cross-tinbronze": "Оловянно-бронзовое перекрестное лезвие",
+	"item-splitterblade-cross-bismuthbronze": "Висмутово-бронзовое перекрестное лезвие",
+	"item-splitterblade-cross-blackbronze": "Черно-бронзовое перекрестное лезвие",
+	"item-splitterblade-cross-iron": "Железное перекрестное лезвие",
+	"item-splitterblade-cross-meteoriciron": "Метеоритное железное перекрестное лезвие",
+	"item-splitterblade-cross-steel": "Стальное перекрестное лезвие",
+	
+	"block-handbooktitle-logsplitter": "Колун",
+	"block-handbooktext-logsplitter": "Колун (Log Splitter) – это новый инструмент для эффективного изготовления <a href=\"handbook://item-firewood\">дров</a>. Он также может использоваться для создания <a href=\"handbooksearch://log slab\">бревенчатых пластин</a>. Чтобы использовать колун, установите его и вставьте <a href=\"handbooksearch://slab blade\">лезвие для пластин</a>, чтобы делать пластины, или <a href=\"handbooksearch://cross blade\">перекрестное лезвие</a>, чтобы делать дрова.<br><br>Обработка бревна, помещенного в колун, требует использования инструмента, например, <a href=\"handbooksearch://maul AND tool\">кувалды для колки</a>, у которого есть режим инструмента <a href=\"handbook://toolmodes-indappledgroves\">колочение</a> (pounding). Колун лучше всего использовать для изготовления дров. Он раскалывает бревна немного медленнее, чем использование кувалды для колки того же бревна, но непосредственно создает дрова. Это делает его более быстрым вариантом для создания дров, чем колода для рубки (chopping block).<br>Обратите внимание, что лезвия имеют прочность, и их придется время от времени заменять. Ни материал лезвия, ни материал колуна не влияют на скорость изготовления дров. Однако материал лезвия влияет на его прочность.",
+	"block-handbooktitle-logsplitter2": "Продается:",
+	"block-handbooktext-logsplitter2": "Кузнец",
+
+	
+	//Bark Basket Entries
+	"block-handbooktitle-barkbasket": "",
+	"block-handbooktext-barkbasket": "<font align='center'><i>С каждым плетением коры
+	мы становимся ближе к дому.</i></font>
+	<font weight='bold' align='center'>- О плетении корзин</font>
+
+	<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font>
+
+	Эти корзины сплетены из <a href=\"handbooksearch://soaked bark\">вымоченной коры</a> любого дерева. Эта вечная технология пережила гниение и является краеугольным камнем для Серафимов, ищущих удобное хранилище.
+					
+	Кора издавна использовалась для изготовления корзин в различных частях света. Свидетельства корзин можно найти в культурах, начиная от саамов региона Сапми, салишей, чилкатов и других индейских племен американского Северо-Запада, и бесчисленном множестве других.",
+	
+	"barkbasketname": "Корзины из коры",
+	"block-barkbasket": "Корзина из коры",
+	"barkbasketcontents": "Корзина из коры",
+
+	//Chopping Block Entries
+	"block-handbooktitle-choppingblock": "Как создать:",	
+	"block-handbooktext-choppingblock": "	<strong>Тип рецепта:</strong> <a href=\"handbook://inworldcrafting-indappledgroves\">В мире</a>
+	<strong>Режим инструмента:</strong> <a href=\"handbook://inworldcrafting-indappledgroves\">Тесание</a>
+	<strong>Ингредиенты</strong>: <a href=\"handbooksearch://log slab\">Любая бревенчатая пластина</a>
+	<strong>Инструменты</strong>: <a href=\"handbooksearch://adze\">тесло</a>, <a href=\"handbooksearch://grub axe\">топор-мотыга</a>
+",
+	"block-handbooktitle-choppingblock2": "																			Лучший друг дровосека",
+	"block-handbooktext-choppingblock2": "
+	<font align='center'><i>До Просветления -
+	Руби дрова, носи воду,
+	После Просветления -
+	Руби дрова, носи воду</i></font>
+	<font weight='bold' align='center'>- Дзенская пословица </font>
+
+				<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font>
+
+			Создается путем размещения любой бревенчатой пластины на земле и <a href=\"handbook://inworldcrafting-indappledgroves\">тесания</a> ее теслом или другим инструментом для тесания. Колода для рубки – это основа набора верстаков серьезного дровосека.
+								 
+			Этот верстак повышает эффективность ваших инструментов. Работа, выполняемая на колоде для рубки, обычно быстрее, чем на земле.
+
+			Кроме того, существуют определенные рецепты, которые можно выполнить только с помощью колоды для рубки. Для тех, кто собирается работать с большими объемами древесины, это должен быть первый верстак, который вы приобретете. 
+",
+	"block-choppingblock": "Колода для рубки",
+	
+	//LogSlab Entries
+	"block-handbooktitle-logslab":"Как создать",
+	"block-handbooktext-logslab": 
+	"	<strong>Тип рецепта:</strong> <a href=\"handbook://inworldcrafting-indappledgroves\">В мире</a> & <a href=\"handbook://workstations-indappledgroves\">Изготовление на верстаке</a>
+	<strong>Режим инструмента:</strong> <a href=\"handbook://inworldcrafting-indappledgroves\">Рубка</a>
+	<strong>Ингредиенты</strong>: <a href=\"handbooksearch://log\">Любое бревно</a>
+	<strong>Инструменты</strong>: Топоры
+		
+	<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font>",
+	"block-handbooktitle-logslab2":"Бревенчатые пластины",
+	"block-handbooktext-logslab2": "	Первый этап на пути к изготовлению <a href=\"handbook://item-firewood\">дров</a>. Их можно изготовить на <a href=\"handbooksearch://chopping block\">колоде для рубки</a> или на <a href=\"handbook://inworldcrafting-indappledgroves\">земле</a>. Целевое <a href=\"handbooksearch://log\">бревно</a> должно стоять вертикально, открывая ствол, а не кору. Бревенчатые пластины, размещенные горизонтально, могут быть <a href=\"handbook://toolmodes-indappledgroves\">обтесаны</a> (hewn) в колоды для рубки. Если они стоят вертикально, их можно <a href=\"handbook://toolmodes-indappledgroves\">рубить</a> (chopped) в дрова или <a href=\"handbook://toolmodes-indappledgroves\">тесать</a> (hewn), чтобы создать окорённые бревенчатые пластины и получить две коры.",
+	"block-logslab": "Бревенчатая пластина",
+	"block-idgblockfirewood": "Дрова",
+
+	//Stripped Log Entries
+	"block-handbooktitle-strippedlog": "Окорённое бревно",
+	"block-handbooktext-strippedlog": "<font align='center'><i>Обнаженные тела, как очищенные бревна,
+иногда издают сладчайший запах,
+мужчина и женщина
+под деревьями в полном изобилии</i></font>
+<font weight='bold' align='center'>- Уильям Карлос Уильямс</font>
+				
+<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font>
+
+Окорённые бревна создаются путем <a href=\"handbook://toolmodes-indappledgroves\">тесания</a> (hewing) <a href=\"handbooksearch://log\">бревна</a> с корой. Затем их можно расколоть на окорённые бревенчатые пластины.
+
+<font weight='bold'>Как создать</font>
+	<strong>Тип рецепта:</strong> <a href=\"handbook://inworldcrafting-indappledgroves\">В мире</a> & <a href=\"handbook://workstations-indappledgroves\">Изготовление на верстаке</a>
+	<strong>Режим инструмента:</strong> <a href=\"handbook://inworldcrafting-indappledgroves\">Тесание</a>
+	<strong>Ингредиенты</strong>: <a href=\"handbooksearch://log\">Любое бревно</a>		
+	<strong>Обычные инструменты</strong>: Тесло, топор-мотыга
+",
+	//Sawhorse Entries
+	"block-handbooktitle-sawhorse": "",
+	"block-handbooktext-sawhorse": "
+<font align='center'><i>Слева — топор, справа — пила.
+Топор в колоде, пила на козлах.
+Опилки устилают тропу. Сидим в
+сарае, наблюдая за дождем.</i></font>
+<font weight='bold' align='center'>- Паоль Кейнег</font>",
+
+	"block-sawhorse": "Козлы для пиления",
+
+	//Sawbuck Entries
+	"indappledgroves:block-handbooktitle-sawbuck": "Козлы для пиления",
+	"indappledgroves:block-handbooktext-sawbuck": "<font align='center'><i>Ветер пилил,
+	И опилки кружились</i></font>
+	<font weight='bold' align='center'>- Чарльз Диккенс </font>
+
+	<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font>
+	
+	Козлы для пиления – это <a href=\"handbook://workstations-indappledgroves\">верстак</a>, который в основном используется для операций пиления, ускоряя процесс и немного уменьшая износ вашего инструмента.	
+	",
+
+	"block-sawbuck": "Козлы для пиления",
+
+	//Bark Bundle Entries
+	"indappledgroves:block-handbooktitle-barkbundledry": "Сухой пучок коры",
+	"indappledgroves:block-handbooktext-barkbundledry": "
+<font align='center'><i>Вдали на хребтах белый ясень и сосна,
+Где кора-железо, голубая камедь и перечная мята;
+Есть много других, но дороже всего мне
+И царь всех — дерево со струнной корой.</i></font>
+<font weight='bold' align='center'>- Поэма «Дерево со струнной корой» Генри Лоусона</font>
+
+		<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font>
+
+Создание сухого пучка коры — это простой процесс. Просто нажмите Shift+ПКМ 
+на землю в одном из четырех углов блока с горстью <a href=\"handbooksearch://dry bark\">сухой коры</a>, чтобы создать наземное хранилище. Заполните оставшиеся три места тем же видом коры, а затем нажмите ПКМ в центре пятым куском, чтобы сделать сухой пучок коры.
+
+Теперь ваш пучок коры готов к обработке. Поднимите его и положите на блок, покрытый водой, чтобы начать процесс замачивания. Через 24 часа у вас будет вымоченный пучок коры. Поднимите его, и вы получите 5 кусков <a href=\"handbooksearch://soaked bark\">вымоченной коры</a>, готовой для изготовления корзины.
+",
+
+	"block-barkbundle": "Пучок коры",
+	"dry": "Сухой",
+	"soaking": "Замачивается",
+	"soaked": "Вымоченный",
+
+
+	"indappledgroves:item-handbooktitle-soakedbark": "Вымоченная кора", 
+	"indappledgroves:item-handbooktext-soakedbark": "
+<font align='center'><i>И когда на Западе строились дома из пиленого леса,
+Тогда для стен и потолков его древесина была лучшей;
+А для черепицы и палисадов, чтобы простоять, пока есть люди,
+Не было ничего на земле, как дерево со струнной корой.</i></font>
+<font weight='bold' align='center'>- Поэма «Дерево со струнной корой» Генри Лоусона</font>
+		
+     Вымоченная кора получается путем помещения <a href=\"handbooksearch://bark bundle\">пучка коры</a> в воду, нажав ПКМ на блок, покрытый водой. Это разместит сухой пучок коры, превратив его в замачивающийся пучок коры. Со временем он превратится в вымоченный пучок коры. Просто нажмите ПКМ на вымоченном пучке коры, чтобы забрать 5 кусков <a href=\"handbooksearch://soaked bark\">вымоченной коры</a>.
+
+Вымоченная кора — универсальный материал, идеально подходящий для изготовления полезных контейнеров, <a href=\"handbooksearch://bark basket\">корзин из коры</a>. Если у вас также установлен мод <a href=\"https://mods.vintagestory.at/ancienttools\">Ancient Tools</a> от Taska, то вам также потребуется замачивать <a href=\"handbooksearch://soaked bark\">вымоченную кору</a> березы, чтобы делать мази.
+",
+
+	//Vanilla Replacement Entries
+	"indappledgroves:item-handbooktitle-firewood": "Дрова",
+	"indappledgroves:item-handbooktext-firewood": "	
+<font align='center'><i>Буковые костры ярки и чисты,
+Если поленья хранились год,
+Каштан хорош, говорят,
+Если для поленьев отложен.</i></font>
+<font weight='bold' align='center'>- Поэма «Дрова» Леди Селии Конгрив</font>
+
+<font size=18 weight='bold'>Использование в In Dappled Groves:</font>
+<font size=14 weight='bold'>Тип рецепта:</font>  <font size=14><a href=\"handbook://inworldcrafting-indappledgroves\">В мире</a> & <a href=\"handbook://workstations-indappledgroves\">Изготовление на верстаке</a></font>
+<font size=14 weight='bold'>Режим инструмента:</font>  <font size=14><a href=\"handbook://inworldcrafting-indappledgroves\">Рубка</a></font>
+<font size=14 weight='bold'>Ингредиенты</font>: <font size=14><a href=\"handbook://indappledgroves:logslab-birch-barked-down-free\">Бревенчатая пластина с корой или окорённая</a></font>
+<font size=14 weight='bold'>Обычные инструменты</font>: <font size=14><a href=\"handbooksearch://axe\">Топор</a>, <a href=\"handbooksearch://forest axe\">Лесной топор</a>, <a href=\"handbooksearch://splitting maul\">Кувалда для колки</a>, <a href=\"handbooksearch://grub axe\">Топор-мотыга</a></font>
+<font size=14 weight='bold'>Верстак</font>: <font size=14> <a href=\"handbooksearch://chopping block\">Колода для рубки</a> или земля</font>
+",
+
+	"indappledgroves:item-handbooktitle-stick": "Палки",
+	"indappledgroves:item-handbooktext-stick": "
+<font align='center'><i>Я был далеко в лесу,
+Когда нашел идеальную палку
+Я знал, что она идеальна,
+Не слишком тонкая, не слишком толстая</i></font>
+<font weight='bold' align='center'>- Эми Людвиг Вандеруотер</font>
+
+<font size=18 weight='bold'>Использование в In Dappled Groves:</font>
+<font size=14 weight='bold'>Тип рецепта:</font>  <font size=14><a href=\"handbook://inworldcrafting-indappledgroves\">В мире</a> & <a href=\"handbook://workstations-indappledgroves\">Изготовление на верстаке</a></font>
+<font size=14 weight='bold'>Режим инструмента:</font>  <font size=14><a href=\"handbook://inworldcrafting-indappledgroves\">Рубка</a></font>
+<font size=14 weight='bold'>Ингредиенты</font>: <font size=14><a href=\"handbook://item-firewood\">Дрова</a></font>
+<font size=14 weight='bold'>Обычные инструменты</font>: <font size=14><a href=\"handbooksearch://axe\">Топор</a>, <a href=\"handbooksearch://forest axe\">Лесной топор</a>, <a href=\"handbooksearch://splitting maul\">Кувалда для колки</a>, <a href=\"handbooksearch://grub axe\">Топор-мотыга</a></font>
+<font size=14 weight='bold'>Верстак</font>: <font size=14> <a href=\"handbooksearch://chopping block\">Колода для рубки</a> или земля</font>
+
+Вы можете использовать любой <a href=\"handbooksearch://axe\">топор</a>, чтобы <a href=\"handbook://toolmodes-indappledgroves\">рубить</a> кусок <a href=\"handbook://item-firewood\">дров</a> на <a href=\"handbook://inworldcrafting-indappledgroves\">земле</a> или на <a href=\"handbooksearch://chopping block\">колоде для рубки</a>, чтобы создать палки.
+",
+	"indappledgroves:block-handbooktitle-debarkedlog": "Метод изготовления",
+	"indappledgroves:block-handbooktext-debarkedlog": "
+<font size=18 weight='bold'>Использование в In Dappled Groves:</font>
+<font size=14 weight='bold'>Тип рецепта:</font>  <font size=14><a href=\"handbook://inworldcrafting-indappledgroves\">В мире</a> & <a href=\"handbook://workstations-indappledgroves\">Изготовление на верстаке</a></font>
+<font size=14 weight='bold'>Режим инструмента:</font> <font size=14> <a href=\"handbook://inworldcrafting-indappledgroves\">Тесание</a></font>
+<font size=14 weight='bold'>Ингредиенты</font>:  <font size=14><a href=\"handbooksearch://log\">Любое бревно</a></font>
+<font size=14 weight='bold'>Обычные инструменты</font>:  <font size=14><a href=\"handbooksearch://adze\">тесло</a>, <a href=\"handbooksearch://grub axe\">топор-мотыга</a></font>
+<font size=14 weight='bold'>Верстак</font>:  <font size=14><a href=\"handbooksearch://chopping block\">Колода для рубки</a> или земля</font>
+",
+
+	"indappledgroves:block-handbooktitle-supportbeam": "Метод изготовления",
+	"indappledgroves:block-handbooktext-supportbeam": "
+<font size=18 weight='bold'>Использование в In Dappled Groves:</font>
+<font size=14 weight='bold'>Тип рецепта:</font></strong> <font size=14><a href=\"handbook://inworldcrafting-indappledgroves\">В мире</a> & <a href=\"handbook://workstations-indappledgroves\">Изготовление на верстаке</a></font>
+<font size=14 weight='bold'>Режим инструмента:</font></strong> <font size=14><a href=\"handbook://inworldcrafting-indappledgroves\">Тесание</a></font>
+<font size=14 weight='bold'>Ингредиенты</strong>:</font> <font size=14><a href=\"handbooksearch://debarked\">Любое окорённое бревно</a></font>		
+<font size=14 weight='bold'>Обычные инструменты</strong>:</font> <font size=14><a href=\"handbooksearch://adze\">тесло</a>, <a href=\"handbooksearch://grub axe\">топор-мотыга</a></font>
+<font size=14 weight='bold'>Верстак</strong>:</font> <font size=14><a href=\"handbook://workstations-indappledgroves\">Козлы для пиления</a></font>
+",
+	//Grub Axe Entries
+	"item-handbooktitle-grubaxe": "Топор-мотыга",
+	"item-handbooktext-grubaxe": "Топор-мотыга имеет длинную рукоять и прочную головку, сочетающую вертикальное лезвие топора с горизонтальным теслом. Это делает его универсальным инструментом, способным к <a href=\"handbook://toolmodes-indappledgroves\">рубке</a> или <a href=\"handbook://toolmodes-indappledgroves\">тесанию.</a>",
+	"item-grubaxehead-tinbronze": "Оловянно-бронзовая головка топора-мотыги",
+	"item-grubaxehead-bismuthbronze": "Висмутово-бронзовая головка топора-мотыги",
+	"item-grubaxehead-blackbronze": "Черно-бронзовая головка топора-мотыги",
+	"item-grubaxehead-iron": "Железная головка топора-мотыги",
+	"item-grubaxehead-meteoriciron": "Метеоритная железная головка топора-мотыги",
+	"item-grubaxehead-steel": "Стальная головка топора-мотыги",
+	"item-grubaxe-tinbronze": "Оловянно-бронзовый топор-мотыга",
+	"item-grubaxe-bismuthbronze": "Висмутово-бронзовый топор-мотыга",
+	"item-grubaxe-blackbronze": "Черно-бронзовый топор-мотыга",
+	"item-grubaxe-iron": "Железный топор-мотыга",
+	"item-grubaxe-meteoriciron": "Метеоритный железный топор-мотыга",
+	"item-grubaxe-steel": "Стальной топор-мотыга",
+	
+	//Forest Axe Entries
+	"item-handbooktitle-forestaxe": "Лесной топор",
+	"item-handbooktext-forestaxe": "
+<font align='center'><i>С болящими конечностями и истерзанной спиной,
+Мы ждали, когда дерево треснет.
+И раздастся громовой звук,
+Когда оно рухнет на землю.</i></font>
+<font weight='bold' align='center'>- Джордж Сэвидж</font>
+
+				<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font>
+				
+		Отличительной особенностью лесных топоров является длинное, закругленное лезвие с плоской удлиненной головкой топора. Лесные топоры специально разработаны для рубки поперек волокон древесины, например, при валке и обрезке сучьев.	
+		Это делает их исключительно хорошими для рубки деревьев, хотя они плохо справляются с попытками <a href=\"handbook://toolmodes-indappledgroves\">рубить</a> бревна на <a href=\"handbooksearch://log slab\">бревенчатые пластины</a>, <a href=\"handbook://item-firewood\">дрова</a> и <a href=\"handbook://item-stick\">палки</a>.
+		",
+
+	"item-forestaxehead-tinbronze": "Оловянно-бронзовая головка лесного топора",
+	"item-forestaxehead-bismuthbronze": "Висмутово-бронзовая головка лесного топора",
+	"item-forestaxehead-blackbronze": "Черно-бронзовая головка лесного топора",
+	"item-forestaxehead-iron": "Железная головка лесного топора",
+	"item-forestaxehead-meteoriciron": "Метеоритная железная головка лесного топора",
+	"item-forestaxehead-steel": "Стальная головка лесного топора",
+	"item-forestaxe-tinbronze": "Оловянно-бронзовый лесной топор",
+	"item-forestaxe-bismuthbronze": "Висмутово-бронзовый лесной топор",
+	"item-forestaxe-blackbronze": "Черно-бронзовый лесной топор",
+	"item-forestaxe-iron": "Железный лесной топор",
+	"item-forestaxe-meteoriciron": "Метеоритный железный лесной топор",
+	"item-forestaxe-steel": "Стальной лесной топор",
+
+	//Maul Entries
+	"item-handbooktitle-maul": "Кувалда для колки",
+	"item-handbooktext-maul": "Этот инструмент имеет тяжелую головку с толстым <a href=\"handbook://toolmodes-indappledgroves\">рубящим</a> лезвием, что делает его идеальным для раскалывания <a href=\"handbooksearch://log\">бревен</a> на <a href=\"handbooksearch://log slab\">пластины</a>. Их можно далее расколоть на <a href=\"handbook://item-firewood\">дрова</a>, а из них — на <a href=\"handbook://item-stick\">палки.</a> ",
+	"item-maulhead-tinbronze": "Оловянно-бронзовая головка кувалды для колки",
+	"item-maulhead-bismuthbronze": "Висмутово-бронзовая головка кувалды для колки",
+	"item-maulhead-blackbronze": "Черно-бронзовая головка кувалды для колки",
+	"item-maulhead-iron": "Железная головка кувалды для колки",
+	"item-maulhead-meteoriciron": "Метеоритная железная головка кувалды для колки",
+	"item-maulhead-steel": "Стальная головка кувалды для колки",
+	"item-maul-tinbronze": "Оловянно-бронзовая кувалда для колки",
+	"item-maul-bismuthbronze": "Висмутово-бронзовая кувалда для колки",
+	"item-maul-blackbronze": "Черно-бронзовая кувалда для колки",
+	"item-maul-iron": "Железная кувалда для колки",
+	"item-maul-meteoriciron": "Метеоритная железная кувалда для колки",
+	"item-maul-steel": "Стальная кувалда для колки",
+
+	//Bark Entries
+	"item-handbooktitle-drybark": "Кора",
+	"item-handbooktext-drybark": "Кора деревьев полезна для изготовления <a href=\"handbooksearch://bark basket\">корзин из коры</a>. Это достигается путем формирования из нее <a href=\"handbooksearch://dry bark bundle\">пучков коры</a> и замачивания их на 24 часа для получения <a href=\"handbooksearch://soaked bark\">вымоченной коры</a>.",
+	"item-bark": "Кора",
+
+	//Adze Info
+	"item-handbooktitle-adze": "",
+	"item-handbooktext-adze": "",
+	"item-adzehead-flint": "Кремневая головка тесла", 
+	"item-adzehead-chert": "Кремневая головка тесла",
+	"item-adzehead-granite": "Гранитовая головка тесла",
+	"item-adzehead-andesite": "Андезитовая головка тесла",
+	"item-adzehead-basalt": "Базальтовая головка тесла",
+	"item-adzehead-obsidian": "Обсидиановая головка тесла",
+	"item-adzehead-peridotite": "Перидотитовая головка тесла",
+	"item-adzehead-tinbronze": "Оловянно-бронзовая головка тесла",
+	"item-adzehead-bismuthbronze": "Висмутово-бронзовая головка тесла",
+	"item-adzehead-blackbronze": "Черно-бронзовая головка тесла",
+	"item-adzehead-iron": "Железная головка тесла",
+	"item-adzehead-meteoriciron": "Метеоритная железная головка тесла",
+	"item-adzehead-steel": "Стальная головка тесла",
+	"item-adze-*-chert": "Кремневое тесло",
+	"item-adze-*-granite": "Гранитовое тесло",
+	"item-adze-*-andesite": "Андезитовое тесло",
+	"item-adze-*-basalt": "Базальтовое тесло",
+	"item-adze-*-obsidian": "Обсидиановое тесло",
+	"item-adze-*-peridotite": "Перидотитовое тесло",
+	"item-adze-*-flint": "Кремневое тесло",
+	"item-adze-*-tinbronze": "Оловянно-бронзовое тесло",
+	"item-adze-*-bismuthbronze": "Висмутово-бронзовое тесло",
+	"item-adze-*-blackbronze": "Черно-бронзовое тесло",
+	"item-adze-*-iron": "Железное тесло",
+	"item-adze-*-meteoriciron": "Метеоритное железное тесло",
+	"item-adze-*-steel": "Стальное тесло",
+	
+	//Story Events
+	"The Tyee and the bullcook...": "Тайи и скотник...",
+	"...working sole and blade": "...работая подошвой и лезвием",
+	"...with sturdy haft and bit": "...с прочной рукоятью и резцом",
+	"...by dust and the dog": "...по пыли и собаке",
+
+	//ToolMode Interaction Help
+	"heldhelp-chopping": "Рубить, чтобы создать {0}",
+	"heldhelp-hewing": "Тесать, чтобы создать {0}",
+	"heldhelp-planing": "Строгать, чтобы создать {0}",
+	"heldhelp-sawing": "Пилить, чтобы создать {0}",
+
+	//Ground Recipe Guide
+"indappledgrovesguide-inworldcrafting-title": "IDG: Изготовление в мире",
+"indappledgrovesguide-inworldcrafting-text": 
+"<font weight='bold' align='center'>Изготовление в мире</font>
+Изготовление в мире направлено на устранение зависимости от сетки 
+изготовления, чтобы обеспечить более захватывающий опыт. In Dappled Groves 
+применяет этот принцип, предоставляя две новые механики для ваших 
+деревообрабатывающих приключений.
+
+<font weight='bold' align='center'>Обработка на земле</font>
+Первая механика — это возможность обрабатывать древесину без сетки.
+Вы можете положить бревно, бревенчатую пластину или кусок дров на землю и
+взаимодействовать с ними инструментом, таким как <a href=\"handbooksearch://axe\">топор</a>, <a href=\"handbooksearch://adze\">тесло</a> или <a href=\"handbooksearch://saw\">пила</a>. Результаты зависят от используемого инструмента и выбранного <a href=\"handbook://toolmodes-indappledgroves\">режима инструмента</a>. Например, <a href=\"handbooksearch://grub axe\">топор-мотыга</a>, установленный в режим тесания, используемый на бревне, даст кору, а выбор режима рубки приведет к получению бревенчатых пластин.
+
+
+<font weight='bold' align='center'>Верстаки</font>
+<a href=\"handbook://workstations-indappledgroves\">Верстаки</a> — это вторая механика. В настоящее время они включают
+колоду для рубки и козлы для пиления. Эти верстаки служат для повышения эффективности при обработке рецептов
+на них. Как и прежде, <a href=\"handbook://toolmodes-indappledgroves\">режим инструмента</a> вашего инструмента изменяет результаты.
+
+Обработка материалов на <a href=\"handbook://workstations-indappledgroves\">верстаке</a> или без него происходит одинаково. 
+Просто наведитесь на блок и удерживайте правую кнопку мыши. Начнется 
+анимация работы, и вскоре вы увидите свои результаты. Типы древесины 
+различаются по твердости, поэтому требуемое время может варьироваться. Сосна —
+более мягкая древесина, и она будет обрабатываться быстро. Эбеновое дерево — одна из самых 
+твердых пород дерева в мире, и на его обработку потребуется значительно больше времени, 
+особенно с каменными инструментами.",
+
+	//Workstation Guide
+"indappledgrovesguide-workstations-title": "IDG: Изготовление на верстаке",
+"indappledgrovesguide-workstations-text": "
+<font weight='bold' align='center'>Изготовление на верстаке</font>
+<font align='center'><i>«И пока я работал, мне пришло в голову,
+О разной участи древесины;
+Один дюйм, где люди едят и пьют,
+Следующий дюйм в гробнице.</i></font>
+<font weight='strong' align='center'>- «Рабочий ящик» Томаса Харди</font>
+
+Верстаки — это блоки, которые добавляют интерактивный элемент в производство ресурсов. In Dappled Groves добавляет два таких верстака: <a href=\"handbooksearch://chopping block\">колоду для рубки</a> и <a href=\"handbooksearch:sawbuck\">козлы для пиления</a>.
+
+<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font>
+
+<font weight='bold' align='center'>Верстаки</font>
+
+<font weight='bold'>Колода для рубки</font>
+Колода для рубки — это самый основной из верстаков, создаваемый с помощью инструмента <a href=\"handbook://toolmodes-indappledgroves\">тесания</a> (hewing), такого как <a href=\"handbooksearch://adze\">тесло</a> или <a href=\"handbooksearch://grub axe\">топор-мотыга</a>, на <a href=\"handbooksearch://log slab\">бревенчатой пластине</a>, лежащей на земле.
+
+<a href=\"handbooksearch://chopping block\">Колода для рубки</a> в настоящее время используется для ряда процессов <a href=\"handbook://toolmodes-indappledgroves\">рубки</a> и <a href=\"handbook://toolmodes-indappledgroves\">тесания</a>. Вы можете обрабатывать <a href=\"handbooksearch://log\">бревна</a> в <a href=\"handbooksearch://log slab\">бревенчатые пластины</a>, их в <a href=\"handbook://item-firewood\">дрова</a>, а их в <a href=\"handbook://item-stick\">палки.</a> Эти процессы также могут быть выполнены на земле, но колода для рубки ускоряет процесс.
+
+<font weight='bold' align='left'>Козлы для пиления</font>
+Козлы для пиления становятся доступными после того, как вы изготовите <a href=\"handbook://item-plank-birch\">доски</a> на земле с помощью <a href=\"handbooksearch://saw\">пилы</a>. Как и колода для рубки, они ускоряют процессы, выполняемые на них, и используются для <a href=\"handbook://toolmodes-indappledgroves\">пиления</a> бревен на <a href=\"handbooksearch://board\">доски</a> и <a href=\"handbook://toolmodes-indappledgroves\">тесания</a> их в <a href=\"handbooksearch://beam\">опорные балки</a>.
+",
+
+
+//Tool Modes Guide
+"indappledgrovesguide-toolmodes-title": "IDG: Режимы инструментов",
+"indappledgrovesguide-toolmodes-text": 
+"<font weight='bold' align='center'>Режимы инструментов</font>
+Режимы инструментов предоставляют опции того, как используется инструмент, и могут быть изменены 
+нажатием клавиши F, удерживая инструмент, у которого они есть. В ванили
+режимы инструментов можно увидеть у зубила и кирки. Этот мод
+добавляет эти опции к другим инструментам, чтобы предоставить более динамичные возможности 
+для изготовления при сочетании с различными материалами и <a href=\"handbook://workstations-indappledgroves\">верстаками</a>.
+
+<font weight='bold' align='center'>Основные концепции</font>
+Режимы инструментов в этом моде предоставляют доступ к различным рецептам и,
+следовательно, к различным результатам, основанным на инструменте, станции изготовления и
+исходном материале. В этой версии реализованы три различных режима 
+инструмента, четвертый в настоящее время отключен, а пятый планируется.
+
+Не все инструменты будут иметь доступ к одним и тем же режимам инструмента, равно как и
+не все инструменты, имеющие доступ к режиму инструмента, гарантированно будут эффективны
+в указанном процессе. Некоторые инструменты просто лучше подходят для одних вещей,
+чем для других. Например, вы можете тесать древесину обратной стороной <a href=\"handbooksearch://grub axe\">топора-мотыги</a>, но
+это не так эффективно, как будет такое же по уровню <a href=\"handbooksearch://adze\">тесло</a>.
+
+<font weight='bold' align='center'>Режимы инструментов</font>
+
+<font weight='bold'>Рубка (Chopping):</font> Используется при рубке древесины на пластины, дрова и палки. В будущем может быть изменен на 'раскол' (splitting). Встречается в любой форме <a href=\"handbook://item-axe-wood-tinbronze\">топора</a>, включая <a href=\"handbooksearch://forest axe\">лесной топор</a>, <a href=\"handbooksearch://grub axe\">топор-мотыгу</a> и <a href=\"handbooksearch://splitting maul\">кувалду для колки</a>.
+
+<font weight='bold'>Тесание (Hewing):</font> Используется при обтесывании древесины или ее 'очистке', например, при снятии коры. В настоящее время используется только для снятия коры, создания колод для рубки из пластин и изготовления балок на <a href=\"handbooksearch:sawbuck\">козлах для пиления</a>. Встречается в любом <a href=\"handbooksearch:adze\">тесле</a> или <a href=\"handbooksearch://grub axe\">топоре-мотыге</a>.'
+
+<font weight='bold'>Пиление (Sawing):</font> Используется пилами, когда из бревен делают доски. Встречается, что неудивительно, в <a href=\"handbooksearch://saw\">пиле.</a>
+
+<font weight='bold'>Колочение (Pounding):</font> Этот режим инструмента доступен в <a href=\"handbooksearch://splitting maul\">кувалде для колки</a> и используется с <a href=\"handbooksearch://log splitter\">колуном</a> для эффективного производства <a href=\"handbook://item-firewood\">дров</a>. Он также используется для изготовления <a href=\"handbooksearch://log slab\">бревенчатых пластин</a>.",
+
+//<font weight='bold' align='center'>Future Modes</font>
+//<font weight='bold'>Planing:</font>  Planing will be a mode used to process boards from a rough state into a smoothed state when more in-depth board making processes are introduced.
+//Строгание: Строгание будет режимом, используемым для обработки досок из грубого состояния в гладкое, когда будут введены более детальные процессы изготовления досок.
+
+//<font weight='bold'>Riving:</font> Riving is a process by which logs can be split into shingles, beams, and various other pieces that require methods more precise than splitting with an axe or maul. A froe, or frow axe is usually used for this process.",
+//Колка (Riving): Колка — это процесс, при котором бревна могут быть расколоты на дранку, балки и различные другие куски, которые требуют более точных методов, чем раскалывание топором или кувалдой. Для этого процесса обычно используется расщепитель (froe) или тесло-топор (frow axe).
+
+"item-handbooktitle-firewood": "Использование в In Dappled Groves:",
+"item-handbooktext-firewood": "Может быть сделано путем <a href=\"handbook://toolmodes-indappledgroves\">рубки</a> бревенчатой пластины после размещения ее на земле или на <a href=\"handbooksearch://chopping block\">колоде для рубки</a>. Может быть помещено на землю или <a href=\"handbooksearch://chopping block\">колоду для рубки</a> и обработано в палки путем их <a href=\"handbook://toolmodes-indappledgroves\">рубки</a> топором или другим рубящим инструментом. ",
+//Wood Resistance Information
+"woodresistance-indappledgroves":"IDG: Различное сопротивление древесины",
+"indappledgroves:indappledgrovesguide-woodresistance-title":"Механика IDG: Различное сопротивление древесины",
+"indappledgroves:indappledgrovesguide-woodresistance-text": "<font align='center'><i>Хорошая древесина не растет легко,
+Чем сильнее ветер, тем крепче деревья;
+Чем дальше небо, тем больше длина;
+Чем больше буря, тем больше сила.</i></font>
+<font weight='bold' align='center'>- «Хорошая древесина» Дугласа Мэллока</font>
+
+<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font>
+<font size=18 weight='bold' align='center'>Сопротивление древесины и деревообработка</font>
+<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font>
+
+Древесина в In Dappled Groves имеет различное сопротивление по типу. 
+Это влияет на то, как быстро вы можете рубить деревья и обрабатывать древесные
+материалы. Сопротивление древесины, используемый вами верстак и эффективность
+вашего инструмента — всё это влияет на то, как быстро можно срубить дерево и 
+затем обработать древесину.
+
+Твердость древесины взята из <a href=\"https://en.wikipedia.org/wiki/Janka_hardness_test\">теста на твердость Янка</a>, и 
+соответственно представляет собой приблизительную симуляцию древесины VS 
+по отношению друг к другу в реальной жизни. Не путать с этим <a href=\"https://www.youtube.com/watch?v=CoACA_LNKt0\">тестом.</a>
+
+Пожалуйста, я зануда.
+
+<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font>
+<font size=18 weight='bold' align='center'>Сопротивление древесины в порядке от самой мягкой до самой твердой (по моду)</font>
+<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font>
+
+<font size=14 weight='bold'>Ваниль</font>:<font size=12>	
+Красное дерево, Лиственница, Сосна, Капок, Грецкий орех, Береза, Дуб, Клен, Акация, Пурпурное сердце, Эбеновое дерево</font>
+
+<font size=14 weight='bold'>Wildcraft Trees And Shrubs</font>: <font size=12>
+Медвежий орех, Хлороцибора, Тополь, Катальпа, (Ваниль: Красное дерево), Ива, Ель, Дугласова пихта, Вяз, Платан, Красный кедр, Кедр, Гинкго, Эвкалипт, Туя, Саксаул, Императорское дерево, Бук, Каури, (Ваниль: Капок), Голубой махоэ, Атласный ясень, Призрачная камедь, (Ваниль: Грецкий орех), Тис, Медовая акация, Сал, Охия, Баньян, Дальбергия, Красное дерево, Жакаранда, Умини, (Ваниль: Акация), Окаменелое дерево, Гваякум, (Ваниль: Эбеновое дерево)</font>
+",
+
+"indappledgroves:item-handbooktitle-plank": "",
+"indappledgroves:item-handbooktext-plank": "<font align='center'><i>Дубовые доски, где резные папоротники смешиваются,
+Святыни монахов в пустыне,
+Уютные хижины в лощине,
+Все то, что благословляют грустные поэты.</i></font>
+<font weight='bold' align='center'>- Эми Людвиг Вандеруотер</font>
+
+<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font>
+<font size=18 weight='bold' align='center'>Использование в In Dappled Groves:</font>
+<font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font>
+
+<font size=14 weight='bold'>Тип рецепта:</font>  <font size=14> <a href=\"handbook://inworldcrafting-indappledgroves\">В мире</a> & <a href=\"handbook://workstations-indappledgroves\">Изготовление на верстаке</a></font>
+<font size=14 weight='bold'>Режим инструмента:</font>  <font size=14> <a href=\"handbook://inworldcrafting-indappledgroves\">Пиление</a></font>
+<font size=14 weight='bold'>Ингредиенты</font>: <font size=14> <a href=\"handbooksearch://log\">Любое бревно</a></font>
+<font size=14 weight='bold'>Обычные инструменты</font>: <font size=14> <a href=\"handbooksearch:saw\">Пила</a>
+<font size=14 weight='bold'>Верстак</font>: <font size=14> <a href=\"handbooksearch:sawbuck\">Козлы для пиления</a> или земля</font>
+
+Вы можете использовать любую <a href=\"handbooksearch://saw\">пилу</a>, чтобы <a href=\"handbook://toolmodes-indappledgroves\">пилить</a> любое <a href=\"handbooksearch://log\">бревно</a> на <a href=\"handbook://inworldcrafting-indappledgroves\">земле</a> или на <a href=\"handbooksearch:sawbuck\">козлах для пиления</a>, чтобы сделать доски.
+",
+}

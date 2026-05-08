@@ -45,7 +45,7 @@
 	},
 	dropsByType: {
 		"*-soaked": [{ type: "item", code: "indappledgroves:bark-{bark}-soaked", quantity: { avg: 5 }  }],
-		"*": [{ type: "item", code: "indappledgroves:bark-{bark}-dry", "attributes": { "test": "test"}, quantity: { avg: 5 }  }]
+		"*": [{ type: "item", code: "indappledgroves:bark-{bark}-dry", quantity: { avg: 5 }  }]
 	},
 	combustiblePropsByType: {
 		"*-dry": {
