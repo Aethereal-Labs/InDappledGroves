@@ -1,4 +1,6 @@
-﻿
+﻿1.22-v3.0.0-rc.1
+	- Removed all previous compat files in preparation for rework of compatibility settins
+	- Added preliminary Biodiversity compatibility (currently very limited with no crafting options. Log Slabs will shop in creative, but are unable to be crafted.)
 
 1.21-v2.3.0
 	- Added a Harmony patch to have hammer run through collectibles and gather tool modes. New tool modes are only visible

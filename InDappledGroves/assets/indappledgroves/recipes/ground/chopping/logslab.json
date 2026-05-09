@@ -5,7 +5,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:log-placed-*-ud", "name": "wood", loadFromPropertiesCombine: ["game:block/wood"]}
+         {"type": "block", "code": "game:log-placed-*-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -17,7 +17,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:logsection-placed-*-ne-ud", "name": "wood", loadFromPropertiesCombine: ["game:block/wood"]}
+         {"type": "block", "code": "game:logsection-placed-*-ne-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -29,7 +29,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:logsection-placed-*-nw-ud", "name": "wood", loadFromPropertiesCombine: ["game:block/wood"]}
+         {"type": "block", "code": "game:logsection-placed-*-nw-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -41,7 +41,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:logsection-placed-*-se-ud", "name": "wood", loadFromPropertiesCombine: ["game:block/wood"]}
+         {"type": "block", "code": "game:logsection-placed-*-se-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -53,7 +53,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:logsection-placed-*-sw-ud", "name": "wood", loadFromPropertiesCombine: ["game:block/wood"]}
+         {"type": "block", "code": "game:logsection-placed-*-sw-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -65,7 +65,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:debarkedlog-*-ud", "name": "wood", loadFromPropertiesCombine: ["game:block/wood"]}
+         {"type": "block", "code": "game:debarkedlog-*-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],

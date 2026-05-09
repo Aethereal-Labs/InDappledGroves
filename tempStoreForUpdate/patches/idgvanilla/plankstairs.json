@@ -1,0 +1,22 @@
+[
+  {
+    "file": "game:blocktypes/wood/woodtyped/plankstairs.json",
+    "side": "server",
+    "op": "addmerge",
+    "path": "/attributes",
+    "value": { 
+      "idgLogSplitterTransform":  {
+		    "translation": {"x": 0, "y": 0.65, "z": 0},
+		    "scale": 0.75
+      },
+      "idgChoppingBlockTransform": {
+        "translation": {"x": 0, "y": 0.0625, "z": 0},
+        "scale": 0.95
+      },
+      "idgSawBuckTransform": {
+        "translation": {"x": 0, "y": 0.7, "z": 0},
+        "rotation": {"x": 90, "y": 45, "z": 0}
+      },
+    }
+  }
+]

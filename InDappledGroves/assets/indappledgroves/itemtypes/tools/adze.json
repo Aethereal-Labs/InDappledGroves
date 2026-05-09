@@ -1,102 +1,144 @@
 {
-	code: "adze",
-	creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"], "indappledgroves": ["*"]},
-	attributes: {
+	"code": "adze",
+	"creativeinventory": {
+		"general": [ "*" ],
+		"items": [ "*" ],
+		"tools": [ "*" ],
+		"indappledgroves": [ "*" ]
+	},
+	"damagedby": [ "blockbreaking", "attacking" ],
+	"tags": [ "tool", "tool-adze" ],
+	"attributes": {
 		"workanimation": "axesplit-fp",
-		handbook: {
-			groupBy: ["adze-*"],
+		"handbook": {
+			"groupBy": [ "adze-*" ],
 			"extraSections": [
-					{
-						"title": "indappledgroves:item-handbooktitle-adze",
-						"text": "indappledgroves:item-handbooktext-adze"
-					}
+				{
+					"title": "indappledgroves:item-handbooktitle-adze",
+					"text": "indappledgroves:item-handbooktext-adze"
+				}
 			]
 		},
-		groundStorageTransform: {
-			translation: { x: 0.05, y: 0.05, z: -0.12 },
-			rotation: { x: 13, y: 88, z: -87 },
-			scale: 0.88
+		"groundStorageTransform": {
+			"translation": {
+				"x": 0.05,
+				"y": 0.05,
+				"z": -0.12
+			},
+			"rotation": {
+				"x": 13,
+				"y": 88,
+				"z": -87
+			},
+			"scale": 0.88
 		},
-		rackable: true,
-		toolrackTransform: {
-			rotation: { y: 1, z: -1 },
-			translation: { x: -0.3, y: 0.6 },
-			scale: 1.25
+		"rackable": true,
+		"toolrackTransform": {
+			"rotation": {
+				"y": 1,
+				"z": -1
+			},
+			"translation": {
+				"x": -0.3,
+				"y": 0.6
+			},
+			"scale": 1.25
 		},
-		"hewingProps": {"hewingMultiplier": 1},
+		"hewingProps": { "hewingMultiplier": 1 }
 	},
-	behaviors: [{
-		name: "GroundStorable",
-		properties: {
-			layout: 'WallHalves',
-			wallOffY: 1,
-			sprintKey: true,
-			selectionBox: { x1: 0, y1: 0, z1: 0, x2: 1, y2: 0.35, z2: 1 },
-			collisionBox: { x1: 0, y1: 0, z1: 0, x2: 0, y2: 0, z2: 0 },
+	"behaviors": [
+		{
+			"name": "GroundStorable",
+			"properties": {
+				"layout": "WallHalves",
+				"wallOffY": 1,
+				"sprintKey": true,
+				"selectionBox": {
+					"x1": 0,
+					"y1": 0,
+					"z1": 0,
+					"x2": 1,
+					"y2": 0.35,
+					"z2": 1
+				},
+				"collisionBox": {
+					"x1": 0,
+					"y1": 0,
+					"z1": 0,
+					"x2": 0,
+					"y2": 0,
+					"z2": 0
+				}
 			}
 		},
 		{
-		"name": "woodhewer"
+			"name": "woodhewer"
 		},
 		{
-		"name": "idgtool"
+			"name": "idgtool"
 		}
 	],
 	"tool": "hoe",
-	variantgroups: [
-		{ code: "handle", states: ["wood", "bone"] },
-    { code: "material", states: ["chert", "granite", "andesite", "basalt", "obsidian", "peridotite", "flint", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel" ] },
-   ],
-	skipVariants: [
+	"variantgroups": [
+		{
+			"code": "handle",
+			"states": [ "wood", "bone" ]
+		},
+		{
+			"code": "material",
+			"states": [ "chert", "granite", "andesite", "basalt", "obsidian", "peridotite", "flint", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel" ]
+		}
+	],
+	"skipVariants": [
 		"adze-bone-copper",
 		"adze-bone-tinbronze",
 		"adze-bone-bismuthbronze",
 		"adze-bone-blackbronze",
-		"adze-bone-iron", 
-		"adze-bone-meteoriciron", 
+		"adze-bone-iron",
+		"adze-bone-meteoriciron",
 		"adze-bone-steel"
 	],
-	drawtype: "json",
-    shapeByType: {
-		"@adze-(wood|bone)-(chert|granite|andesite|basalt|obsidian|peridotite|flint)": { base: "item/tools/adze-stone" },
-		"@adze-wood-(copper|tinbronze|bismuthbronze|blackbronze|iron|meteoriciron|steel)": { base: "item/tools/adze-metal" }
+	"drawtype": "json",
+	"shapeByType": {
+		"@adze-(wood|bone)-(chert|granite|andesite|basalt|obsidian|peridotite|flint)": { "base": "item/tools/adze-stone" },
+		"@adze-wood-(copper|tinbronze|bismuthbronze|blackbronze|iron|meteoriciron|steel)": { "base": "item/tools/adze-metal" }
 	},
-	texturesByType: {
-		"@adze-wood-(chert|granite|andesite|basalt|obsidian|peridotite)": { 
-			"material": { base: "game:block/stone/rock/{material}1" },
-			"string": { base: "game:item/tool/material/string" },
-			"handle": { base: "game:item/tool/material/handle" }
+	"texturesByType": {
+		"@adze-wood-(chert|granite|andesite|basalt|obsidian|peridotite)": {
+			"material": { "base": "game:block/stone/rock/{material}1" },
+			"string": { "base": "game:item/resource/string" },
+			"handle": { "base": "game:item/tool/handle" }
 		},
-		"@adze-bone-(chert|granite|andesite|basalt|obsidian|peridotite)": { 
-			"material": { base: "game:block/stone/rock/{material}1" },
-			"string": { base: "game:item/tool/material/string" },
-			"handle": { base: "game:block/creature/bone-yellow"}
+		"@adze-bone-(chert|granite|andesite|basalt|obsidian|peridotite)": {
+			"material": { "base": "game:block/stone/rock/{material}1" },
+			"string": { "base": "game:item/resource/string" },
+			"handle": { "base": "game:block/creature/bone-yellow" }
 		},
-		"adze-wood-flint": { 
-			"material": { base: "game:block/stone/{material}" },
-			"string": { base: "game:item/tool/material/string" },
-			"handle": { base: "game:item/tool/material/handle" } 
+		"adze-wood-flint": {
+			"material": { "base": "game:block/stone/{material}" },
+			"string": { "base": "game:item/resource/string" },
+			"handle": { "base": "game:item/tool/handle" }
 		},
-		"adze-bone-flint": { 
-			"material": { base: "game:block/stone/{material}" },
-			"string": { base: "game:item/tool/material/string" },
-			"handle": { base: "game:block/creature/bone-yellow" }
+		"adze-bone-flint": {
+			"material": { "base": "game:block/stone/{material}" },
+			"string": { "base": "game:item/resource/string" },
+			"handle": { "base": "game:block/creature/bone-yellow" }
 		},
 		"@adze-wood-(copper|tinbronze|bismuthbronze|blackbronze|gold|silver|iron|meteoriciron|steel)": {
-			"material": { base: "game:block/metal/ingot/{material}" },
-			"handle": { base: "game:item/tool/material/handle" }
+			"material": { "base": "game:block/metal/ingot/{material}" },
+			"handle": { "base": "game:item/tool/handle" }
 		}
 	},
-	maxstacksize: 1,
-	attackRange: 2,
-	tooltierbytype: {
+	"maxstacksize": 1,
+	"attackRange": 2,
+	"tooltierbytype": {
 		"@adze-(wood|bone)-(chert|granite|andesite|basalt|peridotite|flint|obsidian)": 1,
 		"@adze-wood-(copper|silver|gold)": 2,
 		"@adze-wood-(tinbronze|bismuthbronze|blackbronze)": 3,
 		"@adze-wood-(iron|meteoriciron)": 4,
 		"@adze-wood-(steel)": 5
 	},
-	miningspeedbytype: {
+	"miningspeedbytype": {
 		"adze-wood-flint": {
 			"wood": 3,
 			"plant": 2.2,
@@ -168,9 +210,9 @@
 			"leaves": 1.7
 		}
 	},
-	heldTpHitAnimation: "smithing",
-	damagedby: ["blockbreaking", "attacking"],
-	durabilitybytype: {
+	"heldTpHitAnimation": "smithing",
+	"damagedby": [ "blockbreaking", "attacking" ],
+	"durabilitybytype": {
 		"@adze-wood-(chert|granite|andesite|basalt|peridotite)": 50,
 		"@adze-bone-(chert|granite|andesite|basalt|peridotite)": 60,
 		"*-wood-flint": 60,
@@ -186,7 +228,7 @@
 		"*-meteoriciron": 1200,
 		"*-steel": 1800
 	},
-	attackpowerbytype: {
+	"attackpowerbytype": {
 		"@adze-(wood|bone)-(chert|granite|andesite|basalt|peridotite)": 0.75,
 		"*-flint": 1.25,
 		"*-obsidian": 1.5,
@@ -197,35 +239,91 @@
 		"*-medeoriciron": 3.5,
 		"*-steel": 4
 	},
-	guiTransformByType: {
+	"guiTransformByType": {
 		"@adze-(wood|bone)-(chert|granite|andesite|basalt|peridotite|flint|obsidian)": {
-				translation: { x: 0, y: 0, z: 0 },
-				rotation: { x: -112, y: -122, z: -172 },
-				origin: { x: 0.48, y: -0.8, z: 0.18 },
-				scale: 2.97
+			"translation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"rotation": {
+				"x": -112,
+				"y": -122,
+				"z": -172
+			},
+			"origin": {
+				"x": 0.48,
+				"y": -0.8,
+				"z": 0.18
+			},
+			"scale": 2.97
 		},
 		"*": {
-				translation: { x: 4, y: 3, z: 0 },
-				rotation: { x: -112, y: -122, z: -172 },
-				origin: { x: 0.48, y: -0.8, z: 0.18 },
-				scale: 2.97
+			"translation": {
+				"x": 4,
+				"y": 3,
+				"z": 0
+			},
+			"rotation": {
+				"x": -112,
+				"y": -122,
+				"z": -172
+			},
+			"origin": {
+				"x": 0.48,
+				"y": -0.8,
+				"z": 0.18
+			},
+			"scale": 2.97
 		}
 	},
-	fpHandTransform: {
-		translation: { x: -0.24, y: 0, z: 0.1 },
-		rotation: { x: 15, y: 15, z: 90 },
-		scale: 2.45
+	"fpHandTransform": {
+		"translation": {
+			"x": -0.24,
+			"y": 0,
+			"z": 0.1
+		},
+		"rotation": {
+			"x": 15,
+			"y": 15,
+			"z": 90
+		},
+		"scale": 2.45
 	},
-	groundTransform: {
-		translation: { x: 0, y: 0, z: 0 },
-		rotation: { x: 0, y: 0, z: 0 },
-		origin: { x: 0.5, y: 0, z: 0.5 },
-		scale: 3.4
+	"groundTransform": {
+		"translation": {
+			"x": 0,
+			"y": 0,
+			"z": 0
+		},
+		"rotation": {
+			"x": 0,
+			"y": 0,
+			"z": 0
+		},
+		"origin": {
+			"x": 0.5,
+			"y": 0,
+			"z": 0.5
+		},
+		"scale": 3.4
 	},
-	tpHandTransform: {
-		translation: { x: -0.9, y: 0.01, z: -0.65 },
-		rotation: { x: 90, y: 0, z: 0 },
-		origin: { x: 0.5, y: 0, z: 0.5 },
-		scale: 0.8
+	"tpHandTransform": {
+		"translation": {
+			"x": -0.9,
+			"y": 0.01,
+			"z": -0.65
+		},
+		"rotation": {
+			"x": 90,
+			"y": 0,
+			"z": 0
+		},
+		"origin": {
+			"x": 0.5,
+			"y": 0,
+			"z": 0.5
+		},
+		"scale": 0.8
 	}
 }

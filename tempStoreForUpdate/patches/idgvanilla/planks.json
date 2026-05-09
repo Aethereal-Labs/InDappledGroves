@@ -1,0 +1,29 @@
+[
+  {
+    "enabled": false,
+    "op": "replace",
+    "path": "/class",
+    "value": "idgplank",
+    "file": "game:itemtypes/resource/plank.json"
+  },
+  {
+    "file": "game:blocktypes/wood/woodtyped/planks.json",
+    "side": "server",
+    "op": "addmerge",
+    "path": "/attributes",
+    "value": { 
+      "idgLogSplitterTransform":  {
+		    "translation": {"x": 0, "y": 0.65, "z": 0},
+		    "scale": 0.75
+      },
+      "idgChoppingBlockTransform": {
+        "translation": {"x": 0, "y": 0.0625, "z": 0},
+        "scale": 0.95
+      },
+      "idgSawBuckTransform": {
+        "translation": {"x": 0, "y": 0.7, "z": 0},
+        "rotation": {"x": 90, "y": 45, "z": 0}
+      },
+    }
+  }
+]

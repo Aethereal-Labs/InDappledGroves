@@ -1,0 +1,8 @@
+[
+  {
+    "op": "replace",
+    "path": "/class",
+    "value": "idgtreeseed",
+    "file": "game:itemtypes/resource/treeseed.json"
+  }
+]

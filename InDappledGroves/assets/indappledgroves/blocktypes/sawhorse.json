@@ -19,12 +19,26 @@
   ]
   },
   "variantgroups": [
-    { "code": "primary", "states": ["aged"], "loadFromPropertiesCombine": ["game:block/wood"], "skipVariants": [ "veryaged", "veryagedrotten", "agedebony" ]},
-    { "code": "secondary", "states": ["aged"], "loadFromPropertiesCombine": ["game:block/wood"], "skipVariants": [ "veryaged", "veryagedrotten", "agedebony" ]},
-    { "code": "state", "states": ["single","compound"]},
-    { "code": "side", "loadFromProperties": "abstract/horizontalorientation" }
-    
+    {
+      "code": "primary",
+      "states": [ "aged" ],
+      "loadFromPropertiesCombine": [ "game:block/wood" ]
+    },
+    {
+      "code": "secondary",
+      "states": [ "aged" ],
+      "loadFromPropertiesCombine": [ "game:block/wood" ]
+    },
+    {
+      "code": "state",
+      "states": [ "single", "compound" ]
+    },
+    {
+      "code": "side",
+      "loadFromProperties": "abstract/horizontalorientation"
+    }
   ],
+  "skipVariants": [ "*-veryaged-*", "*-veryagedrotten-*", "*-agedebony-*" ],
   "heldTpIdleAnimation": "holdbothhandslarge",
   "helpTpUseAnimation": "twohandplaceblock",
   "creativeinventory": { "general": ["*-single-east"], "indappledgroves": ["*-single-east"]},

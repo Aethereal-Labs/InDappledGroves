@@ -6,7 +6,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:planks-*-we", "name": "wood"}
+         {"type": "block", "code": "game:planks-*-we", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -19,7 +19,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:planks-*-ns", "name": "wood"}
+         {"type": "block", "code": "game:planks-*-ns", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -32,7 +32,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:planks-*-ud", "name": "wood"}
+         {"type": "block", "code": "game:planks-*-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -45,7 +45,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:plankstairs-*-up-east-free", "name": "wood"}
+         {"type": "block", "code": "game:plankstairs-*-up-east-free", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -58,7 +58,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:plankstairs-*-up-west-free", "name": "wood"}
+         {"type": "block", "code": "game:plankstairs-*-up-west-free", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -71,7 +71,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:plankstairs-*-up-north-free","name": "wood"}
+         {"type": "block", "code": "game:plankstairs-*-up-north-free","name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -84,7 +84,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:plankstairs-*-up-south-free", "name": "wood"}
+         {"type": "block", "code": "game:plankstairs-*-up-south-free", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],
@@ -97,7 +97,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:plankslab-*-down-free", "name": "wood"}
+         {"type": "block", "code": "game:plankslab-*-down-free", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"]}
        ]
       }
     ],

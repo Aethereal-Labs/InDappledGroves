@@ -1,0 +1,27 @@
+[
+  {
+    "op": "addmerge",
+    "file": "game:itemtypes/tool/hammer",
+    "path": "/behaviors",
+    "value": [{"name":"idgtool"},{"name": "pounder"}],
+    "side": "server"
+  },
+  {
+    "op": "addmerge",
+    "file": "game:itemtypes/tool/hammer",
+    "path": "/attributes/poundingProps",
+    "value": {"poundingmultiplier": "0.225"},
+    "side": "server"
+  },
+  {
+    "op": "addmerge",
+    "file": "game:itemtypes/tool/hammer",
+    "path": "/miningspeed",
+      "value": {
+			"wood": 6.3,
+			"plant": 2.8,
+			"leaves": 2.4
+		},
+    "side": "server"
+  }
+]

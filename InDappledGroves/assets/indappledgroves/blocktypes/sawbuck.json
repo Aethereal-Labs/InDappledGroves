@@ -4,60 +4,127 @@
   "entityClass": "idgbeworkstation",
   "maxstacksize": 1,
   "behaviors": [
-    {"name": "Unstable" }, {"name": "HorizontalOrientable", "properties": {  "dropBlockFace": "east" }}
+    { "name": "Unstable" },
+    {
+      "name": "HorizontalOrientable",
+      "properties": { "dropBlockFace": "east" }
+    }
   ],
   "attributes": {
     "inventoryclass": "sawbuck",
     "attributetransformcode": "idgSawBuckTransform",
     "acceptFromFacesByType": {
-      "*-east": ["east","west","up"],
-      "*-west": ["east","west","up"],
-      "*-north": ["north","south","up"],
-      "*-south": ["north","south","up"]
+      "*-east": [ "east", "west", "up" ],
+      "*-west": [ "east", "west", "up" ],
+      "*-north": [ "north", "south", "up" ],
+      "*-south": [ "north", "south", "up" ]
     },
-		"handbook": {
-			"groupBy": ["sawbuck-*-east"],
+    "handbook": {
+      "groupBy": [ "sawbuck-*-east" ],
       "groupedName": "idgSawbuckHandbookEntry",
-			"extraSections": [
-				{ "title": "indappledgroves:block-handbooktitle-sawbuck", "text": "indappledgroves:block-handbooktext-sawbuck" }
-			]
-		},
+      "extraSections": [
+        {
+          "title": "indappledgroves:block-handbooktitle-sawbuck",
+          "text": "indappledgroves:block-handbooktext-sawbuck"
+        }
+      ]
+    },
     "workstationproperties": {
       "workstationtype": "basic",
       "slottypes": {
         "inputslot": 0
-      } 
+      }
     }
-	},	
+  },
   "variantgroups": [
-    { "code": "primary", "states": ["aged"], "loadFromPropertiesCombine": ["game:block/wood"] },
-    { "code": "secondary", "states": ["aged"], "loadFromPropertiesCombine": ["game:block/wood"], "skipVariants": [ "veryaged", "veryagedrotten", "agedebony" ]},
-    { "code":"side", "loadFromProperties": "abstract/horizontalorientation" }
+    {
+      "code": "primary",
+      "states": [ "aged" ],
+      "loadFromPropertiesCombine": [ "game:block/wood" ]
+    },
+    {
+      "code": "secondary",
+      "states": [ "aged" ],
+      "loadFromPropertiesCombine": [ "game:block/wood" ]
+    },
+    {
+      "code": "side",
+      "loadFromProperties": "abstract/horizontalorientation"
+    }
+  ],
+  "skipVariants": [
+    "*-*-veryaged-*",
+    "*-*-veryagedrotten-*",
+    "*-*-agedebony-*",
+    "*-veryaged-*-*",
+    "*-veryagedrotten-*-*",
+    "*-agedebony-*-*"
   ],
   "heldTpIdleAnimation": "holdbothhandslarge",
   "helpTpUseAnimation": "twohandplaceblock",
-  "creativeinventory": { "general": ["*-east"], "indappledgroves": ["*-east"]},
-  "textures": {		
-      "support": { "base": "game:block/wood/planks/{primary}1" },
-			"crossbrace": { "base": "game:block/wood/planks/{secondary}1" }
-	},
+  "creativeinventory": {
+    "general": [ "*-east" ],
+    "indappledgroves": [ "*-east" ]
+  },
+  "textures": {
+    "support": { "base": "game:block/wood/planks/{primary}1" },
+    "crossbrace": { "base": "game:block/wood/planks/{secondary}1" }
+  },
   "shapeByType": {
-		"*-north": { "base": "block/sawbuck", "rotateY":0 },
-		"*-east": { "base": "block/sawbuck", "rotateY":270 },
-		"*-south": { "base": "block/sawbuck", "rotateY":180 },
-		"*-west": { "base": "block/sawbuck", "rotateY":90 }
-	}, 
+    "*-north": {
+      "base": "block/sawbuck",
+      "rotateY": 0
+    },
+    "*-east": {
+      "base": "block/sawbuck",
+      "rotateY": 270
+    },
+    "*-south": {
+      "base": "block/sawbuck",
+      "rotateY": 180
+    },
+    "*-west": {
+      "base": "block/sawbuck",
+      "rotateY": 90
+    }
+  },
   "lightabsorption": 0,
   "sideopaque": { "all": false },
   "sidesolid": { "all": false },
   "blockmaterial": "wood",
-  "sounds": {"place": "game:block/planks"},
-  tpHandTransform: {
-		translation: { x: -0.5, y: -0.4, z: -0.28 },
-		rotation: { x: -9, y: -77, z: -165 },
-		origin: { x: 0.5, y: 0.4, z: 0.5 },
-		scale: 1
-	},
-  "collisionbox": { "x1": 0, "y1": 0, "z1": 0, "x2": 1, "y2": 1, "z2": 1},
-  "selectionBox": { "x1": 0, "y1": 0, "z1": 0, "x2": 1, "y2": 1, "z2": 1}
+  "sounds": { "place": "game:block/planks" },
+  "tpHandTransform": {
+    "translation": {
+      "x": -0.5,
+      "y": -0.4,
+      "z": -0.28
+    },
+    "rotation": {
+      "x": -9,
+      "y": -77,
+      "z": -165
+    },
+    "origin": {
+      "x": 0.5,
+      "y": 0.4,
+      "z": 0.5
+    },
+    "scale": 1
+  },
+  "collisionbox": {
+    "x1": 0,
+    "y1": 0,
+    "z1": 0,
+    "x2": 1,
+    "y2": 1,
+    "z2": 1
+  },
+  "selectionBox": {
+    "x1": 0,
+    "y1": 0,
+    "z1": 0,
+    "x2": 1,
+    "y2": 1,
+    "z2": 1
+  }
 }

@@ -1,0 +1,61 @@
+[
+  //Stone Axes
+  {
+    "op": "add",
+    "path": "/behaviors/-",
+    "value": {"name": "idgtool"},
+    "file": "game:itemtypes/tool/axe-stone.json",
+  },
+  {
+    "op": "add",
+    "path": "/behaviors/-",
+    "value": {"name": "woodsplitter"},
+    "file": "game:itemtypes/tool/axe-stone.json",
+  },
+  {
+    "op": "add",
+    "path": "/attributes/choppingProps",
+    "value": { "fellingMultiplier": 0.5, "choppingMultiplier": 0.15 },
+    "file": "game:itemtypes/tool/axe-stone.json",
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/attributes/workanimation",
+    "value": "axesplit-fp",
+    "file": "game:itemtypes/tool/axe-stone.json",
+    "side": "server"
+  },
+  {
+    "op": "replace",
+    "path": "/miningspeedbytype",
+    "value": { "axe-flint": {
+              "wood": 4.75,
+              "plant": 2.2,
+              "leaves": 1.6
+            },
+            "axe-bone-flint": {
+              "wood": 4.75,
+              "plant": 2.2,
+              "leaves": 1.6
+            },
+            "axe-obsidian": {
+              "wood": 5.4,
+              "plant": 2.7,
+              "leaves": 2.4
+            },
+            "axe-bone-obsidian": {
+              "wood": 5.4,
+              "plant": 2.7,
+              "leaves": 2.4
+            },
+            "*": {
+              "wood": 4,
+              "plant": 2.2,
+              "leaves": 1.7
+            }
+         },
+    "file": "game:itemtypes/tool/axe-stone.json",
+    "side": "server"
+  }
+]

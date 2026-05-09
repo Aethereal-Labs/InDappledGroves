@@ -6,6 +6,12 @@
     "side": "server"
   },
   {
+    "file": "game:recipes/grid/beams.json",
+    "op": "remove",
+    "path": "/0",
+    "side": "server"
+  },
+  {
     "file": "game:recipes/grid/firewood.json",
     "op": "remove",
     "path": "/5",

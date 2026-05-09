@@ -1,0 +1,82 @@
+//Metal Axes
+[
+    {
+      "op": "replace",
+      "path": "/ingredient/allowedVariants",
+      "value": ["copper"],
+      "file": "game:recipes/smithing/axe.json",
+      "side": "server"
+    },
+    {
+      "op": "replace",
+      "path": "/variantgroups/0/states",
+      "value": ["scrap", "bearded", "battle", "bardiche", "double", "felling"],
+      "file": "game:itemtypes/tool/axe-metal.json",
+      "side": "server"
+    },
+    {
+      "op": "replace",
+      "path": "/variantgroups/1/states",
+      "value": ["scrap", "copper", "ruined"],
+      "file": "game:itemtypes/tool/axe-metal.json",
+      "side": "server"
+    },
+    {
+      "op": "replace",
+      "path": "/miningspeedbytype/axe-felling-copper",
+      "value": {
+			"wood": 6.3,
+			"plant": 2.8,
+			"leaves": 2.4
+		  },
+      "file": "game:itemtypes/tool/axe-metal.json",
+      "side": "server",
+    },
+    {
+      "op": "replace",
+      "path": "/variantgroups/0/states",
+      "value": ["chert", "granite", "andesite", "basalt", "obsidian", "peridotite", "flint", "copper"],
+      "file": "game:itemtypes/toolhead/axehead.json",
+      "side": "server",
+      "dependsOn": [{"modid": "toolworks", "invert": true}]
+    },
+    {
+      "op": "add",
+      "path": "/behaviors/-",
+      "value": {"name": "idgtool"},
+      "file": "game:itemtypes/tool/axe-metal.json",
+      "side": "server"
+    },
+    {
+      "op": "add",
+      "path": "/behaviors/-",
+      "value": {"name": "woodsplitter"},
+      "file": "game:itemtypes/tool/axe-metal.json",
+      "side": "server"
+    },
+    {
+      "op": "add",
+      "path": "/attributes/workanimation",
+      "value": "axesplit-fp",
+      "file": "game:itemtypes/tool/axe-metal.json",
+      "side": "server"
+    },
+    {
+      "op": "add",
+      "path": "/attributes/choppingProps",
+      "value": { "fellingMultiplier": 0.6, "choppingMultiplier": 0.15 },
+      "file": "game:itemtypes/tool/axe-metal.json",
+      "side": "server"
+    },
+    {
+      "op": "add",
+      "path": "/attributes/groundStorageTransform",
+      "value": 
+        { 
+            translation: { x: 0.02, y: 0.32, z: -0.24 },
+			      rotation: { x: 40, y: 99, z: -95 }
+		    },
+      "file": "game:itemtypes/tool/axe-metal.json",
+      "side": "server"
+    }
+]

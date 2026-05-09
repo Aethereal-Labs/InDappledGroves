@@ -1030,7 +1030,7 @@ namespace InDappledGroves.Util.RecipeTools
                     Enabled = Enabled,
                     Name = Name,
                     Ingredients = ingredients,
-                    Output = Output,
+                    Output = Output.Select(item => item.Clone()).ToArray(),
                     ReturnStack = ReturnStack.Clone(),
 
                 };
@@ -1176,7 +1176,7 @@ namespace InDappledGroves.Util.RecipeTools
                 return new BasicWorkstationRecipe()
                 {
 
-                    Output = Output,
+                    Output = Output.Select(item => item.Clone()).ToArray(),
                     ReturnStack = ReturnStack.Clone(),
                     Code = Code,
                     IngredientMaterial = IngredientMaterial,
@@ -1349,7 +1349,7 @@ namespace InDappledGroves.Util.RecipeTools
                 return new ComplexWorkstationRecipe()
                 {
 
-                    Output = Output,
+                    Output = Output.Select(item => item.Clone()).ToArray(),
                     ReturnStack = ReturnStack.Clone(),
                     Code = Code,
                     IngredientMaterial = IngredientMaterial,
@@ -1596,7 +1596,7 @@ namespace InDappledGroves.Util.RecipeTools
                     Animation = Animation,
                     Sound = Sound,
                     Ingredients = ingredients,
-                    Output = Output,
+                    Output = Output.Select(item => item.Clone()).ToArray(),
                     ReturnStack = ReturnStack.Clone(),
 
                 };

@@ -1,0 +1,15 @@
+[
+ {
+    "op": "addmerge",
+    "path": "/attributes/handbook",
+    "value": {"extraSections": [
+        {
+          "title": "indappledgroves:block-handbooktitle-pan",
+          "text": "indappledgroves:block-handbooktext-pan"
+        }
+      ]},
+    "file": "game:blocktypes/wood/pan.json",
+    "side": "server"
+ }
+]
+

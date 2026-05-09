@@ -8,9 +8,9 @@
 	"textureSizes": {
 	},
 	"textures": {
-		"string": "game:item/tool/material/string",
-		"material": "game:block/metal/ingot/copper",
-		"handle": "game:item/tool/material/handle"
+		"string": "game:item/resource/string",
+		"handle": "game:item/tool/handle",
+		"material": "game:block/metal/ingot/copper"
 	},
 	"elements": [
 		{

@@ -6,7 +6,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:log-placed-*-ud", "name": "wood", "skipVariants": [ "veryaged", "veryagedrotten" ], loadFromPropertiesCombine: ["game:block/wood"], quantity: 6}
+         {"type": "block", "code": "game:log-placed-*-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"], loadFromPropertiesCombine: ["game:block/wood"], quantity: 6}
        ]
       }
     ],
@@ -19,7 +19,7 @@
     [ 
       {"inputs": 
        [
-         {"type": "block", "code": "game:log-debarked-*-ud", "name": "wood", "skipVariants": [ "veryaged", "veryagedrotten" ], loadFromPropertiesCombine: ["game:block/wood"], quantity: 6}
+         {"type": "block", "code": "game:log-debarked-*-ud", "name": "wood", "skipVariants": ["veryaged", "veryagedrotten", "agedebony", "rotten", "veryrotten", "agedacacia", "agedebony"], loadFromPropertiesCombine: ["game:block/wood"], quantity: 6}
        ]
       }
     ],

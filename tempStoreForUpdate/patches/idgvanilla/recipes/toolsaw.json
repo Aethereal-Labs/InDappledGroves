@@ -1,0 +1,26 @@
+[
+  {
+    "op": "replace",
+    "path": "/ingredientPattern",
+    "value": "SRS\tSTS",
+    "file": "game:recipes/grid/tool/saw.json",
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/ingredients/R",
+    "value": {
+      "type": "item",
+      "code": "rope"
+    },
+    "file": "game:recipes/grid/tool/saw.json",
+    "side": "server"
+  },
+  {
+    "op": "replace",
+    "path": "/width",
+    "value": 3,
+    "file": "game:recipes/grid/tool/saw.json",
+    "side": "server"
+  }
+]

@@ -9,7 +9,7 @@
 	},
 	"textures": {
 		"material": "game:block/metal/ingot/iron",
-		"handle": "game:item/tool/material/handle"
+		"handle": "game:item/tool/handle"
 	},
 	"elements": [
 		{

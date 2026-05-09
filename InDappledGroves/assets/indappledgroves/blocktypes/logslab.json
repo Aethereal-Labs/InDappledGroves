@@ -14,7 +14,11 @@
 		}
 	],
 	"variantgroups": [
-		{ "code": "wood", "states": ["aged"], "loadFromPropertiesCombine": ["game:block/wood"] },
+		{
+			"code": "wood",
+			"states": [ "aged" ],
+			"loadFromPropertiesCombine": [ "game:block/wood"]
+		},
 		{ "code": "barked", "states": ["barked","debarked"]},
 		{ "code": "rot", "states": ["north", "east", "south", "west", "up", "down"] },
 		{ "code": "cover", "states": ["free", "snow"] }		

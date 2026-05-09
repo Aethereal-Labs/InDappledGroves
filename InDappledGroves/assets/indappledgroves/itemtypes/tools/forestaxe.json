@@ -1,48 +1,85 @@
 {
-	code: "forestaxe",
-	class: "ItemAxe",
-	creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"], "indappledgroves": ["*"]},
-	attributes: {
+	"code": "forestaxe",
+	"class": "ItemAxe",
+	"creativeinventory": {
+		"general": [ "*" ],
+		"items": [ "*" ],
+		"tools": [ "*" ],
+		"indappledgroves": [ "*" ]
+	},
+	"tags": [ "tool", "tool-axe" ],
+	"attributes": {
 		"workanimation": "axesplit-fp",
-		handbook: {
-			groupBy: ["forestaxe-*"],
+		"handbook": {
+			"groupBy": [ "forestaxe-*" ],
 			"extraSections": [
-					{
-						"title": "indappledgroves:item-handbooktitle-forestaxe",
-						"text": "indappledgroves:item-handbooktext-forestaxe"
-					}
+				{
+					"title": "indappledgroves:item-handbooktitle-forestaxe",
+					"text": "indappledgroves:item-handbooktext-forestaxe"
+				}
 			]
 		},
-		toolrackTransform: {
-			translation: { x: -0.4, y: 0.7, z: 0 },
-			scale: 1.5
+		"toolrackTransform": {
+			"translation": {
+				"x": -0.4,
+				"y": 0.7,
+				"z": 0
+			},
+			"scale": 1.5
 		},
-		groundStorageTransform: {
-			translation: { x: -0.475, y: 0.12, z: 0.15 },
-			rotation: { x: 30, y: -180, z: -91 }
+		"groundStorageTransform": {
+			"translation": {
+				"x": -0.475,
+				"y": 0.12,
+				"z": 0.15
+			},
+			"rotation": {
+				"x": 30,
+				"y": -180,
+				"z": -91
+			}
 		},
-		"choppingProps": { "fellingMultiplier": 1, "choppingMultiplier": 0.25 }
+		"choppingProps": {
+			"fellingMultiplier": 1,
+			"choppingMultiplier": 0.25
+		}
 	},
-	behaviors: [{
-		name: "GroundStorable",
-		properties: {
-			layout: 'WallHalves',
-			wallOffY: 1,
-			sprintKey: true,
-			selectionBox: { x1: 0, y1: 0, z1: 0, x2: 1, y2: 0.35, z2: 1 },
-			collisionBox: { x1: 0, y1: 0, z1: 0, x2: 0, y2: 0, z2: 0 },
-		}},
+	"behaviors": [
 		{
-		"name": "woodsplitter"
+			"name": "GroundStorable",
+			"properties": {
+				"layout": "WallHalves",
+				"wallOffY": 1,
+				"sprintKey": true,
+				"selectionBox": {
+					"x1": 0,
+					"y1": 0,
+					"z1": 0,
+					"x2": 1,
+					"y2": 0.35,
+					"z2": 1
+				},
+				"collisionBox": {
+					"x1": 0,
+					"y1": 0,
+					"z1": 0,
+					"x2": 0,
+					"y2": 0,
+					"z2": 0
+				}
+			}
 		},
 		{
-		"name": "idgtool"
+			"name": "woodsplitter"
+		},
+		{
+			"name": "idgtool"
 		}
 	],
-	tool: "axe",
-	heldTpHitAnimation: "axechop",
-	damagedby: ["blockbreaking", "attacking"],
-	miningspeedbytype: {
+	"tool": "axe",
+	"heldTpHitAnimation": "axechop",
+	"damagedby": [ "blockbreaking", "attacking" ],
+	"miningspeedbytype": {
 		"forestaxe-bismuthbronze": {
 			"wood": 4.5,
 			"plant": 3.5,
@@ -69,39 +106,56 @@
 			"leaves": 1.7
 		}
 	},
-		groundStorageTransform: {
-			translation: { x: 0.05, y: 0.05, z: 0 },
-			rotation: { x: 13, y: 88, z: -87 },
-			scale: 0.88
+	"groundStorageTransform": {
+		"translation": {
+			"x": 0.05,
+			"y": 0.05,
+			"z": 0
 		},
-		rackable: true,
-		toolrackTransform: {
-			rotation: { y: 1, z: -1 },
-			translation: { x: -0.3, y: 0.6 },
-			scale: 1.25,
+		"rotation": {
+			"x": 13,
+			"y": 88,
+			"z": -87
 		},
-	variantgroups: [
-    { code: "material", states: ["tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel" ]},
-   ],
-	drawtype: "json",
-    shapeByType: {
-		"@forestaxe-(copper|tinbronze|bismuthbronze|blackbronze|iron|meteoriciron|steel)": { base: "item/tools/forestaxe" }
+		"scale": 0.88
 	},
-	texturesByType: {
+	"rackable": true,
+	"toolrackTransform": {
+		"rotation": {
+			"y": 1,
+			"z": -1
+		},
+		"translation": {
+			"x": -0.3,
+			"y": 0.6
+		},
+		"scale": 1.25
+	},
+	"variantgroups": [
+		{
+			"code": "material",
+			"states": [ "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel" ]
+		}
+	],
+	"drawtype": "json",
+	"shapeByType": {
+		"@forestaxe-(copper|tinbronze|bismuthbronze|blackbronze|iron|meteoriciron|steel)": { "base": "item/tools/forestaxe" }
+	},
+	"texturesByType": {
 		"@forestaxe-(tinbronze|bismuthbronze|blackbronze|iron|meteoriciron|steel)": {
-			"material": { base: "game:block/metal/ingot/{material}" },
-			"handle": { base: "game:item/tool/material/handle" }
+			"material": { "base": "game:block/metal/ingot/{material}" },
+			"handle": { "base": "game:item/tool/handle" }
 		}
 	},
-	maxstacksize: 1,
-	attackRange: 2,
-	tooltierbytype: {
+	"maxstacksize": 1,
+	"attackRange": 2,
+	"tooltierbytype": {
 		"@forestaxe-(copper|silver|gold)": 2,
 		"@forestaxe-(tinbronze|bismuthbronze|blackbronze)": 3,
 		"@forestaxe-(iron|meteoriciron)": 4,
 		"@forestaxe-(steel)": 5
 	},
-	durabilitybytype: {
+	"durabilitybytype": {
 		"*-copper": 250,
 		"*-tinbronze": 400,
 		"*-bismuthbronze": 500,
@@ -110,7 +164,7 @@
 		"*-meteoriciron": 1200,
 		"*-steel": 1800
 	},
-	attackpowerbytype: {
+	"attackpowerbytype": {
 		"*-copper": 2,
 		"@forestaxe-(bismuthbronze)": 2.5,
 		"*-tinbronze": 2.75,
@@ -118,27 +172,71 @@
 		"*-medeoriciron": 3.5,
 		"*-steel": 4
 	},
-	guiTransform: {
-		translation: { x: 0, y: 0, z: 0 },
-		rotation: { x: -112, y: -135, z: -180 },
-		origin: { x: 0.68, y: -1.1, z: 0.18 },
-		scale: 3.41
+	"guiTransform": {
+		"translation": {
+			"x": 0,
+			"y": 0,
+			"z": 0
+		},
+		"rotation": {
+			"x": -112,
+			"y": -135,
+			"z": -180
+		},
+		"origin": {
+			"x": 0.68,
+			"y": -1.1,
+			"z": 0.18
+		},
+		"scale": 3.41
 	},
-	fpHandTransform: {
-		translation: { x: -0.7, y: -0.1, z: 0.3 },
-		rotation: { x: -29, y: 4, z: 88 },
-		scale: 2.9
+	"fpHandTransform": {
+		"translation": {
+			"x": -0.7,
+			"y": -0.1,
+			"z": 0.3
+		},
+		"rotation": {
+			"x": -29,
+			"y": 4,
+			"z": 88
+		},
+		"scale": 2.9
 	},
-	groundTransform: {
-		translation: { x: 0, y: 0, z: 0 },
-		rotation: { x: 0, y: 0, z: 0 },
-		origin: { x: 0.5, y: 0, z: 0.5 },
-		scale: 2.53
+	"groundTransform": {
+		"translation": {
+			"x": 0,
+			"y": 0,
+			"z": 0
+		},
+		"rotation": {
+			"x": 0,
+			"y": 0,
+			"z": 0
+		},
+		"origin": {
+			"x": 0.5,
+			"y": 0,
+			"z": 0.5
+		},
+		"scale": 2.53
 	},
-	tpHandTransform: {
-		translation: { x: -0.8, y: 0.01, z: -0.54 },
-		rotation: { x: 90, y: 0, z: 0 },
-		origin: { x: 0.5, y: 0, z: 0.5 },
-		scale: 1
+	"tpHandTransform": {
+		"translation": {
+			"x": -0.8,
+			"y": 0.01,
+			"z": -0.54
+		},
+		"rotation": {
+			"x": 90,
+			"y": 0,
+			"z": 0
+		},
+		"origin": {
+			"x": 0.5,
+			"y": 0,
+			"z": 0.5
+		},
+		"scale": 1
 	}
 }

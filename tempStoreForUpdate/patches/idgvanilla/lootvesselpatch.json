@@ -1,0 +1,22 @@
+[ 
+  {
+    "op": "remove",
+    "path": "/attributes/lootListByType/*-tool/3",
+    "file": "game:blocktypes/clay/lootvessel.json",
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/attributes/lootListByType/*-tool/-",
+    "value": { type: "item", chance: 0.1, minQuantity: 1, maxQuantity: 1, codes: ["indappledgroves:forestaxe-copper", "indappledgroves:forestaxe-copper", "indappledgroves:forestaxe-tinbronze" ] },
+    "file": "game:blocktypes/clay/lootvessel.json",
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/attributes/lootListByType/*-tool/-",
+    "value": { type: "item", chance: 0.1, minQuantity: 1, maxQuantity: 1, codes: ["indappledgroves:adze-copper", "adze-copper", "adze-tinbronze" ] },
+    "file": "game:blocktypes/clay/lootvessel.json",
+    "side": "server"
+  }
+]

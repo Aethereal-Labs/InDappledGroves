@@ -1,0 +1,10 @@
+[
+  {
+    "file": "indappledgroves:blocktypes/logslab",
+    "side": "server",
+    "op": "addmerge",
+    "path": "/variantgroups/0/loadFromPropertiesCombine/-",
+    "value": "bdtree:block/wood",
+    "dependsOn": [ { "modid": "bdtree" } ]
+  }
+]

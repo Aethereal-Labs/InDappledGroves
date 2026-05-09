@@ -1,64 +1,64 @@
 [
   {
       "op": "replace",
-      "path": "/0/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/0/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/roughhewngate.json",
       "side": "server"
    },
    {
       "op": "replace",
-      "path": "/1/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/1/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/roughhewngate.json",
       "side": "server"
    },
    {
       "op": "replace",
-      "path": "/0/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/0/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/roughhewnfence.json",
       "side": "server"
    },
    {
       "op": "replace",
-      "path": "/1/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/1/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/roughhewnfence.json",
       "side": "server"
    },
    {
       "op": "replace",
-      "path": "/0/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/0/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/log-quad.json",
       "side": "server"
    },
    {
       "op": "replace",
-      "path": "/1/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/1/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/log-quad.json",
       "side": "server"
    },
    {
       "op": "replace",
-      "path": "/2/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/2/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/log-quad.json",
       "side": "server"
    },
    {
       "op": "replace",
-      "path": "/3/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/3/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/log-quad.json",
       "side": "server"
    },
    {
       "op": "replace",
-      "path": "/4/ingredients/A/tags/0",
-      "value": "tool-adze",
+      "path": "/4/ingredients/A/code",
+      "value": "indappledgroves:adze-*",
       "file": "game:recipes/grid/log-quad.json",
       "side": "server"
    }

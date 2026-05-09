@@ -1,0 +1,189 @@
+[
+  //villager-agnieszka changes
+  {
+    "op": "remove",
+    "path": "/selling/list/13",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+  },
+  {
+    "op": "add",
+    "path": "/selling/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:splitterblade-iron-cross",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 12,
+                    "var": 4
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/selling/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:splitterblade-iron-slab",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 6,
+                    "var": 2
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/buying/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:logsplitter-iron-east",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 24,
+                    "var": 6
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/buying/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:grubaxe-iron",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 16,
+                    "var": 4
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/buying/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:maul-iron",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 16,
+                    "var": 4
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/buying/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:forestaxe-iron",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 16,
+                    "var": 4
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/buying/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:adze-wood-iron",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 16,
+                    "var": 4
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/buying/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:adze-wood-iron",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 16,
+                    "var": 4
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/buying/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:splitterblade-iron-cross",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 10,
+                    "var": 2
+                }
+            },
+    "side": "server"
+  },
+  {
+    "op": "add",
+    "path": "/buying/list/-",
+    "file": "game:config/tradelists/villager-agnieszka.json",
+    "value": {"code": "indappledgroves:splitterblade-iron-slab",
+                "type": "item",
+                "stacksize": 1,
+                "stock": {
+                    "avg": 1,
+                    "var": 0.25
+                },
+                "price": {
+                    "avg": 5,
+                    "var": 1
+                }
+            },
+    "side": "server"
+  }
+]    
+
