@@ -61,6 +61,20 @@
 	"groundprocessable-notenoughitemsinstack": "There's not enough {0} in the pile",
 	"item-handbooktitle-wormgrunter": "Worm Grunter",
 	"item-handbooktext-wormgrunter": "You can craft a worm grunter by using a <a href=\"handbooksearch://knife\">knife</a> on <a href=\"handbook://item-stick\">sticks</a>. After a few seconds, you'll have crafted a worm grunter!",
+
+	//ALCMyGroundStoredProcessableMessages
+	"ALCMyGroundStoredProcessable-MissingData": "ALCMyGroundStoredProcessable behavior process {0} from {1} on {2} has a process with missing data. Process will not be added.",
+	"ALCMyGroundStoredProcessable-Added": "ALCMyGroundStoredProcessable behavior process {0} from {1} on {2} loaded properly.",
+	"indappledgroves:createbarkbasket": "Create Bark Basket, Requires Knife",
+	"indappledgroves:createbarkbasketrecipe": "Crafting Bark Basket",
+	"indappledgroves:createbarkbundlerecipe": "Crafting Dry Bark Bundle",
+	"indappledgroves:createbarkbundle": "Create Dry Bark Bundle",
+	"indappledgroves:createbarkbundletitle": "Create Dry Bark Bundle",
+	"indappledgroves:creategrunterrecipe": "Crafting Worm Grunter",
+	"indappledgroves:creategrunter": "Create Worm Grunter",
+	"indappledgroves:creategruntertitle": "Create Worm Grunter",
+
+
 	//Bark Basket Entries
 	"block-handbooktitle-barkbasket": "Bark Basket",
 	"block-handbooktext-barkbasket": "<font align='center'><i>With each weave of the bark,<br>we are closer to home.</i></font><br><font weight='bold' align='center'>- On Basket Weaving</font><br><br><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><font color='#4ba328'><icon name=tree></icon></font><font color='#065e30'><icon name=tree></icon></font><font color='#E98604'><icon name=tree></icon></font><font color='#795825'><icon name=tree></icon></font><br><br>These baskets are made wrought from the <a href=\"handbooksearch://soaked bark\">soaked bark</a> of any tree.  This timeless technology has survived the rot, and is a cornerstone of Seraph's looking for convenient storage. <br><br>Bark has a long history of being used for the making of baskets in areas all over the world. Evidence of baskets can be found in cultures ranging from the Sami of the Sapmi region, the Salsih, Chilkat, and other Native American Tribes of the American Northwest, and countless others.<br><br><font align='center' weight='bold'>Crafted By</font><br>You can craft a bark basket by interacting with a pile of <a href=\"handbooksearch://soaked bark\">soaked bark</a> while holding four <a href=\"handbook://item-cattailtops\">cattails</a>, <a href=\"handbook://item-papyrustops\">papyrus</a>, or <a href=\"handbook://item-flaxfibers\">flax fibers</a> in your main hand, or one <a href=\"handbook://item-flaxtwine\">flax twine</a> and a knife in your off hand. This takes a few seconds to complete.",
@@ -68,8 +82,7 @@
 	"barkbasketname": "Bark Baskets",
 	"block-basket-barkbasket-*": "Bark Basket",
 	"barkbasketcontents": "Bark Basket",
-	"indappledgroves:createbundle": "Create Dry Bark Bundle",
-	"indappledgroves:createbundletitle": "Create Bark Bundle",
+
 	"handbook-createdby-idgcreatebundle": "Ground Storage Processing",
 	"blockdesc-barkbasket-*": "Old basket version that does not work with rafts and boats. Break block or place in crafting grid to update.",
 

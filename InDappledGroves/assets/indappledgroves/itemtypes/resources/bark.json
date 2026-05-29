@@ -33,53 +33,59 @@
 			{
 				"name": "alcmygroundstoredprocessable",
 				"properties": {
-					"mainHandMustBeEmpty": false,
-					"offHandMustBeEmpty": false,
-					"processingItems": [
+					"validProcesses": [
 						{
-							"type": "item",
-							"code": "game:cattailtops",
-							"quantity": 1
-						},
-						{
-							"type": "item",
-							"code": "game:papyrustops",
-							"quantity": 1
-						},
-						{
-							"type": "item",
-							"code": "game:flaxfibers",
-							"quantity": 1
+							"name": "createbarkbundle",
+							"fromModID": "indappledgroves",
+							"mainHandMustBeEmpty": false,
+							"offHandMustBeEmpty": false,
+							"processingItems": [
+								{
+									"type": "item",
+									"code": "game:cattailtops",
+									"quantity": 1
+								},
+								{
+									"type": "item",
+									"code": "game:papyrustops",
+									"quantity": 1
+								},
+								{
+									"type": "item",
+									"code": "game:flaxfibers",
+									"quantity": 1
+								}
+							],
+							"offHandProcessingItems": null,
+							"consumedGroundStorageStackQty": 4,
+							//"requiredALCMyCraftingSurfaceAttributes": [ "table" ],
+							"processedStacks": [
+								{
+									"type": "block",
+									"code": "indappledgroves:barkbundle-{bark}-dry",
+									"quantity": {
+										"avg": 1,
+										"var": 0
+									}
+								}
+							],
+							"fromModId": "indappledgroves",
+							"processTime": 4,
+							"tool": null,
+							"toolDamage": 0,
+							"toolOffHand": null,
+							"toolOffHandDamage": 0,
+							"transferFreshness": false,
+							"processingSound": "game:sounds/walk/grass*",
+							"processingAnimationCode": "knifescrape",
+							"craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
+							"requiredSurfaceMaterials": null,
+							"surfaceErrorLangCode": null,
+							"interactionHelpCode": "indappledgroves:createbarkbundle",
+							"handbookProcessIntoTitle": "indappledgroves:createbarkbundletitle",
+							"handbookCreatedByTitle": "handbook-createdby-idgcreatebundle"
 						}
-					],
-					"offHandProcessingItems": null,
-					"consumedGroundStorageStackQty": 4,
-					//"requiredALCMyCraftingSurfaceAttributes": [ "table" ],
-					"processedStacks": [
-						{
-							"type": "block",
-							"code": "indappledgroves:barkbundle-{bark}-dry",
-							"quantity": {
-								"avg": 1,
-								"var": 0
-							}
-						}
-					],
-
-					"processTime": 4,
-					"tool": null,
-					"toolDamage": 0,
-					"toolOffHand": null,
-					"toolOffHandDamage": 0,
-					"transferFreshness": false,
-					"processingSound": "game:sounds/walk/grass*",
-					"processingAnimationCode": "knifescrape",
-					"craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
-					"requiredSurfaceMaterials": null,
-					"surfaceErrorLangCode": null,
-					"interactionHelpCode": "indappledgroves:createbundle",
-					"handbookProcessIntoTitle": "indappledgroves:createbundletitle",
-					"handbookCreatedByTitle": "handbook-createdby-idgcreatebundle"
+					]
 				}
 			},
 			{
@@ -108,81 +114,80 @@
 				}
 			}
 		],
-			"*-soaked":
-			[
-				{
-					"name": "alcmygroundstoredprocessable",
-					"properties": {
-						"processTime": 8,
-						"processingItems": [
-							{
-								"type": "item",
-								"code": "game:cattailtops",
-								"quantity": 4
-							},
-							{
-								"type": "item",
-								"code": "game:papyrustops",
-								"quantity": 4
-							},
-							{
-								"type": "item",
-								"code": "game:flaxfibers",
-								"quantity": 4
-							}
-						],
-						"offhandProcessingItems": [
-							{
-								"type": "item",
-								"code": "game:stick",
-								"quantity": 4
-							}
-						],
-						"consumedGroundStorageStackQty": 8,
-						"processedStacks": [
-							{
-								"type": "block",
-								"code": "indappledgroves:barkbaskettyped-east",
-								"attributes": { "type": "{bark}" },
-								"quantity": {
-									"avg": 1,
-									"var": 0
+		"*-soaked": [
+			{
+				"name": "alcmygroundstoredprocessable",
+				"properties": {
+					"validProcesses": [
+						{
+							"name": "createbarkbasket",
+							"processTime": 8,
+							"processingItems": [
+								{
+									"type": "item",
+									"code": "game:cattailtops",
+									"quantity": 4
+								},
+								{
+									"type": "item",
+									"code": "game:papyrustops",
+									"quantity": 4
+								},
+								{
+									"type": "item",
+									"code": "game:flaxfibers",
+									"quantity": 4
 								}
-							}
-						],
-						"processingSound": "game:sounds/walk/grass*",
-						"processingAnimationCode": "knifescrape",
-						"interactionHelpCode": "indappledgroves:createbundle",
-						"handbookProcessIntoTitle": "indappledgroves:createbundletitle",
-						"handbookCreatedByTitle": "handbook-createdby-idgcreatebundle"
-					}
-				},
-				{
-					"name": "GroundStorable",
-					"properties": {
-						"layout": "Stacking",
-						"placeRemoveSound": "game:sounds/block/planks",
-						"stackingModel": "indappledgroves:block/piles/bark",
-						"stackingTextures": { "bark": "game:block/wood/bark/{bark}" },
-						"tessQuantityElements": 18,
-						"stackingCapacity": 32,
-						"collisionBox": {
-							"x1": 0,
-							"y1": 0,
-							"z1": 0,
-							"x2": 1,
-							"y2": 0.0625,
-							"z2": 1
-						},
-						"cbScaleYByLayer": 0.12,
-						"transferQuantity": 2,
-						"bulkTransferQuantity": 4,
-						"cuboidsPerModel": 18,
-						"itemsPerModel": 2,
-						"upSolid": false
-					}
+							],
+							"consumedGroundStorageStackQty": 8,
+							"processedStacks": [
+								{
+									"type": "block",
+									"code": "indappledgroves:barkbaskettyped-east",
+									"attributes": { "type": "{bark}" },
+									"quantity": {
+										"avg": 1,
+										"var": 0
+									}
+								}
+							],
+							"fromModId": "indappledgroves",
+							"toolOffHand": "knife",
+							"processingSound": "game:sounds/walk/grass*",
+							"processingAnimationCode": "knifescrape",
+							"interactionHelpCode": "indappledgroves:createbarkbasket",
+							"handbookProcessIntoTitle": "indappledgroves:createbarkbaskettitle",
+							"handbookCreatedByTitle": "handbook-createdby-idgcreatebarkbasket"
+						}
+					]
 				}
-			]
+			},
+			{
+				"name": "GroundStorable",
+				"properties": {
+					"layout": "Stacking",
+					"placeRemoveSound": "game:sounds/block/planks",
+					"stackingModel": "indappledgroves:block/piles/bark",
+					"stackingTextures": { "bark": "game:block/wood/bark/{bark}" },
+					"tessQuantityElements": 18,
+					"stackingCapacity": 32,
+					"collisionBox": {
+						"x1": 0,
+						"y1": 0,
+						"z1": 0,
+						"x2": 1,
+						"y2": 0.0625,
+						"z2": 1
+					},
+					"cbScaleYByLayer": 0.12,
+					"transferQuantity": 2,
+					"bulkTransferQuantity": 4,
+					"cuboidsPerModel": 18,
+					"itemsPerModel": 2,
+					"upSolid": false
+				}
+			}
+		]
 	},
 		"transitionablePropsByType": {
 			"*-soaked": [

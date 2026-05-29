@@ -17,6 +17,9 @@
     <None Update="assets\game\patches\alcmycraftingsurfacespatches.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="assets\game\patches\offhandstoragepatch.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="assets\game\patches\removerecipes.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

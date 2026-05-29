@@ -11,39 +11,43 @@
     "value": {
       "name": "alcmygroundstoredprocessable",
       "properties": {
-        "mainHandMustBeEmpty": false,
-        "offHandMustBeEmpty": false,
-        "processingItems": null,
-        "offHandProcessingItems": null,
-        "consumedGroundStorageStackQty": 1,
-        //"requiredALCMyCraftingSurfaceAttributes": [ "table" ],
-        "processedStacks": [
+        "validProcesses": [
           {
-            "type": "item",
-            "code": "game:wormgrunter",
-            "quantity": {
-              "avg": 1,
-              "var": 0
-            }
+            "name": "creategrunter",
+            "mainHandMustBeEmpty": false,
+            "offHandMustBeEmpty": false,
+            "processingItems": null,
+            "offHandProcessingItems": null,
+            "consumedGroundStorageStackQty": 1,
+            "processedStacks": [
+              {
+                "type": "item",
+                "code": "game:wormgrunter",
+                "quantity": {
+                  "avg": 1,
+                  "var": 0
+                }
+              }
+            ],
+            "fromModID": "indappledgroves",
+            "processTime": 4,
+            "tool": "knife",
+            "toolDamage": 1,
+            "toolOffHand": null,
+            "toolOffHandDamage": 0,
+            "transferFreshness": false,
+            "processingSound": "game:sounds/walk/grass*",
+            "processingAnimationCode": "knifescrape",
+            "craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
+            "requiredSurfaceMaterials": null,
+            "surfaceErrorLangCode": null,
+            "interactionHelpCode": "indappledgroves:creategrunter",
+            "handbookProcessIntoTitle": "indappledgroves:creategruntertitle",
+            "handbookCreatedByTitle": "handbook-createdby-idgcreategrunter"
           }
-        ],
-        "processTime": 4,
-        "tool": "knife",
-        "toolDamage": 1,
-        "toolOffHand": null,
-        "toolOffHandDamage": 0,
-        "transferFreshness": false,
-        "processingSound": "game:sounds/walk/grass*",
-        "processingAnimationCode": "knifescrape",
-        "craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
-        "requiredSurfaceMaterials": null,
-        "surfaceErrorLangCode": null,
-        "interactionHelpCode": "indappledgroves:creategrunter",
-        "handbookProcessIntoTitle": "indappledgroves:creategruntertitle",
-        "handbookCreatedByTitle": "handbook-createdby-idgcreategrunter"
+        ]
       }
     },
     "file": "game:itemtypes/resource/stick.json"
-  },
-
+  }
 ]
