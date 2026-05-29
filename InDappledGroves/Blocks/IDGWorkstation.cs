@@ -1,14 +1,10 @@
 ﻿using InDappledGroves.BlockEntities;
 using InDappledGroves.CollectibleBehaviors;
-using InDappledGroves.Util.Handlers;
-using OpenTK.Platform.Windows;
 using System.Globalization;
-using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
-using Vintagestory.GameContent;
 using static InDappledGroves.Util.RecipeTools.IDGRecipeNames;
 
 namespace InDappledGroves.Blocks
@@ -52,6 +48,7 @@ namespace InDappledGroves.Blocks
                 else if (!beworkstation.InputSlot.Empty && heldCollectible != null && heldCollectible.HasBehavior<BehaviorIDGTool>())
                 {
                     result = beworkstation.handleRecipe(heldCollectible, secondsUsed, world, byPlayer, blockSel);
+                    byPlayer.Entity.StartAnimation(beworkstation.recipeHandler.recipe?.Animation);
                 }
             }
             return result;

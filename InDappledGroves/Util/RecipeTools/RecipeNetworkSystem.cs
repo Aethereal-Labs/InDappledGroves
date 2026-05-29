@@ -18,9 +18,9 @@ namespace InDappledGroves.Util.RecipeTools
     }
 
     [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
-    public class RecipeResponse
+    public class RecipeSyncRequest
     {
-        public string response;
+        public string reason;
     }
 
     public class RecipeUploadSystem : ModSystem
@@ -28,6 +28,7 @@ namespace InDappledGroves.Util.RecipeTools
         #region Client
         IClientNetworkChannel clientChannel;
         ICoreClientAPI clientApi;
+        long recipeSyncListenerId;
 
         public override void StartClientSide(ICoreClientAPI api)
         {
@@ -36,11 +37,24 @@ namespace InDappledGroves.Util.RecipeTools
             clientChannel =
                 api.Network.RegisterChannel("idgrecipechannel")
                 .RegisterMessageType(typeof(RecipeUpload))
-                .RegisterMessageType(typeof(RecipeResponse))
-                .SetMessageHandler<RecipeUpload>(OnServerMessage)
-            ;
+                .RegisterMessageType(typeof(RecipeSyncRequest))
+                .SetMessageHandler<RecipeUpload>(OnServerMessage);
+
+            // Do not depend only on the server's PlayerNowPlaying push.
+            // Request sync once the client world/player is available.
+            recipeSyncListenerId = api.Event.RegisterGameTickListener(dt =>
+            {
+                if (clientApi.World == null || clientApi.World.Player == null) return;
+
+                clientChannel.SendPacket(new RecipeSyncRequest()
+                {
+                    reason = "initial-client-recipe-sync"
+                });
+
+                clientApi.Event.UnregisterGameTickListener(recipeSyncListenerId);
+            }, 250);
         }
-        
+
 
         private void OnServerMessage(RecipeUpload networkMessage)
         {
@@ -122,68 +136,89 @@ namespace InDappledGroves.Util.RecipeTools
             serverChannel =
                 api.Network.RegisterChannel("idgrecipechannel")
                 .RegisterMessageType(typeof(RecipeUpload))
-                .RegisterMessageType(typeof(RecipeResponse))
-                .SetMessageHandler<RecipeResponse>(OnClientMessage)
-            ;
+                .RegisterMessageType(typeof(RecipeSyncRequest))
+                .SetMessageHandler<RecipeSyncRequest>(OnClientRecipeSyncRequest);
 
             api.RegisterCommand("recipeupload", "Resync recipes", "", OnRecipeUploadCmd, Privilege.chat);
-            api.Event.PlayerNowPlaying += (hmm) => { OnRecipeUploadCmd(); };
+
+            api.Event.PlayerNowPlaying += player =>
+            {
+                SendRecipesTo(player);
+            };
         }
 
-        private void OnRecipeUploadCmd(IServerPlayer player = null, int groupId = 0, CmdArgs args = null)
+        private void OnClientRecipeSyncRequest(IPlayer fromPlayer, RecipeSyncRequest networkMessage)
         {
-            List<string> bwsrecipes = new List<string>();
-            List<string> cwsrecipes = new List<string>();
-            List<string> grecipes = new List<string>();
-
-            foreach (BasicWorkstationRecipe bwsrec in IDGRecipeRegistry.Loaded.BasicWorkstationRecipes)
+            if (fromPlayer is IServerPlayer serverPlayer)
             {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    BinaryWriter writer = new BinaryWriter(ms);
+                SendRecipesTo(serverPlayer);
+            }
+        }
 
-                    bwsrec.ToBytes(writer);
+        private RecipeUpload BuildRecipeUpload()
+        {
+            List<string> bwsrecipes = new();
+            List<string> cwsrecipes = new();
+            List<string> grecipes = new();
 
-                    string value = Ascii85.Encode(ms.ToArray());
-                    bwsrecipes.Add(value);
-                }
+            foreach (BasicWorkstationRecipe bwsrec in IDGRecipeRegistry.Loaded.BasicWorkstationRecipes ?? new())
+            {
+                using MemoryStream ms = new();
+                using BinaryWriter writer = new(ms);
+
+                bwsrec.ToBytes(writer);
+                writer.Flush();
+
+                bwsrecipes.Add(Ascii85.Encode(ms.ToArray()));
             }
 
-            foreach (ComplexWorkstationRecipe cwsrec in IDGRecipeRegistry.Loaded.ComplexWorkstationRecipes)
+            foreach (ComplexWorkstationRecipe cwsrec in IDGRecipeRegistry.Loaded.ComplexWorkstationRecipes ?? new())
             {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    BinaryWriter writer = new BinaryWriter(ms);
+                using MemoryStream ms = new();
+                using BinaryWriter writer = new(ms);
 
-                    cwsrec.ToBytes(writer);
+                cwsrec.ToBytes(writer);
+                writer.Flush();
 
-                    string value = Ascii85.Encode(ms.ToArray());
-                    cwsrecipes.Add(value);
-                }
+                cwsrecipes.Add(Ascii85.Encode(ms.ToArray()));
             }
 
-            foreach (GroundRecipe grec in IDGRecipeRegistry.Loaded.GroundRecipes)
+            foreach (GroundRecipe grec in IDGRecipeRegistry.Loaded.GroundRecipes ?? new())
             {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    BinaryWriter writer = new BinaryWriter(ms);
+                using MemoryStream ms = new();
+                using BinaryWriter writer = new(ms);
 
-                    grec.ToBytes(writer);
+                grec.ToBytes(writer);
+                writer.Flush();
 
-                    string value = Ascii85.Encode(ms.ToArray());
-                    grecipes.Add(value);
-                }
+                grecipes.Add(Ascii85.Encode(ms.ToArray()));
             }
 
-            serverChannel.BroadcastPacket(new RecipeUpload()
+            return new RecipeUpload()
             {
                 bwsvalues = bwsrecipes,
                 cwsvalues = cwsrecipes,
                 gvalues = grecipes,
-            });
+            };
         }
 
-        private void OnClientMessage(IPlayer fromPlayer, RecipeResponse networkMessage)
+        private void SendRecipesTo(IServerPlayer player)
+        {
+            serverChannel.SendPacket(BuildRecipeUpload(), player);
+        }
+
+        private void BroadcastRecipes()
+        {
+            serverChannel.BroadcastPacket(BuildRecipeUpload());
+        }
+
+        private void OnRecipeUploadCmd(IServerPlayer player = null, int groupId = 0, CmdArgs args = null)
+        {
+            if (player != null) SendRecipesTo(player);
+            else BroadcastRecipes();
+        }
+
+        private void OnClientMessage(IPlayer fromPlayer, RecipeSyncRequest networkMessage)
         {
             OnRecipeUploadCmd();
         }

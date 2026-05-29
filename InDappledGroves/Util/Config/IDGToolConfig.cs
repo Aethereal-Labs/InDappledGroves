@@ -28,6 +28,9 @@ namespace InDappledGroves.Util.Config
         //Current Version of the mod, ensures consistency with most recent config paradigm
         public float ConfigVersion { get; set; }
 
+        [ProtoMember(tag:6 )]
+        public bool BarkBasketCarryable{ get; set; } = true;
+
         public IDGToolConfig()
         { }
 
@@ -41,7 +44,8 @@ namespace InDappledGroves.Util.Config
             defaultConfig.baseWorkstationResistanceMult = 1f;
             defaultConfig.baseGroundRecipeMiningSpdMult = 1f;
             defaultConfig.baseGroundRecipeResistanceMult = 1f;
-            defaultConfig.ConfigVersion = 1.0f;
+            defaultConfig.BarkBasketCarryable = true;
+            defaultConfig.ConfigVersion = 1.1f;
 
             return defaultConfig;
         }

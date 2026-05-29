@@ -6,10 +6,7 @@ using static InDappledGroves.Util.RecipeTools.IDGRecipeNames;
 using Vintagestory.API.MathTools;
 using InDappledGroves.Util.Config;
 using Vintagestory.API.Client;
-using Vintagestory.API.Config;
-using Vintagestory.API.Common.Entities;
 using Vintagestory.GameContent;
-using System;
 
 namespace InDappledGroves.Util.Handlers
 {
@@ -39,9 +36,9 @@ namespace InDappledGroves.Util.Handlers
 
         //public string curTMode { get; set; }
 
-        internal static List<BasicWorkstationRecipe> bwsRecipes = IDGRecipeRegistry.Loaded.BasicWorkstationRecipes;
+        private List<BasicWorkstationRecipe> BwsRecipes => IDGRecipeRegistry.Loaded.BasicWorkstationRecipes;
 
-        internal static List<ComplexWorkstationRecipe> cwsRecipes = IDGRecipeRegistry.Loaded.ComplexWorkstationRecipes;
+        private List<ComplexWorkstationRecipe> CwsRecipes => IDGRecipeRegistry.Loaded.ComplexWorkstationRecipes;
 
         private SimpleParticleProperties InitializeParticles()
         {
@@ -121,6 +118,7 @@ namespace InDappledGroves.Util.Handlers
             string processmodifiercheck = slot.Itemstack.Collectible.FirstCodePart() + "-" + slot.Itemstack.Collectible.FirstCodePart(1);
             if (workstationtype == "basic")
             {
+                List<BasicWorkstationRecipe> bwsRecipes = BwsRecipes;
                 if (bwsRecipes != null)
                 {
                     for (int j = 0; j < bwsRecipes.Count; j++)
@@ -135,6 +133,7 @@ namespace InDappledGroves.Util.Handlers
             }
             else if (workstationtype == "complex")
             {
+                List<ComplexWorkstationRecipe> cwsRecipes = CwsRecipes;
                 for (int j = 0; j < cwsRecipes.Count; j++)
                 {
                     //TODO: This needs to be setup to accommodate recipes that only work for one processmodifier
@@ -152,7 +151,7 @@ namespace InDappledGroves.Util.Handlers
         public bool GetMatchingProcessModifier(IWorldAccessor world, ItemSlot slot, string workstationtype)
         {
             string processmodifiercheck = slot.Itemstack.Collectible.FirstCodePart() + "-" + slot.Itemstack.Collectible.FirstCodePart(1);
-
+            List<ComplexWorkstationRecipe> cwsRecipes = CwsRecipes;
             for (int j = 0; j < cwsRecipes.Count; j++)
             {
                 if (cwsRecipes[j].ProcessModifier == processmodifiercheck)
@@ -163,18 +162,23 @@ namespace InDappledGroves.Util.Handlers
             }
             return false;
         }
-
         public virtual bool GetMatchingRecipes(IWorldAccessor world, ItemSlot slots, string curTMode, string workstationname, string workstationtype, out WorkstationRecipe recipe)
         {
-
             recipe = null;
             if (workstationname == null || workstationtype == null) return false;
 
             if (workstationtype == "basic")
             {
+                List<BasicWorkstationRecipe> bwsRecipes = BwsRecipes;
+                if (bwsRecipes == null) return false;
+
                 for (int j = 0; j < bwsRecipes.Count; j++)
                 {
-                    if (bwsRecipes[j].Matches(world, slots) && bwsRecipes[j].RequiredWorkstation == workstationname && (bwsRecipes[j].ToolMode == curTMode || curTMode == "any"))
+                    if (
+                        bwsRecipes[j].Matches(world, slots)
+                        && bwsRecipes[j].RequiredWorkstation == workstationname
+                        && (bwsRecipes[j].ToolMode == curTMode || curTMode == "any")
+                    )
                     {
                         recipe = bwsRecipes[j];
                         return true;
@@ -184,10 +188,23 @@ namespace InDappledGroves.Util.Handlers
             else if (workstationtype == "complex")
             {
                 if (curTMode == null) return false;
+
+                List<ComplexWorkstationRecipe> cwsRecipes = CwsRecipes;
+                if (cwsRecipes == null) return false;
+
                 for (int j = 0; j < cwsRecipes.Count; j++)
                 {
-                    string processmodifier = beworkstation.ProcessModifierSlot?.Itemstack?.Collectible.FirstCodePart() + "-" + beworkstation.ProcessModifierSlot?.Itemstack?.Collectible.FirstCodePart(1);
-                    if (cwsRecipes[j].Matches(world, slots) && (cwsRecipes[j].RequiredWorkstation == workstationname && (cwsRecipes[j].ToolMode == curTMode || curTMode == "any") && cwsRecipes[j].ProcessModifier == processmodifier))
+                    string processmodifier =
+                        beworkstation.ProcessModifierSlot?.Itemstack?.Collectible.FirstCodePart()
+                        + "-"
+                        + beworkstation.ProcessModifierSlot?.Itemstack?.Collectible.FirstCodePart(1);
+
+                    if (
+                        cwsRecipes[j].Matches(world, slots)
+                        && cwsRecipes[j].RequiredWorkstation == workstationname
+                        && (cwsRecipes[j].ToolMode == curTMode || curTMode == "any")
+                        && cwsRecipes[j].ProcessModifier == processmodifier
+                    )
                     {
                         recipe = cwsRecipes[j];
                         return true;
@@ -198,6 +215,7 @@ namespace InDappledGroves.Util.Handlers
             return false;
         }
 
+
         public virtual bool GetMatchingRecipes(IWorldAccessor world, ItemStack stack, string curTMode, string workstationname, string workstationtype, out WorkstationRecipe recipe)
         {
             DummySlot slots = new DummySlot();
@@ -207,6 +225,7 @@ namespace InDappledGroves.Util.Handlers
 
             if (workstationtype == "basic")
             {
+                List<BasicWorkstationRecipe> bwsRecipes = BwsRecipes;
                 for (int j = 0; j < bwsRecipes.Count; j++)
                 {
                     if (bwsRecipes[j].Matches(world, slots) && bwsRecipes[j].RequiredWorkstation == workstationname && (bwsRecipes[j].ToolMode == curTMode || curTMode == "any"))
@@ -218,7 +237,9 @@ namespace InDappledGroves.Util.Handlers
             }
             else if (workstationtype == "complex")
             {
+                
                 if (curTMode == null) return false;
+                List<ComplexWorkstationRecipe> cwsRecipes = CwsRecipes;
                 for (int j = 0; j < cwsRecipes.Count; j++)
                 {
                     string processmodifier = beworkstation.ProcessModifierSlot?.Itemstack?.Collectible.FirstCodePart() + "-" + beworkstation.ProcessModifierSlot?.Itemstack?.Collectible.FirstCodePart(1);
@@ -260,7 +281,7 @@ namespace InDappledGroves.Util.Handlers
 
             toolModeMod = heldCollectible.GetBehavior<BehaviorIDGTool>().GetToolModeMod(activehotbarslot.Itemstack);
             EntityPlayer entityPlayer = player.Entity;
-            entityPlayer.StartAnimation(recipe.Animation);
+            //entityPlayer.StartAnimation(recipe.Animation);
 
             if (player.Entity.Api.Side == EnumAppSide.Server)
             {
@@ -362,7 +383,7 @@ namespace InDappledGroves.Util.Handlers
                 if (beworkstation.InputSlot.Empty) return false;
                 beworkstation.InputSlot.Itemstack = null;
                 byPlayer.Entity.StopAnimation(recipe.Animation);
-                SpawnOutput(recipeValues.output, byPlayer.Entity, byPlayer.Entity.BlockSelection.Position);
+                SpawnOutput(byPlayer.Entity, byPlayer.Entity.BlockSelection.Position);
                 clearRecipe();
                 return false; //If no stack is returned, clear stack
             }
@@ -372,7 +393,7 @@ namespace InDappledGroves.Util.Handlers
                 beworkstation.InputSlot.Itemstack = null;
                 ReturnStackPut(returnStack.Clone(), beworkstation);
                 byPlayer.Entity.StopAnimation(recipe.Animation);
-                SpawnOutput(getResolvedOutput(recipe.Output), byPlayer.Entity, byPlayer.Entity.BlockSelection.Position);
+                SpawnOutput(byPlayer.Entity, byPlayer.Entity.BlockSelection.Position);
                 clearRecipe();
                 return true; //If a stack is returned from the recipe, allow process to continue after resetting dmg accumulation
             }
@@ -385,11 +406,8 @@ namespace InDappledGroves.Util.Handlers
                 workstation.InputSlot.Itemstack = stack;
             }
         }
-
-        public void SpawnOutput(ItemStack[] output, EntityAgent byEntity, BlockPos pos)
+        public void SpawnOutput(EntityAgent byEntity, BlockPos pos)
         {
-            
-            
             foreach (JsonItemStack stack in recipe.Output)
             {
                 int j = stack.ResolvedItemstack.StackSize;

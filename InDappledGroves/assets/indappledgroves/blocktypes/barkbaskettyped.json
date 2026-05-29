@@ -1,0 +1,586 @@
+{
+  "code": "barkbaskettyped",
+  "class": "idgbarkbaskettyped",
+  "entityclass": "GenericTypedContainer",
+  "attributes": {
+    "handbook": {
+      "groupBy": [ "barkbasket-*" ]
+    },
+    "inventoryClassName": "barkbasket",
+    "defaultType": "aged",
+    "openSound": "game:sounds/block/basketopen",
+    "closeSound": "game:sounds/block/basketclose",
+    "types": ["aged", "birch", "oak", "maple", "pine", "acacia", "kapok", "baldcypress", "larch", "redwood", "ebony", "walnut", "purpleheart" ],
+    "drop": {
+      "aged": true,
+      "birch": true,
+      "oak": true,
+      "maple": true,
+      "pine": true,
+      "acacia": true,
+      "kapok": true,
+      "baldcypress": true,
+      "larch": true,
+      "redwood": true,
+      "ebony": true,
+      "walnut": true,
+      "purpleheart": true
+    },
+    "quantitySlots": {
+      "cypress": 12,
+      "aged": 12,
+      "birch": 12,
+      "oak": 12,
+      "maple": 12,
+      "pine": 12,
+      "acacia": 12,
+      "kapok": 12,
+      "baldcypress": 12,
+      "larch": 12,
+      "redwood": 12,
+      "ebony": 12,
+      "walnut": 12,
+      "purpleheart": 12
+    },
+    "shape": {
+      "aged": "block/barkbasket",
+      "birch": "block/barkbasket",
+      "oak": "block/barkbasket",
+      "maple": "block/barkbasket",
+      "pine": "block/barkbasket",
+      "acacia": "block/barkbasket",
+      "kapok": "block/barkbasket",
+      "baldcypress": "block/barkbasket",
+      "larch": "block/barkbasket",
+      "redwood": "block/barkbasket",
+      "ebony": "block/barkbasket",
+      "walnut": "block/barkbasket",
+      "purpleheart": "block/barkbasket"
+    },
+    "storageType": {
+      "cypress": 189,
+      "aged": 189,
+      "birch": 189,
+      "oak": 189,
+      "maple": 189,
+      "pine": 189,
+      "acacia": 189,
+      "kapok": 189,
+      "baldcypress": 189,
+      "larch": 189,
+      "redwood": 189,
+      "ebony": 189,
+      "walnut": 189,
+      "purpleheart": 189
+    },
+    "retreiveOnly": {
+      "cypress": false,
+      "aged": false,
+      "birch": false,
+      "oak": false,
+      "maple": false,
+      "pine": false,
+      "acacia": false,
+      "kapok": false,
+      "baldcypress": false,
+      "larch": false,
+      "redwood": false,
+      "ebony": false,
+      "walnut": false,
+      "purpleheart": false
+    },
+    "dialogTitleLangCode": {
+      "aged": "basketcontents",
+      "birch": "basketcontents",
+      "oak": "basketcontents",
+      "maple": "basketcontents",
+      "pine": "basketcontents",
+      "acacia": "basketcontents",
+      "kapok": "basketcontents",
+      "baldcypress": "basketcontents",
+      "larch": "basketcontents",
+      "redwood": "basketcontents",
+      "ebony": "basketcontents",
+      "walnut": "basketcontents",
+      "purpleheart": "basketcontents"
+    },
+    "attachableCategoryCode": {
+      "aged": "basket",
+      "birch": "basket",
+      "oak": "basket",
+      "maple": "basket",
+      "pine": "basket",
+      "acacia": "basket",
+      "kapok": "basket",
+      "baldcypress": "basket",
+      "larch": "basket",
+      "redwood": "basket",
+      "ebony": "basket",
+      "walnut": "basket",
+      "purpleheart": "basket"
+    },
+    "variantByGroup": "side",
+    "variantByGroupInventory": null,
+    "cartPlacable": {
+      "cypress": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "aged": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "birch": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "oak": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "maple": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "pine": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "acacia": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "kapok": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "baldcypress": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "larch": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "redwood": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "ebony": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "walnut": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      },
+      "purpleheart": {
+        "translation": [ 0.0, 7.0, 2.0 ],
+        "rotation": [ 0.0, 180.0, 0.0 ],
+        "scale": 1.0
+      }
+    },
+    "mobileStorageProps": {
+      "aged": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "birch": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "oak": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "maple": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "pine": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "acacia": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "kapok": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "baldcypress": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "larch": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "redwood": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "ebony": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "walnut": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      },
+      "purpleheart": {
+        "shape": "indappledgroves:shapes/block/barkbasket",
+        "openSound": "game:sounds/block/basketopen",
+        "closeSound": "game:sounds/block/basketclose",
+        "placementSound": "game:sounds/block/planks",
+        "quantitySlots": 12
+      }
+    }
+  },
+  "behaviors": [
+    { "name": "BoatableGenericTypedContainer" },
+    { "name": "Lockable" },
+    { "name": "Container" },
+    {
+      "name": "Carryable",
+      "properties": {
+
+        "translation": [ 0, 0, 0 ],
+        "rotation": [ 0, 0, 0 ],
+        "origin": [ 0.5, 0.5, 0.5 ],
+        "scale": [ 0.5, 0.5, 0.5 ],
+
+        "interactDelay": 0.4,
+        "slots": {
+          "Hands": {
+            "animation": "carryon:holdlight",
+            "walkSpeedModifier": -0.15
+          },
+          "Back": {
+            "walkSpeedModifier": 0.0,
+            "translation": [ 0.09375, 0, 0.03125 ],
+            "rotation": [ 0, 0, -90 ],
+            "scale": 0.6
+          }
+        }
+      }
+    }
+  ],
+  "entityBehaviors": [ { "name": "Animatable" } ],
+  "variantgroups": [
+    {
+      "code": "side",
+      "loadFromProperties": "game:abstract/horizontalorientation"
+    }
+  ],
+  "creativeinventory": {},
+  "creativeinventoryStacksByType": {
+    "*-east": [
+      {
+        "tabs": [ "general", "decorative", "indappledgroves" ],
+        "stacks": [
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "aged" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "birch" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "oak" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "maple" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "pine" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "acacia" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "kapok" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "baldcypress" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "larch" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "redwood" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "ebony" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "walnut" }
+          },
+          {
+            "type": "block",
+            "code": "barkbaskettyped-east",
+            "attributes": { "type": "purpleheart" }
+          }
+        ]
+      }
+    ]
+  },
+  "shapeInventory": {
+    "base": "block/barkbasket",
+    "rotateY": 270
+  },
+  "shapeByType": {
+    "*-north": {
+      "base": "block/barkbasket",
+      "rotateY": 0
+    },
+    "*-east": {
+      "base": "block/barkbasket",
+      "rotateY": 270
+    },
+    "*-west": {
+      "base": "block/barkbasket",
+      "rotateY": 90
+    },
+    "*-south": {
+      "base": "block/barkbasket",
+      "rotateY": 180
+    }
+  },
+  "textures": {
+    "aged-bark": { "base": "game:block/wood/bark/aged" },
+    "aged-inside": {
+      "base": "game:block/wood/debarked/aged",
+      "rotation": 90
+    },
+    "birch-bark": { "base": "game:block/wood/bark/birch" },
+    "birch-inside": {
+      "base": "game:block/wood/debarked/birch",
+      "rotation": 90
+    },
+    "oak-bark": { "base": "game:block/wood/bark/oak" },
+    "oak-inside": {
+      "base": "game:block/wood/debarked/oak",
+      "rotation": 90
+    },
+    "maple-bark": { "base": "game:block/wood/bark/maple" },
+    "maple-inside": {
+      "base": "game:block/wood/debarked/maple",
+      "rotation": 90
+    },
+    "pine-bark": { "base": "game:block/wood/bark/pine" },
+    "pine-inside": {
+      "base": "game:block/wood/debarked/pine",
+      "rotation": 90
+    },
+    "acacia-bark": { "base": "game:block/wood/bark/acacia" },
+    "acacia-inside": {
+      "base": "game:block/wood/debarked/acacia",
+      "rotation": 90
+    },
+    "kapok-bark": { "base": "game:block/wood/bark/kapok" },
+    "kapok-inside": {
+      "base": "game:block/wood/debarked/kapok",
+      "rotation": 90
+    },
+    "baldcypress-bark": { "base": "game:block/wood/bark/baldcypress" },
+    "baldcypress-inside": {
+      "base": "game:block/wood/debarked/baldcypress",
+      "rotation": 90
+    },
+    "larch-bark": { "base": "game:block/wood/bark/larch" },
+    "larch-inside": {
+      "base": "game:block/wood/debarked/larch",
+      "rotation": 90
+    },
+    "redwood-bark": { "base": "game:block/wood/bark/redwood" },
+    "redwood-inside": {
+      "base": "game:block/wood/debarked/redwood",
+      "rotation": 90
+    },
+    "ebony-bark": { "base": "game:block/wood/bark/ebony" },
+    "ebony-inside": {
+      "base": "game:block/wood/debarked/ebony",
+      "rotation": 90
+    },
+    "walnut-bark": { "base": "game:block/wood/bark/walnut" },
+    "walnut-inside": {
+      "base": "game:block/wood/debarked/walnut",
+      "rotation": 90
+    },
+    "purpleheart-bark": { "base": "game:block/wood/bark/purpleheart" },
+    "purpleheart-inside": {
+      "base": "game:block/wood/debarked/purpleheart",
+      "rotation": 90
+    }
+  },
+  "combustibleProps": {
+    "burnTemperature": 800,
+    "burnDuration": 60
+  },
+  "heldTpIdleAnimation": "holdbothhands",
+  "heldTpUseAnimation": "twohandplaceblock",
+  "blockmaterial": "Wood",
+  "replaceable": 900,
+  "resistance": 2,
+  "lightAbsorption": 0,
+  "sideAo": { "all": false },
+  "sidesolid": {
+    "all": false
+  },
+  "sideopaque": {
+    "all": false
+  },
+  "collisionbox": {
+    "x1": 0.125,
+    "y1": 0,
+    "z1": 0.125,
+    "x2": 0.875,
+    "y2": 0.5,
+    "z2": 0.875,
+    "rotateYByType": {
+      "*-north": 270,
+      "*-east": 180,
+      "*-south": 90,
+      "*-west": 0
+    }
+  },
+  "selectionbox": {
+    "x1": 0.125,
+    "y1": 0,
+    "z1": 0.125,
+    "x2": 0.875,
+    "y2": 0.5,
+    "z2": 0.875,
+    "rotateYByType": {
+      "*-north": 270,
+      "*-east": 180,
+      "*-south": 90,
+      "*-west": 0
+    }
+  },
+  "sounds": {
+    "place": "game:block/planks",
+    "walk": "game:walk/wood",
+    "hit": "game:block/planks",
+    "break": "game:block/planks"
+  },
+  "materialDensity": 600,
+  "tpHandTransform": {
+    "translation": {
+      "x": -0.9,
+      "y": 0,
+      "z": -0.9
+    },
+    "rotation": {
+      "x": 36,
+      "y": 21,
+      "z": -80
+    },
+    "origin": {
+      "x": 0.5,
+      "y": 0,
+      "z": 0.5
+    },
+    "scale": 0.5
+  },
+  "guiTransform": {
+    "origin": {
+      "x": 0.5,
+      "y": 0.3,
+      "z": 0.5
+    },
+    "scale": 1.3
+  },
+  "groundTransform": {
+    "translation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "rotation": {
+      "x": 0,
+      "y": -45,
+      "z": 0
+    },
+    "origin": {
+      "x": 0.5,
+      "y": 0,
+      "z": 0.5
+    },
+    "scale": 2.5
+  }
+}

@@ -24,9 +24,8 @@
 		defaultType: "basket",
 		openSound: "game:sounds/block/basketopen",
 		closeSound: "game:sounds/block/basketclose",
-		types: ["basket"],
 		quantitySlots: {
-			basket: 8
+			basket: 12
 		},
 		dialogTitleLangCode: {
 			basket: "basketcontents"
@@ -45,14 +44,7 @@
 	},
 
 	creativeinventoryStacksByType: {
-		"*-east": [
-			{
-				tabs: [ "general", "decorative", "indappledgroves"],
-				stacks: [
-					{ type: "block", code: "barkbasket-{variant}-east" }
-				]
-			}
-		]
+		"*": []
 	},
 	shapeInventory: { base: "block/barkbasket", rotateY: 270 },
 	shapeByType: {

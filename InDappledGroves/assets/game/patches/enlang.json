@@ -1,5 +1,5 @@
 [
-   {
+  {
     "op": "add",
     "path": "/game:block-debarkedlog-douglasfir-*",
     "value": "Debarked Douglas Fir Log",
@@ -238,5 +238,18 @@
     "path": "/block-plankslab-cedar-*",
     "value": "Cedar Slab",
     "file": "lang/en.json"
-  }
+  },
+  {
+    "op": "add",
+    "path": "/attributes/handbook",
+    "value": {
+      "extraSections": [
+        {
+          "title": "indappledgroves:item-handbooktitle-wormgrunter",
+          "text": "indappledgroves:item-handbooktext-wormgrunter"
+        }
+      ]
+    },
+    "file": "game:itemtypes/tool/wormgrunter.json"
+  } 
 ]

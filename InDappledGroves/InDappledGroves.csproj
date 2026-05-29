@@ -14,6 +14,12 @@
     <None Remove="Launcher\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="assets\game\patches\alcmycraftingsurfacespatches.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\game\patches\removerecipes.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="assets\game\patches\tanninrecipes.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1073,10 +1079,13 @@
     <None Update="assets\game\textures\block\wood\treetrunk\yew.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\indappledgroves\blocktypes\barkbundle.json">
+    <None Update="assets\indappledgroves\blocktypes\barkbasket.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\indappledgroves\blocktypes\barkbasket.json">
+    <None Update="assets\indappledgroves\blocktypes\barkbaskettyped.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\indappledgroves\blocktypes\barkbundle.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="assets\indappledgroves\blocktypes\boardblock.json">
@@ -1226,9 +1235,6 @@
     <None Update="assets\indappledgroves\patches\idgvanilla\treeseedpatch.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\indappledgroves\patches\idgvanilla\utbpatch.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="assets\indappledgroves\patches\idgvanilla\villagerupdate.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1271,9 +1277,6 @@
     <None Update="assets\indappledgroves\recipes\grid\adze.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="assets\indappledgroves\recipes\grid\barkbundle.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="assets\indappledgroves\recipes\grid\choppingblock.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1290,9 +1293,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="assets\indappledgroves\recipes\grid\maul.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="assets\indappledgroves\recipes\grid\barkbasket.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="assets\indappledgroves\recipes\grid\sawhorse.json">
@@ -2007,6 +2007,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\indappledgroves\compatibility\bdtree\" />
+    <Folder Include="assets\indappledgroves\compatibility\game\recipes\grid\tool\" />
     <Folder Include="assets\indappledgroves\textures\wood\debarked\" />
   </ItemGroup>
   <ItemGroup>

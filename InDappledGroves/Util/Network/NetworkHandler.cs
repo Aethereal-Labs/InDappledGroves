@@ -122,6 +122,8 @@ namespace InDappledGroves.Util.Network
             public float baseGroundRecipeResistanceMul = IDGToolConfig.Current.baseGroundRecipeResistanceMult;
             [ProtoMember(5)]
             public float ConfigVersion = IDGToolConfig.Current.ConfigVersion;
+            [ProtoMember(6)]
+            public bool BarkBasketCarryable = IDGToolConfig.Current.BarkBasketCarryable;
 
         }
 

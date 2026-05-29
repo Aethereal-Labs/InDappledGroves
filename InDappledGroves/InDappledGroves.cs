@@ -8,6 +8,8 @@ using InDappledGroves.Util.Config;
 using Vintagestory.API.Client;
 using Vintagestory.API.Server;
 using InDappledGroves.Util.Network;
+using Vintagestory.GameContent;
+using indappledgroves.Blocks;
 
 namespace InDappledGroves
 {
@@ -57,7 +59,7 @@ namespace InDappledGroves
             api.RegisterBlockClass("idgbarkbasket", typeof(IDGBarkBasket));
             api.RegisterBlockClass("idgboardblock", typeof(IDGBoardBlock));
             api.RegisterBlockClass("idgblockfirewood", typeof(IDGBlockFirewood));
-
+            api.RegisterBlockClass("idgbarkbaskettyped", typeof(IDGBarkBasketTyped));
             //Register BlockEntities
             api.RegisterBlockEntityClass("idgbeworkstation", typeof(IDGBEWorkstation));
             api.RegisterBlockEntityClass("idglogsplitter", typeof(BlockEntityLogSplitter));
@@ -69,7 +71,7 @@ namespace InDappledGroves
             api.RegisterCollectibleBehaviorClass("woodhewer", typeof(BehaviorWoodHewing));
             api.RegisterCollectibleBehaviorClass("idgtool", typeof(BehaviorIDGTool));
             api.RegisterCollectibleBehaviorClass("pounder", typeof(BehaviorPounding));
-
+            api.RegisterCollectibleBehaviorClass("alcmygroundstoredprocessable", typeof(ALCMYCollectibleBehaviorGroundStoredProcessable));
             //Register BlockBehaviors
             api.RegisterBlockBehaviorClass("Submergible", typeof(BehaviorSubmergible));
             api.RegisterBlockBehaviorClass("IDGPickup", typeof(BehaviorIDGPickup));

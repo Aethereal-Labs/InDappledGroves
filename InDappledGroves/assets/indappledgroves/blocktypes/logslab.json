@@ -52,20 +52,19 @@
 	},
 	"blockmaterial": "Wood",
 	"resistanceByType": {
-    "*-birch-*": 5.7,
-		"*-oak-*": 5.8,
-		"*-maple-*": 6.5,
-		"*-pine-*": 3.9,
-		"*-acacia-*": 10.3,
-		"*-kapok-*": 4,
-		"*-baldcypress-*": 2.3,
-		"*-larch-*": 3.7,
-		"*-redwood-*": 1.9,
-		"*-ebony-*": 14.5,
-		"*-walnut-*": 4.5,
-		"*-purpleheart-*": 12.2,
-		"*-aged-*": 4.5,
-		"*": 4.5
+    "*-birch-*": 2.85,
+		"*-oak-*": 2.9,
+		"*-maple-*": 3.25,
+		"*-pine-*": 1.45,
+		"*-acacia-*": 5.15,
+		"*-kapok-*": 2,
+		"*-baldcypress-*": 1.15,
+		"*-larch-*": 1.85,
+		"*-redwood-*": 0.95,
+		"*-ebony-*": 7.25,
+		"*-walnut-*": 2.25,
+		"*-purpleheart-*": 6.1,
+		"*": 2.25
   },
 	"creativeinventory": {
 		"general": ["*-north-free"], "construction": ["*-north-free"], "indappledgroves": ["*-north-free"]

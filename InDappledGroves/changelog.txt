@@ -1,4 +1,25 @@
-﻿1.22-v3.0.0-rc.1
+﻿1.22-v3.0.0-rc.5
+	- Implemented Taska Raine's bark basket updates to barkbaskettyped so baskets can bow be carried in rafts, and so that they'll drop properly.
+	- Added BarkBasket carryon compatibility.
+	- Updated lang file to account for new bark basket types and to add missing entries.
+	- Implemented new interaction with ground storage to make it possible to craft directly from ground storage, specifically implemented method for crafting bark bundles from bark piles in ground storage.
+	- Corrected ground storage recipes allowing the recipe interaction to continue after the process is finished.
+	- More lang file updates.
+
+1.22-v3.0.0-rc.3
+	- Adjusted recipe handler/workstation process to adjust when animation starts.
+
+1.22-v3.0.0-rc.2
+	- Cut log slab resistance in half to make them more manageable on workstations. They were previously as resistant as full logs.
+	- Increased Bark Basket capacity to 12 as a benefit for the time spent soaking the bark. Still garbage for storing food.
+	- Updated the lang file
+	- Implemented new interaction with ground storage to make it possible to craft bark bundles again.
+	- Updated bark pile model.
+	- Reduced bark bundle size to 4, but required use of cattail top to process.
+	- Increased bark bundle soak time to 24 hours again, but added benefit above.
+	
+
+1.22-v3.0.0-rc.1
 	- Removed all previous compat files in preparation for rework of compatibility settins
 	- Added preliminary Biodiversity compatibility (currently very limited with no crafting options. Log Slabs will shop in creative, but are unable to be crafted.)
 
@@ -11,7 +32,6 @@
 		- Currently requires a hammer in the offhand, this is ridiculous. 
 		- Before release will provide a permanent solution.
 
-	  
 
 1.21-v2.3.0-rc.1
 	- Sounds have returned to the workstation processing.

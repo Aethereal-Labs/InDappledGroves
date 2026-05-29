@@ -8,6 +8,8 @@
 	"textureSizes": {
 	},
 	"textures": {
+		"inside": "game:/block/wood/planks/pine1",
+		"bark": "game:/block/wood/planks/pine1"
 	},
 	"elements": [
 		{

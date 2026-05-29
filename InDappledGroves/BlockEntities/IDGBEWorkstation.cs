@@ -2,18 +2,15 @@
 using InDappledGroves.Util.Handlers;
 using System;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
-using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.Client.NoObf;
 using Vintagestory.GameContent;
 using static InDappledGroves.Util.RecipeTools.IDGRecipeNames;
-using static OpenTK.Graphics.OpenGL.GL;
 
 namespace InDappledGroves.BlockEntities
 {
@@ -235,14 +232,14 @@ namespace InDappledGroves.BlockEntities
 			return false;
 		}
 
-        internal bool handleRecipe(CollectibleObject heldCollectible, float secondsUsed, IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel)
+        public bool handleRecipe(CollectibleObject heldCollectible, float secondsUsed, IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel)
         {
             ItemSlot slot = byPlayer.InventoryManager.ActiveHotbarSlot;
             
             recipecomplete = recipeHandler.processRecipe(heldCollectible, slot, byPlayer, blockSel.Position, this, secondsUsed);
             WeatherSystemBase modSystem = this.Api.ModLoader.GetModSystem<WeatherSystemBase>(true);
             double windspeed = (modSystem != null) ? modSystem.WeatherDataSlowAccess.GetWindSpeed(byPlayer.Entity.SidedPos.XYZ) : 0.0;
-
+            
             
             if (recipecomplete) recipeHandler.clearRecipe();
             updateMeshes();
