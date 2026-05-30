@@ -10,37 +10,38 @@
 
 	],
 	attributes: {
-		handbook: { 
-			groupBy: ["barkbasket-*"],
+		"types": [ "aged", "birch", "oak", "maple", "pine", "acacia", "kapok", "baldcypress", "larch", "redwood", "ebony", "walnut", "purpleheart" ],
+		"handbook": {
+			"groupBy": [ "barkbasket-*" ],
 			"groupedName": "indappledgroves:barkbasketname",
 			"extraSections": [
-        {
-          "title": "indappledgroves:block-handbooktitle-barkbasket",
-          "text": "indappledgroves:block-handbooktext-barkbasket"
-        }
-      ]
+				{
+					"title": "indappledgroves:block-handbooktitle-barkbasket",
+					"text": "indappledgroves:block-handbooktext-barkbasket"
+				}
+			]
 		},
-		inventoryClassName: "barkbasket",
-		defaultType: "basket",
-		openSound: "game:sounds/block/basketopen",
-		closeSound: "game:sounds/block/basketclose",
-		quantitySlots: {
-			basket: 12
+		"inventoryClassName": "barkbasket",
+		"defaultType": "basket",
+		"openSound": "game:sounds/block/basketopen",
+		"closeSound": "game:sounds/block/basketclose",
+		"quantitySlots": {
+			"basket": 12
 		},
-		dialogTitleLangCode: {
-			basket: "basketcontents"
+		"dialogTitleLangCode": {
+			"basket": "basketcontents"
 		},
-		storageType: {
-			basket: 189
+		"storageType": {
+			"basket": 189
 		},
-		retrieveOnly: {
-			basket: false
+		"retrieveOnly": {
+			"basket": false
 		},
-		shape: { 
-			basket: "block/barkbasket"
+		"shape": {
+			"basket": "block/barkbasket"
 		},
-		variantByGroup: "variant",
-		variantByGroupInventory: "variant"
+		"variantByGroup": "variant",
+		"variantByGroupInventory": "variant"
 	},
 
 	creativeinventoryStacksByType: {

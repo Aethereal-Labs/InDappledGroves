@@ -59,6 +59,7 @@
 	"groundprocessable-notenoughprocessitems": "Not enough {0} in hand, need at least {1}.",
 	"groundprocessable-wrongcraftingsurface": "This requires a different crafting surface",
 	"groundprocessable-notenoughitemsinstack": "There's not enough {0} in the pile",
+	"block-barkbasket": "Bark Basket",
 	"item-handbooktitle-wormgrunter": "Worm Grunter",
 	"item-handbooktext-wormgrunter": "You can craft a worm grunter by using a <a href=\"handbooksearch://knife\">knife</a> on <a href=\"handbook://item-stick\">sticks</a>. After a few seconds, you'll have crafted a worm grunter!",
 

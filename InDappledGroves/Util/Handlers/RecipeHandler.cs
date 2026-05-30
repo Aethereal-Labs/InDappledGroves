@@ -290,10 +290,10 @@ namespace InDappledGroves.Util.Handlers
 
                 resistance = (InputStack.Block is Block ? InputStack.Block.Resistance
                 : InputStack.Item.Attributes["resistance"].AsFloat()) * IDGToolConfig.Current.baseWorkstationResistanceMult;
-                if ((int)player.Entity.Api.Side == 1 && playNextSound < secondsUsed)
+                if (playNextSound < secondsUsed)
                 {
                     player.Entity.Api.World.PlaySoundAt(new AssetLocation(recipe.Sound), beworkstation.Pos.X, beworkstation.Pos.Y, beworkstation.Pos.Z, null, true, 32, 1f);
-                    playNextSound += 1.5f;
+                    playNextSound += 1f;
                 }
                 lastSecondsUsed = secondsUsed - lastSecondsUsed < 0 ? 0 : lastSecondsUsed;
                 curMiningSpeed = GetCurMiningSpeed(InputStack, heldCollectible, player);
@@ -312,8 +312,8 @@ namespace InDappledGroves.Util.Handlers
                             beworkstation.ProcessModifierSlot.Itemstack.Collectible.DamageItem(player.Entity.Api.World, player.Entity, beworkstation.ProcessModifierSlot, 1);
                         }
                     }
-                    heldCollectible.DamageItem(player.Entity.Api.World, entityPlayer, entityPlayer.RightHandItemSlot, recipeValues.baseToolDamage);
                     CompleteRecipe(api, player);
+                    heldCollectible.DamageItem(player.Entity.Api.World, entityPlayer, entityPlayer.RightHandItemSlot, recipeValues.baseToolDamage);
                     beworkstation.MarkDirty();
                     return true;
                 }

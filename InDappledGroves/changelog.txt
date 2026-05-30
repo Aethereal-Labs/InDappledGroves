@@ -1,4 +1,11 @@
-﻿1.22-v3.0.0-rc.5
+﻿1.22-v3.0.1-rc.6
+	- Fixed animation continuing when tool breaks when finishing recipe.
+
+1.22-v3.0.1-rc.5
+	- Fixed issue with old bark baskets causing crashes when in inventories.
+
+1.22-v3.0.0-rc.5
+	- Fixed audio not playing on ground recipes.
 	- Implemented Taska Raine's bark basket updates to barkbaskettyped so baskets can bow be carried in rafts, and so that they'll drop properly.
 	- Added BarkBasket carryon compatibility.
 	- Updated lang file to account for new bark basket types and to add missing entries.

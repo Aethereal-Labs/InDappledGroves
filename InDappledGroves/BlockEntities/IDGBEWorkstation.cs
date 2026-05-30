@@ -249,23 +249,6 @@ namespace InDappledGroves.BlockEntities
 
         }
        
-
-        private string GetWorkStationType()
-        {
-            JsonObject attributes = Block.Attributes["workstationproperties"];
-            if (attributes.Exists && attributes["workstationtype"].Exists)
-            {
-                return attributes["workstationtype"].ToString();
-            } else
-            {
-                if (Api.Side.IsClient())
-                {
-                    capi.Logger.Debug(Lang.GetMatching("WorkstationTypeNotDesignated", Block.Class));
-                }
-                return null;
-            }
-        }
-
         protected override float[][] genTransformationMatrices()
         {
             float[][] tfMatrices = new float[Inventory.Count][];

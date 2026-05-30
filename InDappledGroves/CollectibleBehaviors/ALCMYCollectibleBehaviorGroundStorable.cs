@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vintagestory.API;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
-using Vintagestory.API.Server;
 using Vintagestory.API.Util;
 namespace Vintagestory.GameContent
 {
@@ -562,7 +560,8 @@ namespace Vintagestory.GameContent
                             {
                                 foreach (JsonItemStack jstack in p.ProcessingItems)
                                 {
-                                    jstack.Resolve(byPlayer.Entity.World, "barkWorldInteractionList");
+                                if(
+                                    jstack.Resolve(byPlayer.Entity.World, "barkWorldInteractionList"));
                                     ItemStack stack = jstack.ResolvedItemstack;
                                     if (!(stack == null))
                                     {
@@ -588,7 +587,6 @@ namespace Vintagestory.GameContent
         private bool TrySelectBestProcess(BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
             curProcess = null;
-
             if (validProcesses == null || validProcesses.Count == 0)
             {
                 return false;
@@ -651,16 +649,7 @@ namespace Vintagestory.GameContent
             return true;
         }
 
-        private bool TryScoreProcess(
-        ProcessableProperties process,
-        BlockEntityContainer be,
-        ItemSlot slot,
-        IPlayer byPlayer,
-        BlockSelection blockSel,
-        out int score,
-        out int mainConsumed,
-        out int offhandConsumed
-        )
+        private bool TryScoreProcess(ProcessableProperties process, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, out int score, out int mainConsumed, out int offhandConsumed)
         {
             score = 0;
             mainConsumed = 0;
@@ -697,7 +686,6 @@ namespace Vintagestory.GameContent
                 {
                     return false;
                 }
-
                 score += 50 + process.ConsumedGroundStorageStackQty;
             }
 
@@ -705,23 +693,20 @@ namespace Vintagestory.GameContent
             if (process.RequiredSurfaceMaterials != null)
             {
                 EnumBlockMaterial belowMaterial = be.Api.World.BlockAccessor.GetBlock(be.Pos.DownCopy(1)).BlockMaterial;
-
                 if (!process.RequiredSurfaceMaterials.Contains(belowMaterial))
                 {
                     return false;
                 }
-
                 score += 30 + process.RequiredSurfaceMaterials.Length;
             }
 
-            // Required ALCMY crafting surface attribute.
+            // Required ALCMYcraftingsurfaceattribute.
             if (process.RequiredALCMYCraftingSurfaceAttributes != null)
             {
                 if (!DoesBlockBelowHaveAnyCraftingSurface(be, process.RequiredALCMYCraftingSurfaceAttributes))
                 {
                     return false;
                 }
-
                 score += 30 + process.RequiredALCMYCraftingSurfaceAttributes.Length;
             }
 
@@ -743,7 +728,6 @@ namespace Vintagestory.GameContent
                 {
                     return false;
                 }
-
                 score += 100;
             }
 
@@ -754,7 +738,6 @@ namespace Vintagestory.GameContent
                 {
                     return false;
                 }
-
                 score += 100 + mainConsumed;
             }
 
@@ -765,7 +748,6 @@ namespace Vintagestory.GameContent
                 {
                     return false;
                 }
-
                 score += 100 + offhandConsumed;
             }
 
@@ -776,7 +758,6 @@ namespace Vintagestory.GameContent
                 {
                     return false;
                 }
-
                 score += 60;
             }
 
@@ -787,7 +768,6 @@ namespace Vintagestory.GameContent
                 {
                     return false;
                 }
-
                 score += 60;
             }
 
@@ -878,7 +858,7 @@ namespace Vintagestory.GameContent
             string processList = string.Join(", ", matches.Select(match => FormatProcessIdentity(match.Process)));
 
             be.Api.Logger.Warning(
-                "[ALCMy] Conflicting ground stored processes on collectible {0}. " +
+                "[ALCMy] Conflicting ground stored processes on collectible {0}. " + 
                 "Multiple validProcesses matched with the same best score of {1}. " +
                 "The process selection is ambiguous and has been cancelled. " +
                 "Conflicting processes: {2}. " +
@@ -891,8 +871,8 @@ namespace Vintagestory.GameContent
 
         private string FormatProcessIdentity(ProcessableProperties process)
         {
-            string name = string.IsNullOrEmpty(process.Name) ? "<unnamed>" : process.Name;
-            string fromModID = string.IsNullOrEmpty(process.FromModID) ? "<unknown mod>" : process.FromModID;
+            string name = string.IsNullOrEmpty(process.Name) ? "unnamed" : process.Name;
+            string fromModID = string.IsNullOrEmpty(process.FromModID) ? "" : process.FromModID;
 
             return $"name='{name}', fromModID='{fromModID}'";
         }

@@ -225,17 +225,16 @@ namespace InDappledGroves.CollectibleBehaviors
             // Server: sounds and completion
             if (api.Side == EnumAppSide.Server)
             {
-                float nextSoundAt = w.GetFloat("nextSoundAt", 0.25f);
-                if (secondsUsed >= nextSoundAt)
+                GroundRecipe recipe = GetMatchingGroundRecipe(Inventory[0], GetToolModeName(slot.Itemstack));
+                if (playNextSound < secondsUsed)
                 {
-                    // play your recipe sound here (you can store the path in the blob if needed)
-                    w.SetFloat("nextSoundAt", nextSoundAt + 0.5f);
+                    byEntity.Api.World.PlaySoundAt(new AssetLocation(recipe.Sound), blockSel.Position.X, blockSel.Position.Y, blockSel.Position.Z, null, true, 32, 1f);
+                    playNextSound += 1f;
                 }
-
                 if (curDamage >= resistance && secondsUsed > 0.25f)
                 {
                     // Perform SpawnOutput + block swap
-                    GroundRecipe recipe = GetMatchingGroundRecipe(Inventory[0], GetToolModeName(slot.Itemstack));
+                    
                     if (recipe != null)
                     {
                         SpawnOutput(recipe, target, byEntity);
@@ -299,7 +298,7 @@ namespace InDappledGroves.CollectibleBehaviors
                     slot.Itemstack.Collectible.DamageItem(api.World, byEntity, slot, recipeAtStop.BaseToolDmg);
                 }
             }
-            ClearWork(slot.Itemstack);
+            ClearWork(slot?.Itemstack);
         }
 
         public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity,BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason reason, ref EnumHandling handling)
