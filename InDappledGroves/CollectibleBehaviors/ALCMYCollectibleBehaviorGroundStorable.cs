@@ -104,7 +104,9 @@ namespace Vintagestory.GameContent
         // Token: 0x060013D0 RID: 5072 RVA: 0x000A8584 File Offset: 0x000A6784
         public virtual bool OnContainedInteractStep(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
-            
+            // No process was selected (Start returned false, or a stray step tick fired after
+            // completion/cancel reset it). Nothing to do, and the checks below assume curProcess != null.
+            if (curProcess == null) return false;
 
             bool testFlag = checkProcessingRequirements(byPlayer, be, blockSel);
             if (!testFlag) return testFlag;
@@ -172,6 +174,7 @@ namespace Vintagestory.GameContent
         // Token: 0x060013D1 RID: 5073 RVA: 0x000A8768 File Offset: 0x000A6968
         public void OnContainedInteractStop(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
+            if (curProcess == null) return;
             byPlayer.Entity.StopAnimation(curProcess.ProcessingAnimationCode);
             if (!checkProcessingRequirements(byPlayer, be, blockSel))
             {
@@ -225,6 +228,7 @@ namespace Vintagestory.GameContent
 
         public bool OnContainedInteractCancel(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, EnumItemUseCancelReason cancelReason)
         {
+            if (curProcess == null) return false;
             byPlayer.Entity.StopAnimation(curProcess.ProcessingAnimationCode);
             curProcess = null;
             return false;
@@ -234,6 +238,7 @@ namespace Vintagestory.GameContent
 
         public virtual bool checkProcessingRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel)
         {
+            if (curProcess == null) return false;
             var inv = byPlayer.InventoryManager;
 
             var mainSlot = inv.ActiveHotbarSlot;
