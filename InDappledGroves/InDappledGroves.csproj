@@ -1115,6 +1115,9 @@
     <None Update="assets\indappledgroves\blocktypes\clapboard.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="assets\indappledgroves\itemtypes\resources\board.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="assets\indappledgroves\lang\es-419.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1164,6 +1167,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="assets\indappledgroves\lang\en.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\indappledgroves\lang\ja.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\indappledgroves\lang\ru.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\indappledgroves\patches\bdtree\worldpropertypatches.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="assets\indappledgroves\patches\idgvanilla\animations\axesplit-fp.json">
@@ -1473,6 +1485,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="assets\indappledgroves\shapes\item\resource\bark.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\indappledgroves\shapes\item\resource\grass1-pile.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\indappledgroves\shapes\item\resource\hide\medium1-pile.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\indappledgroves\shapes\item\resource\hide\small1-pile.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="assets\indappledgroves\shapes\item\resource\splittercrossblade.json">
@@ -2010,6 +2031,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\indappledgroves\compatibility\bdtree\" />
+    <Folder Include="assets\indappledgroves\compatibility\game\itemtypes\resource\" />
     <Folder Include="assets\indappledgroves\compatibility\game\recipes\grid\tool\" />
     <Folder Include="assets\indappledgroves\textures\wood\debarked\" />
   </ItemGroup>

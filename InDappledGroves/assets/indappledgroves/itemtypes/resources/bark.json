@@ -37,9 +37,7 @@
 						{
 							"name": "createbarkbundle",
 							"fromModID": "indappledgroves",
-							"mainHandMustBeEmpty": false,
-							"offHandMustBeEmpty": false,
-							"processingItems": [
+							"MainHandProcessingItemsByCode": [
 								{
 									"type": "item",
 									"code": "game:cattailtops",
@@ -56,9 +54,12 @@
 									"quantity": 1
 								}
 							],
-							"offHandProcessingItems": null,
+							"MainHandProcessingItemByTag": [
+								{
+									"tag": "plantfiber", "quantity":	1
+								}
+							],
 							"consumedGroundStorageStackQty": 4,
-							//"requiredALCMyCraftingSurfaceAttributes": [ "table" ],
 							"processedStacks": [
 								{
 									"type": "block",
@@ -71,16 +72,9 @@
 							],
 							"fromModId": "indappledgroves",
 							"processTime": 4,
-							"tool": null,
-							"toolDamage": 0,
-							"toolOffHand": null,
-							"toolOffHandDamage": 0,
-							"transferFreshness": false,
 							"processingSound": "game:sounds/walk/grass*",
 							"processingAnimationCode": "knifescrape",
 							"craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
-							"requiredSurfaceMaterials": null,
-							"surfaceErrorLangCode": null,
 							"interactionHelpCode": "indappledgroves:createbarkbundle",
 							"handbookProcessIntoTitle": "indappledgroves:createbarkbundletitle",
 							"handbookCreatedByTitle": "handbook-createdby-idgcreatebundle"
@@ -122,7 +116,7 @@
 						{
 							"name": "createbarkbasket",
 							"processTime": 8,
-							"processingItems": [
+							"MainHandProcessingTimeByCode": [
 								{
 									"type": "item",
 									"code": "game:cattailtops",

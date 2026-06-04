@@ -74,7 +74,8 @@
 	"indappledgroves:creategrunterrecipe": "Crafting Worm Grunter",
 	"indappledgroves:creategrunter": "Create Worm Grunter",
 	"indappledgroves:creategruntertitle": "Create Worm Grunter",
-
+	"indappledgroves:createbarkbundletitle": "Ground Crafting",
+	"handbook-createdby-idgcreatebundle": "Ground Crafting 2",
 
 	//Bark Basket Entries
 	"block-handbooktitle-barkbasket": "Bark Basket",

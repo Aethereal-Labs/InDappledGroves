@@ -1,9 +1,286 @@
 [
+  //{
+  //  "op": "replace",
+  //  "path": "/behaviorsByType/*-soaked-*/0",
+  //  "value": {
+  //    "name": "alcmygroundstoredprocessable",
+  //    "properties": {
+  //      "validProcesses": [
+  //        {
+  //          "name": "createscrapedhide",
+  //          "mainHandMustBeEmpty": false,
+  //          "offHandMustBeEmpty": false,
+  //          "processingItems": null,
+  //          "offHandProcessingItems": null,
+  //          "remainingItem": {
+  //            "type": "item",
+  //            "code": "hide-scraped-{size}"
+  //          },
+  //          "fromModID": "indappledgroves",
+  //          "processTime": 4,
+  //          "tool": "knife",
+  //          "toolDamage": 1,
+  //          "toolOffHand": null,
+  //          "toolOffHandDamage": 0,
+  //          "transferFreshness": false,
+  //          "processingSound": "game:sounds/tool/groundcrafting/hidescrape*",
+  //          "processingAnimationCode": "knifescrape",
+  //          "craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
+  //          "requiredSurfaceMaterials": null,
+  //          "surfaceErrorLangCode": null,
+  //          "interactionHelpCode": "indappledgroves:creategrunter",
+  //          "handbookProcessIntoTitle": "indappledgroves:creategruntertitle",
+  //          "handbookCreatedByTitle": "handbook-createdby-idgcreategrunter"
+  //        }
+  //      ]
+  //    }
+  //  },
+  //  "file": "game:itemtypes/resource/hide.json",
+  //  "side": "server"
+  //},
+  //{
+  //  "op": "replace",
+  //  "path": "/behaviorsByType/hide-scraped-small/0",
+  //  "value": {
+  //    "name": "alcmygroundstoredprocessable",
+  //    "properties": {
+  //      "validProcesses": [
+  //        {
+  //          "name": "createparchment",
+  //          "mainHandMustBeEmpty": false,
+  //          "offHandMustBeEmpty": false,
+  //          "processingItems": null,
+  //          "offHandProcessingItems": null,
+  //          "remainingItem": {
+  //            "type": "item",
+  //            "code": "paper-parchment"
+  //          },
+  //          "fromModID": "indappledgroves",
+  //          "processTime": 4,
+  //          "tool": "shears",
+  //          "toolDamage": 1,
+  //          "toolOffHand": null,
+  //          "toolOffHandDamage": 0,
+  //          "transferFreshness": false,
+  //          "processingSound": "game:sounds/tool/groundcrafting/shears*",
+  //          "processingAnimationCode": "knifescrape",
+  //          "craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
+  //          "requiredSurfaceMaterials": null,
+  //          "surfaceErrorLangCode": null,
+  //          "interactionHelpCode": "indappledgroves:creategrunter",
+  //          "handbookProcessIntoTitle": "indappledgroves:creategruntertitle",
+  //          "handbookCreatedByTitle": "handbook-createdby-idgcreategrunter"
+  //        }
+  //      ]
+  //    }
+  //  },
+  //  "file": "game:itemtypes/resource/hide.json",
+  //  "side": "server"
+  //},
+  //{
+  //  "op": "addMerge",
+  //  "path": "/behaviorsByType",
+  //  "value": {
+  //    "*-raw-*": [
+  //      {
+  //        "name": "alcmygroundstoredprocessable",
+  //        "properties": {
+  //          "validProcesses": [
+  //            {
+  //              "name": "createoiledhide",
+  //              "mainHandMustBeEmpty": false,
+  //              "offHandMustBeEmpty": false,
+  //              "mainHandProcessingItemsByCodeByType": {
+  //                "*-raw-small": [
+  //                  {
+  //                    "type": "item",
+  //                    "code": "game:fat-rendered",
+  //                    "quantity": 1
+  //                  }
+  //                ],
+  //                "*-raw-medium": [
+  //                  {
+  //                    "type": "item",
+  //                    "code": "game:fat-rendered",
+  //                    "quantity": 1
+  //                  }
+  //                ],
+  //                "*-raw-large": [
+  //                  {
+  //                    "type": "item",
+  //                    "code": "game:fat-rendered",
+  //                    "quantity": 1
+  //                  }
+  //                ],
+  //                "*-raw-huge": [
+  //                  {
+  //                    "type": "item",
+  //                    "code": "game:fat-rendered",
+  //                    "quantity": 2
+  //                  }
+  //                ]
+  //              },
+  //              "offHandProcessingItemsByCode": null,
+  //              "remainingItem": {
+  //                "type": "item",
+  //                "code": "game:hide-oiled-{size}"
+  //              },
+  //              "fromModID": "indappledgroves",
+  //              "processTime": 4,
+  //              "processingSound": "game:sounds/tool/groundcrafting/hidescrape*",
+  //              "processingAnimationCode": "knifescrape",
+  //              "craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
+  //              "interactionHelpCode": "indappledgroves:createoiledhide",
+  //              "handbookProcessIntoTitle": "indappledgroves:createoiledhidetitle",
+  //              "handbookCreatedByTitle": "handbook-createdby-idgcreateoiledhide",
+  //              "requiredActions": [ "sprint" ]
+  //            },
+  //            {
+  //              "name": "createsaltedhide",
+  //              "mainHandMustBeEmpty": false,
+  //              "offHandMustBeEmpty": false,
+  //              "mainHandProcessingItemsByCodeByType": {
+  //                "*-raw-small": [
+  //                  {
+  //                    "type": "item",
+  //                    "code": "game:salt",
+  //                    "quantity": 1
+  //                  }
+  //                ],
+  //                "*-raw-medium": [
+  //                  {
+  //                    "type": "item",
+  //                    "code": "game:salt",
+  //                    "quantity": 2
+  //                  }
+  //                ],
+  //                "*-raw-large": [
+  //                  {
+  //                    "type": "item",
+  //                    "code": "game:salt",
+  //                    "quantity": 4
+  //                  }
+  //                ],
+  //                "*-raw-huge": [
+  //                  {
+  //                    "type": "item",
+  //                    "code": "game:salt",
+  //                    "quantity": 8
+  //                  }
+  //                ]
+  //              },
+  //              "offHandProcessingItemsByCode": null,
+  //              "remainingItem": {
+  //                "type": "item",
+  //                "code": "game:hide-salted-{size}"
+  //              },
+  //              "fromModID": "indappledgroves",
+  //              "processTime": 4,
+  //              "processingSound": "game:sounds/tool/groundcrafting/hidescrape*",
+  //              "processingAnimationCode": "knifescrape",
+  //              "craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
+  //              "interactionHelpCode": "indappledgroves:createsaltedhide",
+  //              "handbookProcessIntoTitle": "indappledgroves:createsaltedhidetitle",
+  //              "handbookCreatedByTitle": "handbook-createdby-idgcreatesaltedhide",
+  //              "requiredActions": [ "sprint" ]
+  //            }
+  //          ]
+  //        }
+  //      },
+  //      {
+  //        "name": "GroundStorable",
+  //        "properties": {
+  //          "layout": "SingleCenter",
+  //          "collisionBox": {
+  //            "x1": 0,
+  //            "y1": 0,
+  //            "z1": 0,
+  //            "x2": 1,
+  //            "y2": 0.1,
+  //            "z2": 1
+  //          }
+  //        }
+  //      }
+  //    ]
+  //  },
+  //  "file": "game:itemtypes/resource/hide.json",
+  //  "side": "server"
+  //},
+  {
+    "op": "remove",
+    "path": "/class",
+    "file": "game:itemtypes/resource/drygrass.json"
+  },
   {
     "op": "addmerge",
-    "path": "/attributes/ALCMyCrafting",
+    "path": "/behaviors",
+    "value": [
+      {
+        "name": "alcmygroundstoredprocessable",
+        "properties": {
+          "validProcesses": [
+            {
+              "name": "createfirepit",
+              "consumedGroundStorageStackQty": 1,
+              "remainingItem": {
+                "type": "block",
+                "code": "game:firepit-construct1"
+              },
+              "MainHandMustBeEmpty": true,
+              "OffHandMustBeEmpty": true,
+              "PlaceRemainingItemAsBlock": true,
+              "ExactGroundStorageStackQtyRequired": true,
+              "fromModID": "indappledgroves",
+              "processingSound": "game:sounds/walk/grass*",
+              "processingAnimationCode": "knifescrape",
+              "processingAnimationTargetFrame": 15,
+              "interactionHelpCode": "indappledgroves:createfirepit",
+              "handbookProcessIntoTitle": "indappledgroves:createfirepittitle",
+              "handbookCreatedByTitle": "handbook-createdby-idgfirepitchest",
+              "requiredActions": [ "sprint" ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "GroundStorable",
+        "properties": {
+          "layout": "Stacking",
+          "upSolid": false,
+          "placeRemoveSound": "sounds/block/leather",
+          "stackingModel": "indappledgroves:item/resource/grass1-pile",
+          "collisionBox": {
+            "x1": 0.125,
+            "y1": 0,
+            "z1": 0.125,
+            "x2": 0.875,
+            "y2": 0.0625,
+            "z2": 0.875
+          },
+          "tessQuantityElements": 18,
+          "cuboidsPerModel": 19,
+          "cbScaleYByLayer": 0.25,
+          "itemsPerModel": 3,
+          "stackingCapacity": 36,
+          "transferQuantity": 1,
+          "bulkTransferQuantity": 8
+        }
+      }
+    ],
+    "file": "game:itemtypes/resource/drygrass.json",
+    "side": "server"
+  },
+  {
+    "op": "addmerge",
+    "path": "/attributes/CraftingTags",
     "value": { "surfaces": [ "table" ] },
     "file": "game:blocktypes/wood/table.json"
+  },
+  {
+    "op": "replace",
+    "path": "/storageFlags",
+    "value": 261,
+    "file": "game:itemtypes/resource/metalnailsandstrips.json"
   },
   {
     "op": "addmerge",
@@ -48,6 +325,50 @@
         ]
       }
     },
-    "file": "game:itemtypes/resource/stick.json"
+    "file": "game:itemtypes/resource/stick.json",
+    "side": "server"
+  },
+  {
+    "op": "addmerge",
+    "path": "/behaviors/-",
+    "value": {
+      "name": "alcmygroundstoredprocessable",
+      "properties": {
+        "validProcesses": [
+          {
+            "name": "createchest",
+            "OffHandProcessingItemsByCode": [
+              {
+                "type": "item",
+                "code": "game:metalnailsandstrips-*",
+                "quantity": 1
+              }
+            ],
+            //"MainHandProcessingItemsByKey": [ "nailsandstrips" ],
+            "consumedGroundStorageStackQty": 8,
+            "remainingItem": {
+              "type": "block",
+              "code": "game:chest-east",
+              "attributes": { "type": "normal-generic" }
+            },
+            "PlaceRemainingItemAsBlock": true,
+            "ExactGroundStorageStackQtyRequired": true,
+            "fromModID": "indappledgroves",
+            "processTime": 4,
+            "tool": "Hammer",
+            "toolDamage": 1,
+            "processingSound": "game:sounds/block/barrelopen",
+            "processingAnimationCode": "smithingwide",
+            "processingAnimationTargetFrame": 15,
+            "craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
+            "interactionHelpCode": "indappledgroves:createchest",
+            "handbookProcessIntoTitle": "indappledgroves:createchesttitle",
+            "handbookCreatedByTitle": "handbook-createdby-idgcreatechest",
+            "requiredActions": [ "sprint" ]
+          }
+        ]
+      }
+    },
+    "file": "game:itemtypes/resource/plank.json"
   }
 ]

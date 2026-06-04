@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
@@ -16,8 +17,6 @@ namespace Vintagestory.GameContent
         {
         }
 
-    
-
         public override void Initialize(JsonObject properties)
         {
             base.Initialize(properties);
@@ -25,7 +24,15 @@ namespace Vintagestory.GameContent
             {
                 return;
             }          
-            validProcesses = properties["validProcesses"].AsObject<List<ProcessableProperties>>();
+            CollectibleObject fuckthis = collObj;
+            System.Diagnostics.Debug.WriteLine(collObj.Code);
+            List<ProcessableProperties> vProcess = new();
+            foreach(JsonObject process in properties["validProcesses"].AsArray())
+            {
+                ProcessableProperties nextProcess = new ProcessableProperties(process);    
+                vProcess.Add(nextProcess);
+            }
+            if(vProcess.Count != 0) validProcesses = vProcess;
         }
 
         public override void OnLoaded(ICoreAPI api)
@@ -41,7 +48,7 @@ namespace Vintagestory.GameContent
                 for (int i = validProcesses.Count - 1; i >= 0; i--)
                 {
                     ProcessableProperties p = validProcesses[i];
-                    if (p.Name == "unnamed" || p.FromModID == "modinotprovided")
+                    if (p.Name == "unnamed" || p.FromModID == "modidnotprovided")
                     {
                         api.Logger.Debug(Lang.Get("indappledgroves:ALCMyGroundStoredProcessable-MissingData", p.Name, p.FromModID, this.collObj.Code));
                         validProcesses.Remove(p);
@@ -58,23 +65,23 @@ namespace Vintagestory.GameContent
                         {
                             if (processedStack != null)
                             {
-                                processedStack.Resolve(api.World, "processedStack of item ", this.collObj.Code);
+                                processedStack.Resolve(api.World, "processedStack groundstoredcollectableprocess " + p.Name + " on ", this.collObj.Code);
                             }
                         });
                     }
+                    if (p.RemainingItem != null)
+                    {
+                        p.RemainingItem.Resolve(api.World,"remainingStack of groundstoredcollectableprocess " + p.Name + " on ", this.collObj.Code);                    }
                 }
             }
         }
 
-       
+
 
         // Token: 0x060013CF RID: 5071 RVA: 0x000A847C File Offset: 0x000A667C
         public virtual bool OnContainedInteractStart(BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
-            if (!byPlayer.Entity.Controls.ShiftKey)
-            {
-                return false;
-            }
+
 
             if (!be.Api.World.Claims.TryAccess(byPlayer, blockSel.Position, EnumBlockAccessFlags.Use))
             {
@@ -86,6 +93,13 @@ namespace Vintagestory.GameContent
                 return false;
             }
 
+            foreach (EnumEntityAction action in curProcess.RequiredActions) { 
+                if (!byPlayer.Entity.Controls.Flags[(int)action])
+                {
+                    return false;
+                }
+            }
+
             if (byPlayer.Entity.Api is ICoreClientAPI capi)
             {
                 capi.TriggerIngameError(this, "craftingmessage", Lang.Get(curProcess.FromModID + ":" + curProcess.Name + "recipe"));
@@ -94,7 +108,6 @@ namespace Vintagestory.GameContent
 
             if (curProcess.ProcessedStacks != null || curProcess.RemainingItem != null)
             {
-                be.Api.World.PlaySoundAt(curProcess.ProcessingSound, blockSel.Position, 0.0, byPlayer, true, 32f, 1f);
                 return true;
             }
 
@@ -105,66 +118,79 @@ namespace Vintagestory.GameContent
         public virtual bool OnContainedInteractStep(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
             
-
             bool testFlag = checkProcessingRequirements(byPlayer, be, blockSel);
             if (!testFlag) return testFlag;
-            
-            if (!byPlayer.Entity.Controls.ShiftKey)
+
+            foreach (EnumEntityAction action in curProcess.RequiredActions)
             {
-                return false;
+                if (!byPlayer.Entity.Controls.Flags[(int)action])
+                {
+                    return false;
+                }
             }
+
             if (blockSel == null)
             {
                 return false;
             }
-            if (!this.canProcessOnSurfaceMaterial(be, byPlayer))
+            IWorldAccessor world = be.Api.World;
+            Vec3d pos = blockSel.Position.ToVec3d().Add(blockSel.HitPosition);
+
+            if (!string.IsNullOrEmpty(curProcess.ProcessingAnimationCode) && !byPlayer.Entity.AnimManager.IsAnimationActive(curProcess.ProcessingAnimationCode))
             {
-                return false;
-            }
-            if (curProcess.ProcessingAnimationCode != null && byPlayer.Entity.World is IClientWorldAccessor)
-            {
+                if (be.Pos.Y > byPlayer.Entity.Pos.Y)
+                {
+                    byPlayer.Entity.StopAnimation("sneakidle");
+                }
+                else if (be.Pos.Y <= byPlayer.Entity.Pos.Y)
+                {
+                    byPlayer.Entity.StartAnimation("sneakidle");
+                }
                 byPlayer.Entity.StartAnimation(curProcess.ProcessingAnimationCode);
             }
-            if (be.Api.World.Rand.NextDouble() < 0.05)
+            float curFrame = byPlayer.Entity.AnimManager.GetAnimationState(curProcess.ProcessingAnimationCode).CurrentFrame;
+            float procAnimationFrameQty = byPlayer.Entity.AnimManager.GetAnimationState(curProcess.ProcessingAnimationCode).Animation.QuantityFrames;
+            float targetSoundFrame;
+            if (curProcess.ProcessingAnimationTargetFrame == 0f)
             {
-                be.Api.World.PlaySoundAt(curProcess.ProcessingSound, blockSel.Position, 0.0, byPlayer, true, 32f, 1f);
+                targetSoundFrame = soundFrames.TryGetValue(curProcess.ProcessingAnimationCode) != 0f ? soundFrames.TryGetValue(curProcess.ProcessingAnimationCode) : procAnimationFrameQty / 2;
+            } else
+            {
+                targetSoundFrame = curProcess.ProcessingAnimationTargetFrame > procAnimationFrameQty ? procAnimationFrameQty / 2 : curProcess.ProcessingAnimationTargetFrame;
             }
-            if (be.Api.World.Side == EnumAppSide.Client && be.Api.World.Rand.NextDouble() < 0.25)
+
+
+            if (curFrame > targetSoundFrame && curFrame< targetSoundFrame+2)
             {
-                BlockDropItemStack[] processedStacks = curProcess.ProcessedStacks;
-                ItemStack itemStack;
-                if (processedStacks == null)
-                {
-                    itemStack = null;
-                }
-                else
-                {
-                    BlockDropItemStack blockDropItemStack = processedStacks[0];
-                    itemStack = ((blockDropItemStack != null) ? blockDropItemStack.ResolvedItemstack : null);
-                }
-                ItemStack itemStack2;
-                if ((itemStack2 = itemStack) == null)
-                {
-                    JsonItemStack remainingItem = curProcess.RemainingItem;
-                    itemStack2 = ((remainingItem != null) ? remainingItem.ResolvedItemstack : null);
-                }
-                if (itemStack2 != null)
-                {
-                    IWorldAccessor world = be.Api.World;
-                    Vec3d pos = blockSel.Position.ToVec3d().Add(blockSel.HitPosition);
-                    BlockDropItemStack[] processedStacks2 = curProcess.ProcessedStacks;
-                    ItemStack itemStack3;
-                    if (processedStacks2 == null)
+                world.PlaySoundAt(curProcess.ProcessingSound, blockSel.Position, 0.0, byPlayer, true, 32f, 1f);
+
+                    BlockDropItemStack[] processedStacks = curProcess.ProcessedStacks;
+                    if (processedStacks != null && processedStacks.Length > 0)
                     {
-                        itemStack3 = null;
+                        foreach (BlockDropItemStack stack in curProcess.ProcessedStacks)
+                        {
+                            world.SpawnCubeParticles(pos, stack.ResolvedItemstack, 0.25f, 1, 0.5f, byPlayer, new Vec3f(0f, 3f, 0f));
+                        }
                     }
-                    else
+
+                    ItemStack itemStack2 = curProcess.RemainingItem?.ResolvedItemstack;
+                    if (itemStack2 != null)
                     {
-                        BlockDropItemStack blockDropItemStack2 = processedStacks2[0];
-                        itemStack3 = ((blockDropItemStack2 != null) ? blockDropItemStack2.ResolvedItemstack : null);
-                    }
-                    world.SpawnCubeParticles(pos, itemStack3 ?? curProcess.RemainingItem.ResolvedItemstack, 0.25f, 1, 0.5f, byPlayer, new Vec3f(0f, 1f, 0f));
-                }
+
+
+                        BlockDropItemStack[] processedStacks2 = curProcess.ProcessedStacks;
+                        ItemStack itemStack3;
+                        if (processedStacks2 == null)
+                        {
+                            itemStack3 = null;
+                        }
+                        else
+                        {
+                            BlockDropItemStack blockDropItemStack2 = processedStacks2[0];
+                            itemStack3 = ((blockDropItemStack2 != null) ? blockDropItemStack2.ResolvedItemstack : null);
+                        }
+                        world.SpawnCubeParticles(pos, itemStack3 ?? curProcess.RemainingItem.ResolvedItemstack, 0.25f, 4, 0.5f, byPlayer, new Vec3f(0f, 3f, 0f));
+                    }           
             }
             return secondsUsed < curProcess.ProcessTime;
         }
@@ -172,13 +198,20 @@ namespace Vintagestory.GameContent
         // Token: 0x060013D1 RID: 5073 RVA: 0x000A8768 File Offset: 0x000A6968
         public void OnContainedInteractStop(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
-            byPlayer.Entity.StopAnimation(curProcess.ProcessingAnimationCode);
+            //byPlayer.Entity.AnimManager.ActiveAnimationsByAnimCode;
+            if (!byPlayer.Entity.Controls.Sneak) byPlayer.Entity.StopAnimation("sneakidle");
+            if (!string.IsNullOrEmpty(curProcess?.ProcessingAnimationCode))
+            {
+                byPlayer.Entity.StopAnimation(curProcess.ProcessingAnimationCode);
+            }
             if (!checkProcessingRequirements(byPlayer, be, blockSel))
             {
                 curProcess = null;
                 return;
             }
-            if (secondsUsed > curProcess.ProcessTime - 0.05f && (curProcess.ProcessedStacks != null || curProcess.RemainingItem != null) && be.Api.World.Side == EnumAppSide.Server)
+            if (secondsUsed > curProcess.ProcessTime - 0.05f
+                && (curProcess.ProcessedStacks != null || curProcess.RemainingItem != null)
+                && be.Api.World.Side == EnumAppSide.Server)
             {
                 
                 HandleProcessedStacks(byPlayer, slot, blockSel, be);
@@ -205,27 +238,31 @@ namespace Vintagestory.GameContent
                         itemstack.Collectible.DamageItem(be.Api.World, byPlayer.Entity, toolSlot, curProcess.toolOffhandDamage, true);
                     }
                 }
-                if (curProcess.ProcessingItems?.Length > 0 && curProcess.ConsumedMainHandProcessItem > 0)
+                if (curProcess.MainHandProcessingItemsByCode?.Length > 0 && curProcess.ConsumedMainHandProcessItem > 0)
                 {
                     byPlayer.InventoryManager.ActiveHotbarSlot.TakeOut(curProcess.ConsumedMainHandProcessItem);
                     byPlayer.InventoryManager.ActiveHotbarSlot.MarkDirty();
                 }
-                if (curProcess.OffHandProcessingItems?.Length > 0 && curProcess.ConsumedOffHandProcessItem > 0)
+                if (curProcess.OffHandProcessingItemsByCode?.Length > 0 && curProcess.ConsumedOffHandProcessItem > 0)
                 {
                     byPlayer.InventoryManager.OffhandHotbarSlot.TakeOut(curProcess.ConsumedOffHandProcessItem);
                     byPlayer.InventoryManager.OffhandHotbarSlot.MarkDirty();
                 }
-                
-                be.Api.World.PlaySoundAt(curProcess.CompletionSound ?? curProcess.ProcessingSound, blockSel.Position, 0.0, byPlayer, true, 32f, 1f);
+
+                be.Api.World.PlaySoundAt(curProcess.CompletionSound ?? curProcess.ProcessingSound, blockSel.Position, 0.0, byPlayer, true, 32f, 2f);
+                be.MarkDirty();
                 curProcess = null;
             }
-            
         }
         
 
         public bool OnContainedInteractCancel(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, EnumItemUseCancelReason cancelReason)
         {
-            byPlayer.Entity.StopAnimation(curProcess.ProcessingAnimationCode);
+            if (!byPlayer.Entity.Controls.Sneak) byPlayer.Entity.StopAnimation("sneakidle");
+            if (!string.IsNullOrEmpty(curProcess.ProcessingAnimationCode))
+            {
+                byPlayer.Entity.StopAnimation(curProcess.ProcessingAnimationCode);
+            }
             curProcess = null;
             return false;
         }
@@ -251,15 +288,13 @@ namespace Vintagestory.GameContent
 
             if (curProcess.ConsumedGroundStorageStackQty > 0)
             {
+                if (be.Inventory[blockSel.SelectionBoxIndex].Empty || be.Inventory[blockSel.SelectionBoxIndex].StackSize < curProcess.ConsumedGroundStorageStackQty)
                 {
-                    if (be.Inventory[blockSel.SelectionBoxIndex].Empty || be.Inventory[blockSel.SelectionBoxIndex].StackSize < curProcess.ConsumedGroundStorageStackQty)
-                    {
-                        if (coreClientAPI != null)
-                        {
-                            coreClientAPI.TriggerIngameError(this, "notenoughstackitems", Lang.Get("indappledgroves:groundprocessable-notenoughitemsinstack", be.Inventory[blockSel.SelectionBoxIndex].Itemstack.GetName().ToLower()));
-                        }
-                        return false;
-                    }
+                    //if (coreClientAPI != null)
+                    //{
+                    //    coreClientAPI.TriggerIngameError(this, "notenoughstackitems", Lang.Get("indappledgroves:groundprocessable-notenoughitemsinstack", be.Inventory[blockSel.SelectionBoxIndex].Itemstack.GetName().ToLower()));
+                    //}
+                    return false;
                 }
             }          
 
@@ -268,8 +303,8 @@ namespace Vintagestory.GameContent
 
         private bool checkheldItemRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv)
         {
-            bool mainItemRequired = curProcess.ProcessingItems?.Length > 0;
-            bool offhandItemRequired = curProcess.OffHandProcessingItems?.Length > 0;
+            bool mainItemRequired = curProcess.MainHandProcessingItemsByCode?.Length > 0;
+            bool offhandItemRequired = curProcess.OffHandProcessingItemsByCode?.Length > 0;
 
             // Always reset these before checking.
             curProcess.ConsumedMainHandProcessItem = 0;
@@ -280,7 +315,7 @@ namespace Vintagestory.GameContent
             if (mainItemRequired)
             {
                 bool mainhandItemFound = false;
-                foreach (JsonItemStack jsonStack in curProcess.ProcessingItems)
+                foreach (JsonItemStack jsonStack in curProcess.MainHandProcessingItemsByCode)
                 {
                     if (jsonStack.Code.FirstCodePart() != playerMainStack?.Collectible?.Code.FirstCodePart())
                     {
@@ -312,7 +347,7 @@ namespace Vintagestory.GameContent
             {
                 bool offhandItemFound = false;
 
-                foreach (JsonItemStack jsonStack in curProcess.OffHandProcessingItems)
+                foreach (JsonItemStack jsonStack in curProcess.OffHandProcessingItemsByCode)
                 {
                     if (jsonStack.Code.FirstCodePart() != playerOffHandStack?.Collectible?.Code.FirstCodePart())
                     {
@@ -367,8 +402,8 @@ namespace Vintagestory.GameContent
 
         private bool checkToolRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv)
         {
-            bool mainItemRequired = curProcess.ProcessingItems?.Length > 0;
-            bool offhandItemRequired = curProcess.OffHandProcessingItems?.Length > 0;
+            bool mainItemRequired = curProcess.MainHandProcessingItemsByCode?.Length > 0;
+            bool offhandItemRequired = curProcess.OffHandProcessingItemsByCode?.Length > 0;
 
             // Same hand cannot require both a tool and a processing item.
             if ((curProcess.Tool != null && mainItemRequired) || (curProcess.ToolOffhand != null && offhandItemRequired))
@@ -451,8 +486,11 @@ namespace Vintagestory.GameContent
                     }
                     if (!byPlayer.InventoryManager.TryGiveItemstack(stack, false))
                     {
-                        be.Api.World.SpawnItemEntity(stack, blockSel.Position, null);
+                        BlockFacing facing = BlockFacing.HorizontalFromYaw(byPlayer.Entity.Pos.Yaw).Opposite;
+                        be.Api.World.SpawnItemEntity(stack, blockSel.Position, new Vec3d(facing.Normalf.X * 0.075, 0.03f, facing.Normalf.Z * 0.075f));
                     }
+                    slot.TakeOut(curProcess.ConsumedGroundStorageStackQty);
+                    slot.MarkDirty();
                     be.Api.World.Logger.Audit("{0} Took {1}x{2} from {3} at {4}.", new object[]
                     {
                             byPlayer.PlayerName,
@@ -471,11 +509,27 @@ namespace Vintagestory.GameContent
 
         public virtual void HandleRemainingItem(IPlayer byPlayer, ItemSlot slot, BlockSelection blockSel, BlockEntityContainer be)
         {
+            
             JsonItemStack remainingItem = curProcess.RemainingItem;
-            ItemStack itemStack;
+            
+            ItemStack itemStack = null;
             if (remainingItem == null)
             {
                 itemStack = null;
+                return;
+            }
+            curProcess.RemainingItem.Resolve(byPlayer.Entity.World, "resolvingcraftingstack");
+            itemStack = remainingItem.ResolvedItemstack;
+            if (curProcess.PlaceRemainingItemAsBlock)
+            {
+                remainingItem.Resolve(be.Api.World, "remainingItem of item ", this.collObj.Code);
+                Block block = remainingItem.ResolvedItemstack?.Block;
+                if (block != null)
+                {
+                    block.DoPlaceBlock(byPlayer.Entity.Api.World, byPlayer, blockSel, itemStack);
+                }
+                be.MarkDirty(true, null);
+                return;
             }
             else
             {
@@ -501,7 +555,7 @@ namespace Vintagestory.GameContent
                     CollectibleObject.CarryOverFreshness(be.Api, slot, remainingStack, perishProps);
                 }
             }
-            if (slot.Itemstack.StackSize >= curProcess.ConsumedGroundStorageStackQty)
+            if (slot.Itemstack.StackSize > curProcess.ConsumedGroundStorageStackQty)
             {
                 if (remainingStack != null)
                 {
@@ -556,9 +610,9 @@ namespace Vintagestory.GameContent
                         foreach (ProcessableProperties p in validProcesses)
                         {
                             List<ItemStack> processItemList = new();
-                            if (p.ProcessingItems?.Length > 0)
+                            if (p.MainHandProcessingItemsByCode?.Length > 0)
                             {
-                                foreach (JsonItemStack jstack in p.ProcessingItems)
+                                foreach (JsonItemStack jstack in p.MainHandProcessingItemsByCode)
                                 {
                                 if(
                                     jstack.Resolve(byPlayer.Entity.World, "barkWorldInteractionList"));
@@ -569,13 +623,34 @@ namespace Vintagestory.GameContent
                                     }
                                 }
                             }
-                                interactionList.Add(new WorldInteraction
+                            if(p.RequiredActions.Length > 1)
+                            {
+
+                                List<string> actioncodes = new();
+                                foreach(EnumEntityAction action in p.RequiredActions)
                                 {
+                                    actioncodes.Add(action.ToString());
+                                }
+                                string[] actioncodestrings = actioncodes.ToArray<string>();
+                                interactionList.Add(new WorldInteraction
+                                    {
+                                        ActionLangCode = p.interactionHelpCode,
+                                        MouseButton = EnumMouseButton.Right,
+                                        HotKeyCodes = actioncodestrings,
+                                        Itemstacks = processItemList?.Count > 0 ? processItemList?.ToArray() : ((p.Tool == null) ? null : ObjectCacheUtil.GetToolStacks(be.Api, p.Tool.Value))
+                                    });
+                            } else
+                            {
+
+                            interactionList.Add(new WorldInteraction
+                            {
                                     ActionLangCode = p.interactionHelpCode,
                                     MouseButton = EnumMouseButton.Right,
-                                    HotKeyCode = "shift",
+                                    HotKeyCode = p.RequiredActions[0].ToString(),
                                     Itemstacks = processItemList?.Count > 0 ? processItemList?.ToArray() : ((p.Tool == null) ? null : ObjectCacheUtil.GetToolStacks(be.Api, p.Tool.Value))
-                                });
+                            });
+                            }
+                                
                         };
                     return interactionList.ToArray();
                 }
@@ -597,7 +672,37 @@ namespace Vintagestory.GameContent
 
             foreach (ProcessableProperties process in validProcesses)
             {
+                //TODO: Implement Multiple Recipe Types By Using Enum.GroundProcessType,
+                //Valid types should be:
+                //MultislotA (Using more than one ground storage slot for a single process);
+                //MultislotB (Using more than one ground storage slot for a single process, with neighboring blocks being considered);
+                foreach(EnumEntityAction action in process.RequiredActions){
+                    if (!byPlayer.Entity.Controls.Flags[(int)action])
+                    {
+                        return false;
+                    }
+                }
+                
+
                 if (!IsCorrectStoredStackForThisBehavior(slot))
+                {
+                    return false;
+                }
+
+                if (process.RequiredClassTraits != null && byPlayer.Entity.World.Config.GetBool("classExclusiveRecipes", true))
+                {
+                    bool hasTrait = false;
+                    foreach (string trait in process.RequiredClassTraits) {
+                        if (be.Api.ModLoader.GetModSystem<CharacterSystem>().HasTrait(byPlayer, trait))
+                        {
+                            hasTrait = true;
+                            break;
+                        }
+                    }
+                    if (!hasTrait) return false;
+                }
+
+                if(process.RestrictedImmersedInMaterials.ToArray<EnumBlockMaterial>().Contains(be.Api.World.BlockAccessor.GetBlock(be.Pos, 1).BlockMaterial))
                 {
                     return false;
                 }
@@ -668,8 +773,8 @@ namespace Vintagestory.GameContent
             ItemStack mainStack = mainSlot.Itemstack;
             ItemStack offhandStack = offhandSlot.Itemstack;
 
-            bool mainItemRequired = process.ProcessingItems?.Length > 0;
-            bool offhandItemRequired = process.OffHandProcessingItems?.Length > 0;
+            bool mainItemRequired = process.MainHandProcessingItemsByCode?.Length > 0;
+            bool offhandItemRequired = process.OffHandProcessingItemsByCode?.Length > 0;
 
             // Invalid/conflicting process definitions.
             if (process.Tool != null && mainItemRequired) return false;
@@ -682,11 +787,32 @@ namespace Vintagestory.GameContent
             // Ground storage stack requirement.
             if (process.ConsumedGroundStorageStackQty > 0)
             {
-                if (slot.Empty || slot.Itemstack.StackSize < process.ConsumedGroundStorageStackQty)
+                if (slot.Empty)
                 {
                     return false;
                 }
-                score += 50 + process.ConsumedGroundStorageStackQty;
+
+                int stackSize = slot.Itemstack.StackSize;
+                int requiredQty = process.ConsumedGroundStorageStackQty;
+
+                if (process.ExactGroundStorageStackQtyRequired)
+                {
+                    if (stackSize != requiredQty)
+                    {
+                        return false;
+                    }
+
+                    score += 100 + requiredQty;
+                }
+                else
+                {
+                    if (stackSize < requiredQty)
+                    {
+                        return false;
+                    }
+
+                    score += 50 + requiredQty;
+                }
             }
 
             // Required block material under the ground storage block.
@@ -700,14 +826,14 @@ namespace Vintagestory.GameContent
                 score += 30 + process.RequiredSurfaceMaterials.Length;
             }
 
-            // Required ALCMYcraftingsurfaceattribute.
-            if (process.RequiredALCMYCraftingSurfaceAttributes != null)
+            // Required CraftingTagssurfaceattribute.
+            if (process.RequiredCraftingSurfaceByTag != null)
             {
-                if (!DoesBlockBelowHaveAnyCraftingSurface(be, process.RequiredALCMYCraftingSurfaceAttributes))
+                if (!DoesBlockBelowHaveAnyCraftingSurface(be, process.RequiredCraftingSurfaceByTag))
                 {
                     return false;
                 }
-                score += 30 + process.RequiredALCMYCraftingSurfaceAttributes.Length;
+                score += 30 + process.RequiredCraftingSurfaceByTag.Length;
             }
 
             // Main hand tool.
@@ -734,7 +860,7 @@ namespace Vintagestory.GameContent
             // Main hand processing item.
             if (mainItemRequired)
             {
-                if (!TryMatchProcessingItem(process.ProcessingItems, mainStack, out mainConsumed))
+                if (!TryMatchProcessingItem(process.MainHandProcessingItemsByCode, process.MainHandProcessingItemsByKey, mainStack, out mainConsumed))
                 {
                     return false;
                 }
@@ -744,7 +870,7 @@ namespace Vintagestory.GameContent
             // Offhand processing item.
             if (offhandItemRequired)
             {
-                if (!TryMatchProcessingItem(process.OffHandProcessingItems, offhandStack, out offhandConsumed))
+                if (!TryMatchProcessingItem(process.OffHandProcessingItemsByCode, process.OffHandProcessingItemsByKey, offhandStack, out offhandConsumed))
                 {
                     return false;
                 }
@@ -782,7 +908,7 @@ namespace Vintagestory.GameContent
             public int OffhandConsumed;
         }
 
-        private bool TryMatchProcessingItem(JsonItemStack[] requiredItems, ItemStack heldStack, out int consumedQty)
+        private bool TryMatchProcessingItem(JsonItemStack[] requiredItems, JsonObject[] processingItemByKey, ItemStack heldStack, out int consumedQty)
         {
             consumedQty = 0;
 
@@ -817,6 +943,27 @@ namespace Vintagestory.GameContent
                 return true;
             }
 
+
+            if(processingItemByKey == null || processingItemByKey.Length == 0)
+            {
+                return false;
+            }
+
+            foreach(JsonObject jsonObj in processingItemByKey) {
+                if (heldStack.Collectible.Attributes["CraftingTags"].Exists && heldStack.Collectible.Attributes["CraftingTags"].AsArray<String>(null).Contains<string>(jsonObj["tag"].ToString()))
+                {
+                    continue;
+                }
+
+                if (heldStack.StackSize < jsonObj["quantity"].AsInt())
+                {
+                    continue;
+                }
+
+                consumedQty = jsonObj["quantity"].AsInt();
+                return true;
+            }
+
             return false;
         }
 
@@ -829,7 +976,7 @@ namespace Vintagestory.GameContent
 
             Block belowBlock = be.Api.World.BlockAccessor.GetBlock(be.Pos.DownCopy(1));
 
-            string[] surfaces = belowBlock.Attributes?["ALCMyCrafting"]?["surfaces"].AsArray<string>(null);
+            string[] surfaces = belowBlock.Attributes?["CraftingTags"]?["surfaces"].AsArray<string>(null);
 
             if (surfaces == null || surfaces.Length == 0)
             {
@@ -858,7 +1005,7 @@ namespace Vintagestory.GameContent
             string processList = string.Join(", ", matches.Select(match => FormatProcessIdentity(match.Process)));
 
             be.Api.Logger.Warning(
-                "[ALCMy] Conflicting ground stored processes on collectible {0}. " + 
+                "Conflicting ground stored processes on collectible {0}. " + 
                 "Multiple validProcesses matched with the same best score of {1}. " +
                 "The process selection is ambiguous and has been cancelled. " +
                 "Conflicting processes: {2}. " +
@@ -899,53 +1046,223 @@ namespace Vintagestory.GameContent
 
         public virtual bool canProcessOnCraftingSurface(BlockEntityContainer be, IPlayer byPlayer)
         {
-            if (curProcess.RequiredALCMYCraftingSurfaceAttributes == null)
+            if (curProcess.RequiredCraftingSurfaceByTag == null)
             {
                 return true;
             }
             bool isSurfaceValid = false;
             Block block = byPlayer.Entity.World.BlockAccessor.GetBlock(be.Pos.DownCopy(1));
-            String[] testString = block.Attributes["ALCMyCrafting"]["surfaces"].AsArray<string>(null);
-            byPlayer.Entity.World.BlockAccessor.GetBlock(be.Pos.DownCopy(1)).Attributes["ALCMyCrafting"]["surfaces"].AsArray<string>(null)?.Foreach((string surface) =>
+            String[] testString = block.Attributes["CraftingTags"]["surfaces"].AsArray<string>(null);
+            byPlayer.Entity.World.BlockAccessor.GetBlock(be.Pos.DownCopy(1)).Attributes["CraftingTags"]["surfaces"].AsArray<string>(null)?.Foreach((string surface) =>
             {
-                if (curProcess.RequiredALCMYCraftingSurfaceAttributes.Contains(surface))
+                if (curProcess.RequiredCraftingSurfaceByTag.Contains(surface))
                 {
                     isSurfaceValid = true;
                 }
             });
             return isSurfaceValid;
-
+            
         }
+
+        public Dictionary<string, float> soundFrames = new Dictionary<string, float>
+        {
+            {"smithingwide", 15f },
+
+        };
 
         public class ProcessableProperties
         {
             public string Name = "unnamed";
             public string FromModID = "modidnotprovided";
             public float ProcessTime = 1;
-            public BlockDropItemStack[] ProcessedStacks;
-            public AssetLocation ProcessingSound;
-            public string ProcessingAnimationCode;
-            public JsonItemStack RemainingItem;
-            public int ConsumedGroundStorageStackQty;
-            public bool OffHandMustBeEmpty;
-            public bool MainHandMustBeEmpty;
-            public EnumTool? Tool;
+            public BlockDropItemStack[] ProcessedStacks = null;
+            public AssetLocation ProcessingSound = "";
+            public string ProcessingAnimationCode = "";
+            public float ProcessingAnimationTargetFrame = 0f;
+            public JsonItemStack RemainingItem = null;
+            public int ConsumedGroundStorageStackQty = 1;
+            public bool ExactGroundStorageStackQtyRequired = false;
+            public bool PlaceRemainingItemAsBlock = false; //Replaces ground storage with output block.
+            //public bool ReplaceSurfaceBlock = false; //Replaces block under ground storage with output block, PlaceRemainingItemAsBlock must be true,
+            //and RequiredSurfaceMaterials or RequiredCraftingSurfaceByTag must be set.
+            public bool OffHandMustBeEmpty = false;
+            public bool MainHandMustBeEmpty = false;
+            public string[] RequiredClassTraits = null;
+            public EnumTool? Tool { get; set; } = null;
             public int toolDamage = 1;
-            public EnumTool? ToolOffhand;
+            public EnumTool? ToolOffhand { get; set; } = null;
             public int toolOffhandDamage = 1;
-            public bool transferFreshness;
-            public String[] RequiredALCMYCraftingSurfaceAttributes;
-            public string craftingSurfaceErrorLangCode;
-            public EnumBlockMaterial[] RequiredSurfaceMaterials;
-            public string surfaceErrorLangCode;
-            public AssetLocation CompletionSound;
-            public JsonItemStack[] OffHandProcessingItems;
-            public JsonItemStack[] ProcessingItems;
-            public int ConsumedOffHandProcessItem;
-            public int ConsumedMainHandProcessItem;
-            public string interactionHelpCode;
-            public string handbookProcessIntoTitle;
-            public string handbookCreatedByTitle;
+            public bool transferFreshness = false;
+            public String[] RequiredCraftingSurfaceByTag = null;
+            public string craftingSurfaceErrorLangCode = "";
+            public EnumBlockMaterial[] RequiredSurfaceMaterials = null;
+            public EnumBlockMaterial[] RequiredImmersedInMaterials = null;
+            public EnumBlockMaterial[] RestrictedImmersedInMaterials = new EnumBlockMaterial[] { EnumBlockMaterial.Water, EnumBlockMaterial.Lava };
+            public string surfaceErrorLangCode = "";
+            public AssetLocation CompletionSound = "";
+            public JsonItemStack[] MainHandProcessingItemsByCode = null;
+            public JsonObject[] MainHandProcessingItemsByKey = null;
+            public JsonItemStack[] OffHandProcessingItemsByCode = null;
+            public JsonObject[] OffHandProcessingItemsByKey = null;
+            //public JsonObject[] GroundStorageProcessItems = null;
+            public int ConsumedOffHandProcessItem = 0;
+            public int ConsumedMainHandProcessItem = 0;
+            public string interactionHelpCode = "";
+            public string handbookProcessIntoTitle = "";
+            public string handbookCreatedByTitle = "";
+            public EnumEntityAction[] RequiredActions = new EnumEntityAction[] { EnumEntityAction.Sneak };
+            
+            public ProcessableProperties(JsonObject newProcess) {
+                if (newProcess == null)
+                {
+                    
+                    return;
+                }
+                try
+                {
+                    //The Nmae of the Recipe - Required for clarity in logging, processes without Name and ModID set will autoreject.
+                    //Both must be set manually to ensure compliance.
+                    Name = newProcess["name"]?.ToString() ?? Name;
+                    FromModID = newProcess["fromModID"]?.ToString() ?? FromModID;
+
+                    //Time in seconds for process to complete
+                    ProcessTime = newProcess["processTime"].Exists ? newProcess["processTime"].AsFloat(1) : ProcessTime;
+                    //BlockDropItemStacks that will be produced every time the process is completed.
+                    ProcessedStacks = newProcess["processedStacks"].Exists ? newProcess["processedStacks"].AsObject<BlockDropItemStack[]>() : ProcessedStacks;
+                    //The sound that will play during processing
+                    ProcessingSound = newProcess["processingSound"].Exists ? new AssetLocation(newProcess["processingSound"].ToString()) : ProcessingSound;
+                    //The animation that will play during processing
+                    ProcessingAnimationCode = newProcess["processingAnimationCode"]?.ToString() ?? ProcessingAnimationCode;
+                    //The target frame in the animation when the sound will play and particles will be produced.
+                    ProcessingAnimationTargetFrame = newProcess["processingAnimationTargetFrame"]?.AsFloat() ?? ProcessingAnimationTargetFrame;
+                    //This item will attempt to be placed in the GroundStorage or (if a block) will replace the ground storage based on PlaceRemainingItemAsBlock.
+                    //Will TryGiveItemStack otherwise.
+                    RemainingItem = newProcess["remainingItem"].Exists ? newProcess["remainingItem"].AsObject<JsonItemStack>() : null;
+                    //The number of items that will be consumed from the groundStorage if GroundStorageProcessItems[] is null.
+                    ConsumedGroundStorageStackQty = newProcess["consumedGroundStorageStackQty"].Exists ? newProcess["consumedGroundStorageStackQty"].AsInt(1) : ConsumedGroundStorageStackQty;
+                    //If the stacksize of the GroundStorage slot (or slots if multislot) must match GroundStorageProcessItems or consumedGroundStorageStackQty exactly.
+                    //Primarily used for PlaceItemAsBlock
+                    ExactGroundStorageStackQtyRequired = newProcess["exactGroundStorageStackQtyRequired"].Exists ? newProcess["exactGroundStorageStackQtyRequired"].AsBool(false) : ExactGroundStorageStackQtyRequired;
+                    //If true, the RemainingItem will be placed as a block in the world at the position of the ground storage instead of being given to the player. Will require an item that resolves to a block.
+                    PlaceRemainingItemAsBlock = newProcess["placeRemainingItemAsBlock"].Exists ? newProcess["placeRemainingItemAsBlock"].AsBool(false) : PlaceRemainingItemAsBlock;
+                    
+                    //ReplaceSurfaceBlock 
+
+                    //If the players offhand must be empty.
+                    OffHandMustBeEmpty = newProcess["offHandMustBeEmpty"].Exists ? newProcess["offHandMustBeEmpty"].AsBool(false) : OffHandMustBeEmpty;
+                    //If the players activeHotBarSlot must be empty.
+                    MainHandMustBeEmpty = newProcess["mainHandMustBeEmpty"].Exists ? newProcess["mainHandMustBeEmpty"].AsBool(false) : MainHandMustBeEmpty;
+                    
+                    //Any class trait or traits the player must have to perform this process. Only one trait must be met, but multiple can be supplied. Can easily be altered
+                    //To require multiple traits at once if we should wish it.
+                    RequiredClassTraits = newProcess["requiredTraits"].Exists ? newProcess["requiredTraits"].AsArray<string>(null) : RequiredClassTraits;
+
+                    //Tool required to be held in the main hand and the damage it will receive upon completion.
+                    string toolCode = newProcess["tool"]?.ToString();
+                    EnumTool tools = newProcess["tool"].AsObject<EnumTool>();
+                    if (!string.IsNullOrWhiteSpace(toolCode))
+                    {
+                        if (Enum.TryParse(toolCode, true, out EnumTool parsedTool))
+                        {
+                            Tool = parsedTool;
+                        }
+                        else
+                        {
+                            // Optional: log or throw a clearer error
+                            throw new Exception($"Invalid tool value '{toolCode}' in process JSON.");
+                        }
+                    }
+                    toolDamage = newProcess["toolDamage"].Exists ? newProcess["toolDamage"].AsInt(1) : toolDamage;
+
+
+                    //Tool that must be held in the offhand and the damage it will receive upon completion.
+                    string toolOffHandCode = newProcess["toolOffhand"]?.ToString();
+                    if (!string.IsNullOrWhiteSpace(toolOffHandCode))
+                    {
+                        if (Enum.TryParse(toolOffHandCode, true, out EnumTool parsedTool))
+                        {
+                            ToolOffhand = parsedTool;
+                        }
+                        else
+                        {
+                            // Optional: log or throw a clearer error
+                            throw new Exception($"Invalid tooloffhand value '{toolCode}' in process JSON.");
+                        }
+                    }
+                  
+                    //Transfer freshness of input to output.
+                    transferFreshness = newProcess["transferFreshness"].Exists ? newProcess["transferFreshness"].AsBool(false) : transferFreshness;
+
+                    //Required tag that must exist on crafting surface for this process to be used.
+                    RequiredCraftingSurfaceByTag = newProcess["requiredCraftingSurfaceByTag"].Exists ? newProcess["requiredCraftingSurfaceByTag"].AsArray<string>(null) : RequiredCraftingSurfaceByTag;
+
+                    //The error code that will show up if the crafting surface is wrong. Error codes are not currently working as a non-matching recipe will not show up at all.
+                    craftingSurfaceErrorLangCode = newProcess["craftingSurfaceErrorLangCode"]?.ToString() ?? craftingSurfaceErrorLangCode;
+                    
+                    //Any valid materials for the block the GroundStorage is resting on for the process.
+                    RequiredSurfaceMaterials = newProcess["requiredSurfaceMaterials"].Exists ? newProcess["requiredSurfaceMaterials"].AsArray<EnumBlockMaterial>(null) : RequiredSurfaceMaterials;
+                    //Any materials the groundstorage must be immersed in for the process to work, defaults to null.
+                    RequiredImmersedInMaterials = newProcess["requiredImmersedInMaterials"].Exists ? newProcess["requiredImmersedInMaterials"].AsArray<EnumBlockMaterial>(null) : RequiredImmersedInMaterials;
+                    //Any materials the groundstorage must not be immersed in for the process to work, defaults to Water and Lava
+                    RestrictedImmersedInMaterials = newProcess["RestrictedImmersedInMaterials"].AsArray<EnumBlockMaterial>(new EnumBlockMaterial[] { EnumBlockMaterial.Water, EnumBlockMaterial.Lava });
+                    //The error code that will show up if the surface material lacks the correct tag or material. Error codes are not currently working as a non-matching recipe will not show up at all.
+                    surfaceErrorLangCode = newProcess["surfaceErrorLangCode"]?.ToString() ?? surfaceErrorLangCode;
+                    //The sound that plays upon completion of the process. No sound by default.
+                    CompletionSound = newProcess["completionSound"].Exists ? new AssetLocation(newProcess["completionSound"].ToString()) : CompletionSound;    
+                    //A list of itemstacks and stacksizes that can be held in the main hand, if listed, one must be in the activeHotbarSlot in the appropriate quantities to process.
+                    MainHandProcessingItemsByCode = newProcess["mainHandProcessingItemsByCode"].Exists ? newProcess["mainHandProcessingItemsByCode"].AsObject<JsonItemStack[]>() : MainHandProcessingItemsByCode;
+                    //A list of tags and stacksizes that indicate valid processing items for the main hand and the quantities desired.
+                    MainHandProcessingItemsByKey = newProcess["mainHandProcessingItemsByKey"].Exists ? newProcess["mainHandProcessingItemsByKey"].AsObject<JsonObject[]>() : MainHandProcessingItemsByKey;
+                    //A list of itemstacks and stacksizes that can be held in the offhand, if listed, one must be in the offhandHotbarSlot in the appropriate quantities to process.
+                    OffHandProcessingItemsByCode = newProcess["offHandProcessingItemsByCode"].Exists ? newProcess["offHandProcessingItemsByCode"].AsObject<JsonItemStack[]>() : OffHandProcessingItemsByCode;
+                    //A list of tags and stacksizes that indicate valid processing items for the offhand and the quantities desired.
+                    OffHandProcessingItemsByKey = newProcess["offHandProcessingItemsByKey"].Exists ? newProcess["offHandProcessingItemsByKey"].AsObject<JsonObject[]>() : OffHandProcessingItemsByKey;
+                    //This number is set once the itemstack held in the offhand has been determined. It is not set as part of describing the process.
+                    ConsumedOffHandProcessItem = newProcess["consumedOffHandProcessItem"].Exists ? newProcess["consumedOffHandProcessItem"].AsInt(0) : ConsumedOffHandProcessItem;
+                    //This number is set once the itemstack held in the main hand has been determined. It is not set as part of describing the process.
+                    ConsumedMainHandProcessItem = newProcess["consumedMainHandProcessItem"].Exists ? newProcess["consumedMainHandProcessItem"].AsInt(0) : ConsumedMainHandProcessItem;
+
+                    //(Unimplemented) GroundStorageProcessItems is A list of up to four itemstacks that will be looked for in a target groundstorage.
+                    //If all items are present in the indicated quantities, will produce a desired output. This can require an exact quantity per itemstack or simply a minimum quantity,
+                    //depending on the value of ExactGroundStorageStackQtyRequired. Should only produce one group of processed stacks. Mass production will require ongoing interaction.
+                    //Optionally, at the whim of the gods, it can be set to produce as many groups of processed stacks as the quantity of input stacks allows for.  (Vinter: It's my preference that
+                    //Only one group of processed stacks is output at a time.)
+
+                    //The language code for the interaction help text that appears when looking at the ground storage with this process available.                   
+                    interactionHelpCode = newProcess["interactionHelpCode"]?.ToString() ?? interactionHelpCode;
+                    //If all items are present in the indicated quantities, will produce a desired output. This can require an exact quantity per itemstack or simply a minimum quantity,
+                    //depending on the value of ExactGroundStorageStackQtyRequired. Should only produce one group of processed stacks. Mass production will require ongoing interaction.
+                    //Optionally, at the whim of the gods, it can be set to produce as many groups of processed stacks as the quantity of input stacks allows for.  (Vinter: It's my preference that
+                    //Only one group of processed stacks is output at a time.)
+                    handbookProcessIntoTitle = newProcess["handbookProcessIntoTitle"]?.ToString() ?? handbookProcessIntoTitle;  
+                    handbookCreatedByTitle = newProcess["handbookCreatedByTitle"]?.ToString() ?? handbookCreatedByTitle;
+                    
+                    string[] actionCodes = newProcess["requiredActions"]?.AsArray<String>();
+                    if (actionCodes != null)
+                    {
+                        List<EnumEntityAction> actions = new(); 
+                        for (int i = 0; i < actionCodes.Length; i++)
+                        {
+                            if (Enum.TryParse(actionCodes[i], true, out EnumEntityAction parsedAction))
+                            {
+                                actions.Add(parsedAction);
+                            }
+                            else
+                            {
+                                // Optional: log or throw a clearer error
+                                throw new Exception($"Invalid action code '{actionCodes[i]}' in process JSON.");
+                            }
+                            RequiredActions = actions.ToArray();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Catch and log any exceptions during deserialization to avoid crashing the game due to mod errors.
+                    // This also helps identify issues with process definitions that may be causing valid processes to be ignored.
+                    Console.WriteLine($"Error deserializing ProcessableProperties: {e}");
+                }
+            }
         }
 
         private List<ProcessableProperties> validProcesses;
