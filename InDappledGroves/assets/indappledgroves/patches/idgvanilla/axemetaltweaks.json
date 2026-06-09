@@ -30,7 +30,7 @@
 			"leaves": 2.4
 		  },
       "file": "game:itemtypes/tool/axe-metal.json",
-      "side": "server",
+      "side": "server"
     },
     {
       "op": "replace",

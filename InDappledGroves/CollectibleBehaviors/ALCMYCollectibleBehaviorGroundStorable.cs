@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -8,6 +9,7 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
+using static Vintagestory.GameContent.ALCMYCollectibleBehaviorGroundStoredProcessable;
 namespace Vintagestory.GameContent
 {
     public class ALCMYCollectibleBehaviorGroundStoredProcessable : CollectibleBehavior, IContainedInteractable
@@ -82,144 +84,166 @@ namespace Vintagestory.GameContent
         public virtual bool OnContainedInteractStart(BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
 
-
             if (!be.Api.World.Claims.TryAccess(byPlayer, blockSel.Position, EnumBlockAccessFlags.Use))
             {
                 return false;
             }
 
-            if (!TrySelectBestProcess(be, slot, byPlayer, blockSel))
+            if (!TrySelectBestProcess(be, slot, byPlayer, blockSel, out ProcessableProperties curProcess, out int mainItemConsumed, out int offItemConsumed, out bool requirementsMet
+               ))
             {
                 return false;
             }
 
-            foreach (EnumEntityAction action in curProcess.RequiredActions) { 
-                if (!byPlayer.Entity.Controls.Flags[(int)action])
-                {
-                    return false;
-                }
+            if (!requirementsMet)
+            {
+                checkProcessingRequirements(be, slot, byPlayer, blockSel, curProcess);
+                return false;
             }
+
 
             if (byPlayer.Entity.Api is ICoreClientAPI capi)
             {
                 capi.TriggerIngameError(this, "craftingmessage", Lang.Get(curProcess.FromModID + ":" + curProcess.Name + "recipe"));
             }
 
-
-            if (curProcess.ProcessedStacks != null || curProcess.RemainingItem != null)
+            if (curProcess.ProcessedStacks == null && curProcess.RemainingItem == null)
             {
-                return true;
+                return false;
             }
 
-            return false;
+            activeProcessByEntityId[byPlayer.PlayerUID] = new ActiveGroundProcess(curProcess, mainItemConsumed, offItemConsumed);
+
+            return true;
         }
 
         // Token: 0x060013D0 RID: 5072 RVA: 0x000A8584 File Offset: 0x000A6784
         public virtual bool OnContainedInteractStep(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
+            if (blockSel == null) return false;
             
-            bool testFlag = checkProcessingRequirements(byPlayer, be, blockSel);
-            if (!testFlag) return testFlag;
+            ActiveGroundProcess activeProcess = activeProcessByEntityId.TryGetValue(byPlayer.PlayerUID);
 
-            foreach (EnumEntityAction action in curProcess.RequiredActions)
-            {
-                if (!byPlayer.Entity.Controls.Flags[(int)action])
-                {
-                    return false;
-                }
-            }
+            if (activeProcess == null) return false;
 
-            if (blockSel == null)
+            if (!checkProcessingRequirements(be, slot, byPlayer, blockSel, activeProcess.Process))
             {
+                StopProcessingAnimations(byPlayer, activeProcess);
+                activeProcessByEntityId.Remove(byPlayer.PlayerUID);
                 return false;
             }
+
             IWorldAccessor world = be.Api.World;
             Vec3d pos = blockSel.Position.ToVec3d().Add(blockSel.HitPosition);
 
-            if (!string.IsNullOrEmpty(curProcess.ProcessingAnimationCode) && !byPlayer.Entity.AnimManager.IsAnimationActive(curProcess.ProcessingAnimationCode))
+            string animCode = activeProcess.AnimationCode;
+
+            if (!string.IsNullOrEmpty(animCode))
             {
-                if (be.Pos.Y > byPlayer.Entity.Pos.Y)
+                if (!byPlayer.Entity.AnimManager.IsAnimationActive(animCode))
                 {
-                    byPlayer.Entity.StopAnimation("sneakidle");
-                }
-                else if (be.Pos.Y <= byPlayer.Entity.Pos.Y)
-                {
-                    byPlayer.Entity.StartAnimation("sneakidle");
-                }
-                byPlayer.Entity.StartAnimation(curProcess.ProcessingAnimationCode);
-            }
-            float curFrame = byPlayer.Entity.AnimManager.GetAnimationState(curProcess.ProcessingAnimationCode).CurrentFrame;
-            float procAnimationFrameQty = byPlayer.Entity.AnimManager.GetAnimationState(curProcess.ProcessingAnimationCode).Animation.QuantityFrames;
-            float targetSoundFrame;
-            if (curProcess.ProcessingAnimationTargetFrame == 0f)
-            {
-                targetSoundFrame = soundFrames.TryGetValue(curProcess.ProcessingAnimationCode) != 0f ? soundFrames.TryGetValue(curProcess.ProcessingAnimationCode) : procAnimationFrameQty / 2;
-            } else
-            {
-                targetSoundFrame = curProcess.ProcessingAnimationTargetFrame > procAnimationFrameQty ? procAnimationFrameQty / 2 : curProcess.ProcessingAnimationTargetFrame;
-            }
-
-
-            if (curFrame > targetSoundFrame && curFrame< targetSoundFrame+2)
-            {
-                world.PlaySoundAt(curProcess.ProcessingSound, blockSel.Position, 0.0, byPlayer, true, 32f, 1f);
-
-                    BlockDropItemStack[] processedStacks = curProcess.ProcessedStacks;
-                    if (processedStacks != null && processedStacks.Length > 0)
+                    if (be.Pos.Y > byPlayer.Entity.Pos.Y)
                     {
-                        foreach (BlockDropItemStack stack in curProcess.ProcessedStacks)
-                        {
-                            world.SpawnCubeParticles(pos, stack.ResolvedItemstack, 0.25f, 1, 0.5f, byPlayer, new Vec3f(0f, 3f, 0f));
-                        }
+                        byPlayer.Entity.StopAnimation("sneakidle");
+                    }
+                    else
+                    {
+                        byPlayer.Entity.StartAnimation("sneakidle");
                     }
 
-                    ItemStack itemStack2 = curProcess.RemainingItem?.ResolvedItemstack;
-                    if (itemStack2 != null)
+                    byPlayer.Entity.StartAnimation(animCode);
+                }
+
+                RunningAnimation animState = byPlayer.Entity.AnimManager.GetAnimationState(animCode);
+
+                if (animState != null && animState.Animation != null)
+                {
+                    float curFrame = animState.CurrentFrame;
+                    float procAnimationFrameQty = animState.Animation.QuantityFrames;
+
+                    float targetSoundFrame;
+
+                    if (activeProcess.Process.ProcessingAnimationTargetFrame == 0f)
                     {
+                        targetSoundFrame = soundFrames.TryGetValue(animCode) != 0f
+                            ? soundFrames.TryGetValue(animCode)
+                            : procAnimationFrameQty / 2;
+                    }
+                    else
+                    {
+                        targetSoundFrame =
+                            activeProcess.Process.ProcessingAnimationTargetFrame > procAnimationFrameQty
+                                ? procAnimationFrameQty / 2
+                                : activeProcess.Process.ProcessingAnimationTargetFrame;
+                    }
 
+                    if (curFrame > targetSoundFrame && curFrame < targetSoundFrame + 2)
+                    {
+                        world.PlaySoundAt(activeProcess.Process.ProcessingSound, blockSel.Position, 0.0, byPlayer, true, 32f, 1f);
 
-                        BlockDropItemStack[] processedStacks2 = curProcess.ProcessedStacks;
-                        ItemStack itemStack3;
-                        if (processedStacks2 == null)
+                        BlockDropItemStack[] processedStacks = activeProcess.Process.ProcessedStacks;
+
+                        if (processedStacks != null && processedStacks.Length > 0)
                         {
-                            itemStack3 = null;
+                            foreach (BlockDropItemStack stack in processedStacks)
+                            {
+                                stack.Resolve(world, "processrecipe", stack.Code);
+                                world.SpawnCubeParticles(pos, stack.ResolvedItemstack, 0.25f, 1, 0.5f, byPlayer, new Vec3f(0f, 3f, 0f));
+                            }
                         }
-                        else
+
+                        ItemStack itemStack2 = activeProcess.Process.RemainingItem?.ResolvedItemstack;
+
+                        if (itemStack2 != null)
                         {
-                            BlockDropItemStack blockDropItemStack2 = processedStacks2[0];
-                            itemStack3 = ((blockDropItemStack2 != null) ? blockDropItemStack2.ResolvedItemstack : null);
+                            ItemStack particleStack = itemStack2;
+
+                            if (processedStacks != null && processedStacks.Length > 0)
+                            {
+                                particleStack = processedStacks[0]?.ResolvedItemstack ?? itemStack2;
+                            }
+
+                            world.SpawnCubeParticles(pos, particleStack, 0.25f, 4, 0.5f, byPlayer, new Vec3f(0f, 3f, 0f));
                         }
-                        world.SpawnCubeParticles(pos, itemStack3 ?? curProcess.RemainingItem.ResolvedItemstack, 0.25f, 4, 0.5f, byPlayer, new Vec3f(0f, 3f, 0f));
-                    }           
+                    }
+                }
             }
-            return secondsUsed < curProcess.ProcessTime;
+
+            return secondsUsed < activeProcess.Process.ProcessTime - 0.05f;
         }
 
         // Token: 0x060013D1 RID: 5073 RVA: 0x000A8768 File Offset: 0x000A6968
         public void OnContainedInteractStop(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
-            //byPlayer.Entity.AnimManager.ActiveAnimationsByAnimCode;
-            if (!byPlayer.Entity.Controls.Sneak) byPlayer.Entity.StopAnimation("sneakidle");
-            if (!string.IsNullOrEmpty(curProcess?.ProcessingAnimationCode))
+            ActiveGroundProcess activeProcess = activeProcessByEntityId.TryGetValue(byPlayer.PlayerUID);
+
+            if (activeProcess == null)
             {
-                byPlayer.Entity.StopAnimation(curProcess.ProcessingAnimationCode);
-            }
-            if (!checkProcessingRequirements(byPlayer, be, blockSel))
-            {
-                curProcess = null;
+                byPlayer.Entity.StopAnimation("sneakidle");
                 return;
             }
-            if (secondsUsed > curProcess.ProcessTime - 0.05f
-                && (curProcess.ProcessedStacks != null || curProcess.RemainingItem != null)
-                && be.Api.World.Side == EnumAppSide.Server)
-            {
-                
-                HandleProcessedStacks(byPlayer, slot, blockSel, be);
-                HandleRemainingItem(byPlayer, slot, blockSel, be);
-                if (be.Inventory.Empty)
+
+            ProcessableProperties curProcess = activeProcess.Process;
+
+            StopProcessingAnimations(byPlayer, activeProcess);
+            activeProcessByEntityId.Remove(byPlayer.PlayerUID);
+            if (curProcess == null) return;
+            if (secondsUsed < curProcess.ProcessTime - 0.05f) return;
+            if (be.Api.World.Side != EnumAppSide.Server) return;
+            if (curProcess.ProcessedStacks == null && curProcess.RemainingItem == null) return;
+             
+                HandleProcessedStacks(byPlayer, slot, blockSel, be, curProcess);
+                HandleRemainingItem(byPlayer, slot, blockSel, be, curProcess);
+                if (slot.Itemstack?.Collectible.Code == collObj.Code)
                 {
-                    be.Api.World.BlockAccessor.SetBlock(0, blockSel.Position);
+                    slot.TakeOut(curProcess.ConsumedGroundStorageStackQty);
                 }
+                if (be.Inventory.Empty && !curProcess.PlaceRemainingItemAsBlock)
+                {
+                    be.Api.World.BlockAccessor.SetBlock(0, be.Pos);
+                    be.MarkDirty();
+                }
+                byPlayer.Entity.Api.World.BlockAccessor.MarkBlockDirty(blockSel.Position);
                 if (curProcess.Tool != null)
                 {
                     ItemSlot toolSlot = byPlayer.InventoryManager.ActiveHotbarSlot;
@@ -238,38 +262,41 @@ namespace Vintagestory.GameContent
                         itemstack.Collectible.DamageItem(be.Api.World, byPlayer.Entity, toolSlot, curProcess.toolOffhandDamage, true);
                     }
                 }
-                if (curProcess.MainHandProcessingItemsByCode?.Length > 0 && curProcess.ConsumedMainHandProcessItem > 0)
+                if (curProcess.MainHandProcessingItemsByCode?.Length > 0 && activeProcess.MainhandConsumed > 0)
                 {
-                    byPlayer.InventoryManager.ActiveHotbarSlot.TakeOut(curProcess.ConsumedMainHandProcessItem);
-                    byPlayer.InventoryManager.ActiveHotbarSlot.MarkDirty();
+                    byPlayer.InventoryManager.ActiveHotbarSlot?.TakeOut(activeProcess.MainhandConsumed);
+                    byPlayer.InventoryManager.ActiveHotbarSlot?.MarkDirty();
                 }
-                if (curProcess.OffHandProcessingItemsByCode?.Length > 0 && curProcess.ConsumedOffHandProcessItem > 0)
+                if (curProcess.OffHandProcessingItemsByCode?.Length > 0 && activeProcess.OffhandConsumed > 0)
                 {
-                    byPlayer.InventoryManager.OffhandHotbarSlot.TakeOut(curProcess.ConsumedOffHandProcessItem);
-                    byPlayer.InventoryManager.OffhandHotbarSlot.MarkDirty();
+                    byPlayer.InventoryManager.OffhandHotbarSlot?.TakeOut(activeProcess.OffhandConsumed);
+                    byPlayer.InventoryManager.OffhandHotbarSlot?.MarkDirty();
                 }
 
                 be.Api.World.PlaySoundAt(curProcess.CompletionSound ?? curProcess.ProcessingSound, blockSel.Position, 0.0, byPlayer, true, 32f, 2f);
-                be.MarkDirty();
-                curProcess = null;
-            }
         }
         
 
         public bool OnContainedInteractCancel(float secondsUsed, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, EnumItemUseCancelReason cancelReason)
         {
-            if (!byPlayer.Entity.Controls.Sneak) byPlayer.Entity.StopAnimation("sneakidle");
-            if (!string.IsNullOrEmpty(curProcess.ProcessingAnimationCode))
+            ActiveGroundProcess activeProcess = activeProcessByEntityId.TryGetValue(byPlayer.PlayerUID);
+
+            if (activeProcess != null)
             {
-                byPlayer.Entity.StopAnimation(curProcess.ProcessingAnimationCode);
+                StopProcessingAnimations(byPlayer, activeProcess);
+                activeProcessByEntityId.Remove(byPlayer.PlayerUID);
             }
-            curProcess = null;
+            else
+            {
+                byPlayer.Entity.StopAnimation("sneakidle");
+            }
+
             return false;
+
         }
 
-        
 
-        public virtual bool checkProcessingRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel)
+        public virtual bool checkProcessingRequirements(BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, ProcessableProperties curProcess)
         {
             var inv = byPlayer.InventoryManager;
 
@@ -277,38 +304,47 @@ namespace Vintagestory.GameContent
             var offSlot = inv.OffhandHotbarSlot;
 
             ICoreClientAPI coreClientAPI = be.Api as ICoreClientAPI;
-            if (!IsCorrectStoredStackForThisBehavior(be.Inventory[blockSel.SelectionBoxIndex]))
+            if (!IsCorrectStoredStackForThisBehavior(slot))
             {
                 return false;
             }
-            if (!checkProcessingSurface(byPlayer, be, blockSel, coreClientAPI, inv)) return false;
-            if (!checkToolRequirements(byPlayer,be, blockSel, coreClientAPI, inv)) return false;
-            if (!checkheldItemRequirements(byPlayer, be, blockSel, coreClientAPI, inv)) return false;
-            if (!checkEmptyHandRequirements(byPlayer, be, blockSel, coreClientAPI, inv)) return false;
+            if (!checkProcessingSurface(byPlayer, be, blockSel, coreClientAPI, inv, curProcess)) return false;
+            if (!checkToolRequirements(byPlayer,be, blockSel, coreClientAPI, inv, curProcess)) return false;
+            if (!checkheldItemRequirements(byPlayer, be, blockSel, coreClientAPI, inv, curProcess)) return false;
+            if (!checkEmptyHandRequirements(byPlayer, be, blockSel, coreClientAPI, inv, curProcess)) return false;
 
             if (curProcess.ConsumedGroundStorageStackQty > 0)
             {
-                if (be.Inventory[blockSel.SelectionBoxIndex].Empty || be.Inventory[blockSel.SelectionBoxIndex].StackSize < curProcess.ConsumedGroundStorageStackQty)
+                if (slot.Empty || slot.StackSize < curProcess.ConsumedGroundStorageStackQty)
                 {
-                    //if (coreClientAPI != null)
-                    //{
-                    //    coreClientAPI.TriggerIngameError(this, "notenoughstackitems", Lang.Get("indappledgroves:groundprocessable-notenoughitemsinstack", be.Inventory[blockSel.SelectionBoxIndex].Itemstack.GetName().ToLower()));
-                    //}
+                    if (coreClientAPI != null)
+                    {
+                        coreClientAPI.TriggerIngameError(this, "notenoughstackitems", Lang.Get("indappledgroves:groundprocessable-notenoughitemsinstack", slot.Itemstack.GetName().ToLower()));
+                    }
                     return false;
                 }
-            }          
+            }
 
+            if (curProcess.RequiredActions != null)
+            {
+                foreach (EnumEntityAction action in curProcess.RequiredActions)
+                {
+                    if (!byPlayer.Entity.Controls.Flags[(int)action])
+                    {
+                        return false;
+                    }
+                }
+            }
             return true;
+           
         }
 
-        private bool checkheldItemRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv)
+        private bool checkheldItemRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv, ProcessableProperties curProcess)
         {
-            bool mainItemRequired = curProcess.MainHandProcessingItemsByCode?.Length > 0;
-            bool offhandItemRequired = curProcess.OffHandProcessingItemsByCode?.Length > 0;
+            bool mainItemRequired = curProcess.MainHandProcessingItemsByCode?.Length > 0/* || curProcess.MainHandProcessingItemsByKey?.Length > 0*/;
+            bool offhandItemRequired = curProcess.OffHandProcessingItemsByCode?.Length > 0/* || curProcess.OffHandProcessingItemsByKey?.Length > 0*/;
 
             // Always reset these before checking.
-            curProcess.ConsumedMainHandProcessItem = 0;
-            curProcess.ConsumedOffHandProcessItem = 0;
             ItemStack playerMainStack = inv.ActiveHotbarSlot.Itemstack;
             ItemStack playerOffHandStack = inv.OffhandHotbarSlot.Itemstack;
 
@@ -333,7 +369,6 @@ namespace Vintagestory.GameContent
                     }
 
                     mainhandItemFound = true;
-                    curProcess.ConsumedMainHandProcessItem = jsonStack.StackSize;
                     break;
                 }
 
@@ -365,7 +400,6 @@ namespace Vintagestory.GameContent
                     }
 
                     offhandItemFound = true;
-                    curProcess.ConsumedOffHandProcessItem = jsonStack.StackSize;
                     break;
                 }
 
@@ -378,9 +412,9 @@ namespace Vintagestory.GameContent
             return true;
         }
 
-        private bool checkProcessingSurface(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv)
+        private bool checkProcessingSurface(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv, ProcessableProperties curProcess)
         {
-            if (!this.canProcessOnSurfaceMaterial(be, byPlayer))
+            if (!this.canProcessOnSurfaceMaterial(be, byPlayer, curProcess))
             {
 
                 if (capi != null)
@@ -389,7 +423,7 @@ namespace Vintagestory.GameContent
                 }
                 return false;
             }
-            if (!this.canProcessOnCraftingSurface(be, byPlayer))
+            if (!this.canProcessOnCraftingSurface(be, byPlayer, curProcess))
             {
                 if (capi != null)
                 {
@@ -400,7 +434,7 @@ namespace Vintagestory.GameContent
             return true;
         }
 
-        private bool checkToolRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv)
+        private bool checkToolRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv, ProcessableProperties curProcess)
         {
             bool mainItemRequired = curProcess.MainHandProcessingItemsByCode?.Length > 0;
             bool offhandItemRequired = curProcess.OffHandProcessingItemsByCode?.Length > 0;
@@ -426,7 +460,7 @@ namespace Vintagestory.GameContent
             return true;
         }
 
-        private bool checkEmptyHandRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv)
+        private bool checkEmptyHandRequirements(IPlayer byPlayer, BlockEntityContainer be, BlockSelection blockSel, ICoreClientAPI capi, IPlayerInventoryManager inv, ProcessableProperties curProcess)
         {
             var mainSlot = inv.ActiveHotbarSlot;
             var offSlot = inv.OffhandHotbarSlot;
@@ -451,7 +485,7 @@ namespace Vintagestory.GameContent
 
        
 
-        public virtual void HandleProcessedStacks(IPlayer byPlayer, ItemSlot slot, BlockSelection blockSel, BlockEntity be)
+        public virtual void HandleProcessedStacks(IPlayer byPlayer, ItemSlot slot, BlockSelection blockSel, BlockEntity be, ProcessableProperties curProcess)
         {
             BlockDropItemStack[] processedStacks = curProcess.ProcessedStacks;
             if (processedStacks != null)
@@ -484,13 +518,12 @@ namespace Vintagestory.GameContent
                             CollectibleObject.CarryOverFreshness(be.Api, slot, stack, perishProps2);
                         }
                     }
-                    if (!byPlayer.InventoryManager.TryGiveItemstack(stack, false))
+                    if (!byPlayer.InventoryManager.TryGiveItemstack(origStack2, false))
                     {
                         BlockFacing facing = BlockFacing.HorizontalFromYaw(byPlayer.Entity.Pos.Yaw).Opposite;
                         be.Api.World.SpawnItemEntity(stack, blockSel.Position, new Vec3d(facing.Normalf.X * 0.075, 0.03f, facing.Normalf.Z * 0.075f));
                     }
-                    slot.TakeOut(curProcess.ConsumedGroundStorageStackQty);
-                    slot.MarkDirty();
+
                     be.Api.World.Logger.Audit("{0} Took {1}x{2} from {3} at {4}.", new object[]
                     {
                             byPlayer.PlayerName,
@@ -507,7 +540,7 @@ namespace Vintagestory.GameContent
             }
         }
 
-        public virtual void HandleRemainingItem(IPlayer byPlayer, ItemSlot slot, BlockSelection blockSel, BlockEntityContainer be)
+        public virtual void HandleRemainingItem(IPlayer byPlayer, ItemSlot slot, BlockSelection blockSel, BlockEntityContainer be, ProcessableProperties curProcess)
         {
             
             JsonItemStack remainingItem = curProcess.RemainingItem;
@@ -524,11 +557,13 @@ namespace Vintagestory.GameContent
             {
                 remainingItem.Resolve(be.Api.World, "remainingItem of item ", this.collObj.Code);
                 Block block = remainingItem.ResolvedItemstack?.Block;
+                
                 if (block != null)
                 {
+                    be.Api.World.BlockAccessor.SetBlock(0, blockSel.Position);
+                    be.MarkDirty();
                     block.DoPlaceBlock(byPlayer.Entity.Api.World, byPlayer, blockSel, itemStack);
                 }
-                be.MarkDirty(true, null);
                 return;
             }
             else
@@ -555,7 +590,7 @@ namespace Vintagestory.GameContent
                     CollectibleObject.CarryOverFreshness(be.Api, slot, remainingStack, perishProps);
                 }
             }
-            if (slot.Itemstack.StackSize > curProcess.ConsumedGroundStorageStackQty)
+            if (slot.Itemstack.StackSize > curProcess.ConsumedGroundStorageStackQty || ((BlockEntityGroundStorage)be).DisplayedItems>1)
             {
                 if (remainingStack != null)
                 {
@@ -578,11 +613,11 @@ namespace Vintagestory.GameContent
                     tree["byentityid"] = new LongAttribute(byPlayer.Entity.EntityId);
                     be.Api.World.Api.Event.PushEvent("onitemcollected", tree);
                 }
-                slot.TakeOut(curProcess.ConsumedGroundStorageStackQty);
             }
             else
             {
                 slot.Itemstack = remainingStack;
+                slot.MarkDirty();
             }
             be.MarkDirty(true, null);
         }
@@ -619,39 +654,51 @@ namespace Vintagestory.GameContent
                                     ItemStack stack = jstack.ResolvedItemstack;
                                     if (!(stack == null))
                                     {
+                                    if (stack.Item != null)
+                                    {
                                         processItemList.Add(new ItemStack(stack.Item, stack.StackSize));
+                                    } else
+                                        processItemList.Add(new ItemStack(stack.Block, stack.StackSize)); 
                                     }
                                 }
                             }
-                            if(p.RequiredActions.Length > 1)
-                            {
+                        if (p.RequiredActions?.Length > 1)
+                        {
 
-                                List<string> actioncodes = new();
-                                foreach(EnumEntityAction action in p.RequiredActions)
-                                {
-                                    actioncodes.Add(action.ToString());
-                                }
-                                string[] actioncodestrings = actioncodes.ToArray<string>();
-                                interactionList.Add(new WorldInteraction
-                                    {
-                                        ActionLangCode = p.interactionHelpCode,
-                                        MouseButton = EnumMouseButton.Right,
-                                        HotKeyCodes = actioncodestrings,
-                                        Itemstacks = processItemList?.Count > 0 ? processItemList?.ToArray() : ((p.Tool == null) ? null : ObjectCacheUtil.GetToolStacks(be.Api, p.Tool.Value))
-                                    });
-                            } else
+                            List<string> actioncodes = new();
+                            foreach (EnumEntityAction action in p.RequiredActions)
                             {
-
+                                actioncodes.Add(action.ToString().ToLower());
+                            }
+                            string[] actioncodestrings = actioncodes.ToArray<string>();
                             interactionList.Add(new WorldInteraction
                             {
-                                    ActionLangCode = p.interactionHelpCode,
-                                    MouseButton = EnumMouseButton.Right,
-                                    HotKeyCode = p.RequiredActions[0].ToString(),
-                                    Itemstacks = processItemList?.Count > 0 ? processItemList?.ToArray() : ((p.Tool == null) ? null : ObjectCacheUtil.GetToolStacks(be.Api, p.Tool.Value))
+                                ActionLangCode = p.interactionHelpCode,
+                                MouseButton = EnumMouseButton.Right,
+                                HotKeyCodes = actioncodestrings,
+                                Itemstacks = processItemList?.Count > 0 ? processItemList?.ToArray() : ((p.Tool == null) ? null : ObjectCacheUtil.GetToolStacks(be.Api, p.Tool.Value))
                             });
-                            }
-                                
-                        };
+                        }
+                        else if (p.RequiredActions != null)
+                        {
+                            interactionList.Add(new WorldInteraction
+                            {
+                                ActionLangCode = p.interactionHelpCode,
+                                MouseButton = EnumMouseButton.Right,
+                                HotKeyCode = p.RequiredActions[0].ToString().ToLower(),
+                                Itemstacks = processItemList?.Count > 0 ? processItemList?.ToArray() : ((p.Tool == null) ? null : ObjectCacheUtil.GetToolStacks(be.Api, p.Tool.Value))
+                            });
+                        } else
+                        {
+                            interactionList.Add(new WorldInteraction
+                            {
+                                ActionLangCode = p.interactionHelpCode,
+                                MouseButton = EnumMouseButton.Right,
+                                Itemstacks = processItemList?.Count > 0 ? processItemList?.ToArray() : ((p.Tool == null) ? null : ObjectCacheUtil.GetToolStacks(be.Api, p.Tool.Value))
+                            });
+                        }
+                    }
+                    ;
                     return interactionList.ToArray();
                 }
 
@@ -659,10 +706,21 @@ namespace Vintagestory.GameContent
             return Array.Empty<WorldInteraction>();
         }
 
-        private bool TrySelectBestProcess(BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
+        private bool TrySelectBestProcess(BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, 
+            out ProcessableProperties curProcess, out int mainItemConsumed, out int offItemConsumed, out bool requirementsMet)
         {
             curProcess = null;
+            mainItemConsumed = 0;
+            offItemConsumed = 0;
+            requirementsMet = false;
+
             if (validProcesses == null || validProcesses.Count == 0)
+            {
+                return false;
+            }
+
+            // This is global to the behavior, not process-specific.
+            if (!IsCorrectStoredStackForThisBehavior(slot))
             {
                 return false;
             }
@@ -672,42 +730,55 @@ namespace Vintagestory.GameContent
 
             foreach (ProcessableProperties process in validProcesses)
             {
-                //TODO: Implement Multiple Recipe Types By Using Enum.GroundProcessType,
-                //Valid types should be:
-                //MultislotA (Using more than one ground storage slot for a single process);
-                //MultislotB (Using more than one ground storage slot for a single process, with neighboring blocks being considered);
-                foreach(EnumEntityAction action in process.RequiredActions){
-                    if (!byPlayer.Entity.Controls.Flags[(int)action])
+                // Process-specific gates should not return false for the whole selection.
+                // They should only skip this process.
+                bool actionMatched = true;
+
+                if (process.RequiredActions != null)
+                {
+                    foreach (EnumEntityAction action in process.RequiredActions)
                     {
-                        return false;
+                        if (!byPlayer.Entity.Controls.Flags[(int)action])
+                        {
+                            actionMatched = false;
+                            break;
+                        }
                     }
                 }
-                
 
-                if (!IsCorrectStoredStackForThisBehavior(slot))
+                if (!actionMatched)
                 {
-                    return false;
+                    continue;
                 }
 
                 if (process.RequiredClassTraits != null && byPlayer.Entity.World.Config.GetBool("classExclusiveRecipes", true))
                 {
                     bool hasTrait = false;
-                    foreach (string trait in process.RequiredClassTraits) {
+
+                    foreach (string trait in process.RequiredClassTraits)
+                    {
                         if (be.Api.ModLoader.GetModSystem<CharacterSystem>().HasTrait(byPlayer, trait))
                         {
                             hasTrait = true;
                             break;
                         }
                     }
-                    if (!hasTrait) return false;
+
+                    if (!hasTrait)
+                    {
+                        continue;
+                    }
                 }
 
-                if(process.RestrictedImmersedInMaterials.ToArray<EnumBlockMaterial>().Contains(be.Api.World.BlockAccessor.GetBlock(be.Pos, 1).BlockMaterial))
+                if (process.RestrictedImmersedInMaterials.ToArray<EnumBlockMaterial>().Contains(
+                    be.Api.World.BlockAccessor.GetBlock(be.Pos, 1).BlockMaterial
+                ))
                 {
-                    return false;
+                    continue;
                 }
 
-                if (!TryScoreProcess(process, be, slot, byPlayer, blockSel, out int score, out int mainConsumed, out int offhandConsumed))
+                if (!TryScoreProcess(process, be, slot, byPlayer, blockSel, out int score, out int mainConsumed, out int offhandConsumed, out bool processRequirementsMet
+                ))
                 {
                     continue;
                 }
@@ -717,7 +788,8 @@ namespace Vintagestory.GameContent
                     Process = process,
                     Score = score,
                     MainConsumed = mainConsumed,
-                    OffhandConsumed = offhandConsumed
+                    OffhandConsumed = offhandConsumed,
+                    RequirementsMet = processRequirementsMet
                 };
 
                 if (score > bestScore)
@@ -748,17 +820,20 @@ namespace Vintagestory.GameContent
             ProcessMatch bestMatch = bestMatches[0];
 
             curProcess = bestMatch.Process;
-            curProcess.ConsumedMainHandProcessItem = bestMatch.MainConsumed;
-            curProcess.ConsumedOffHandProcessItem = bestMatch.OffhandConsumed;
+            mainItemConsumed = bestMatch.MainConsumed;
+            offItemConsumed = bestMatch.OffhandConsumed;
+            requirementsMet = bestMatch.RequirementsMet;
 
             return true;
         }
 
-        private bool TryScoreProcess(ProcessableProperties process, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, out int score, out int mainConsumed, out int offhandConsumed)
+        private bool TryScoreProcess(ProcessableProperties process, BlockEntityContainer be, ItemSlot slot, IPlayer byPlayer,
+            BlockSelection blockSel, out int score, out int mainConsumed, out int offhandConsumed, out bool requirementsMet)
         {
             score = 0;
             mainConsumed = 0;
             offhandConsumed = 0;
+            requirementsMet = true;
 
             if (process == null || blockSel == null)
             {
@@ -776,7 +851,7 @@ namespace Vintagestory.GameContent
             bool mainItemRequired = process.MainHandProcessingItemsByCode?.Length > 0;
             bool offhandItemRequired = process.OffHandProcessingItemsByCode?.Length > 0;
 
-            // Invalid/conflicting process definitions.
+            // Invalid/conflicting process definitions should still be rejected outright.
             if (process.Tool != null && mainItemRequired) return false;
             if (process.ToolOffhand != null && offhandItemRequired) return false;
             if (process.Tool != null && process.MainHandMustBeEmpty) return false;
@@ -787,114 +862,177 @@ namespace Vintagestory.GameContent
             // Ground storage stack requirement.
             if (process.ConsumedGroundStorageStackQty > 0)
             {
-                if (slot.Empty)
-                {
-                    return false;
-                }
-
-                int stackSize = slot.Itemstack.StackSize;
+                int stackSize = slot.Empty ? 0 : slot.Itemstack.StackSize;
                 int requiredQty = process.ConsumedGroundStorageStackQty;
 
                 if (process.ExactGroundStorageStackQtyRequired)
                 {
-                    if (stackSize != requiredQty)
+                    if (stackSize == requiredQty)
                     {
-                        return false;
+                        score += 100 + requiredQty;
                     }
+                    else
+                    {
+                        requirementsMet = false;
 
-                    score += 100 + requiredQty;
+                        int difference = Math.Abs(stackSize - requiredQty);
+                        score += Math.Max(0, 80 - difference * 10);
+                    }
                 }
                 else
                 {
-                    if (stackSize < requiredQty)
+                    if (stackSize >= requiredQty)
                     {
-                        return false;
+                        score += 50 + requiredQty;
                     }
-
-                    score += 50 + requiredQty;
+                    else
+                    {
+                        requirementsMet = false;
+                        score += Math.Max(0, stackSize * 5);
+                    }
                 }
             }
 
             // Required block material under the ground storage block.
             if (process.RequiredSurfaceMaterials != null)
             {
-                EnumBlockMaterial belowMaterial = be.Api.World.BlockAccessor.GetBlock(be.Pos.DownCopy(1)).BlockMaterial;
-                if (!process.RequiredSurfaceMaterials.Contains(belowMaterial))
+                EnumBlockMaterial belowMaterial =
+                    be.Api.World.BlockAccessor.GetBlock(be.Pos.DownCopy(1)).BlockMaterial;
+
+                if (process.RequiredSurfaceMaterials.Contains(belowMaterial))
                 {
-                    return false;
+                    score += 30 + process.RequiredSurfaceMaterials.Length;
                 }
-                score += 30 + process.RequiredSurfaceMaterials.Length;
+                else
+                {
+                    requirementsMet = false;
+                    score -= 30;
+                }
             }
 
-            // Required CraftingTagssurfaceattribute.
+            // Required crafting surface.
             if (process.RequiredCraftingSurfaceByTag != null)
             {
-                if (!DoesBlockBelowHaveAnyCraftingSurface(be, process.RequiredCraftingSurfaceByTag))
+                if (DoesBlockBelowHaveAnyCraftingSurface(be, process.RequiredCraftingSurfaceByTag))
                 {
-                    return false;
+                    score += 30 + process.RequiredCraftingSurfaceByTag.Length;
                 }
-                score += 30 + process.RequiredCraftingSurfaceByTag.Length;
+                else
+                {
+                    requirementsMet = false;
+                    score -= 30;
+                }
             }
 
             // Main hand tool.
             if (process.Tool != null)
             {
-                if (inv.ActiveTool != process.Tool)
+                if (inv.ActiveTool == process.Tool)
                 {
-                    return false;
+                    score += 100;
                 }
-
-                score += 100;
+                else
+                {
+                    requirementsMet = false;
+                    score -= 100;
+                }
             }
 
             // Offhand tool.
             if (process.ToolOffhand != null)
             {
-                if (inv.OffhandTool != process.ToolOffhand)
+                if (inv.OffhandTool == process.ToolOffhand)
                 {
-                    return false;
+                    score += 100;
                 }
-                score += 100;
+                else
+                {
+                    requirementsMet = false;
+                    score -= 100;
+                }
             }
 
             // Main hand processing item.
             if (mainItemRequired)
             {
-                if (!TryMatchProcessingItem(process.MainHandProcessingItemsByCode, process.MainHandProcessingItemsByKey, mainStack, out mainConsumed))
+                if (TryMatchProcessingItem(
+                    process.MainHandProcessingItemsByCode,
+                    process.MainHandProcessingItemsByKey,
+                    mainStack,
+                    out mainConsumed
+                ))
                 {
-                    return false;
+                    score += 100 + mainConsumed;
                 }
-                score += 100 + mainConsumed;
+                else
+                {
+                    requirementsMet = false;
+
+                    if (HeldStackMatchesAnyRequiredCode(process.MainHandProcessingItemsByCode, mainStack))
+                    {
+                        // Right item, wrong quantity.
+                        score += 40;
+                    }
+                    else
+                    {
+                        score -= 100;
+                    }
+                }
             }
 
             // Offhand processing item.
             if (offhandItemRequired)
             {
-                if (!TryMatchProcessingItem(process.OffHandProcessingItemsByCode, process.OffHandProcessingItemsByKey, offhandStack, out offhandConsumed))
+                if (TryMatchProcessingItem(
+                    process.OffHandProcessingItemsByCode,
+                    process.OffHandProcessingItemsByKey,
+                    offhandStack,
+                    out offhandConsumed
+                ))
                 {
-                    return false;
+                    score += 100 + offhandConsumed;
                 }
-                score += 100 + offhandConsumed;
+                else
+                {
+                    requirementsMet = false;
+
+                    if (HeldStackMatchesAnyRequiredCode(process.OffHandProcessingItemsByCode, offhandStack))
+                    {
+                        score += 40;
+                    }
+                    else
+                    {
+                        score -= 100;
+                    }
+                }
             }
 
             // Empty main hand.
             if (process.MainHandMustBeEmpty)
             {
-                if (!mainSlot.Empty)
+                if (mainSlot.Empty)
                 {
-                    return false;
+                    score += 60;
                 }
-                score += 60;
+                else
+                {
+                    requirementsMet = false;
+                    score -= 60;
+                }
             }
 
             // Empty offhand.
             if (process.OffHandMustBeEmpty)
             {
-                if (!offhandSlot.Empty)
+                if (offhandSlot.Empty)
                 {
-                    return false;
+                    score += 60;
                 }
-                score += 60;
+                else
+                {
+                    requirementsMet = false;
+                    score -= 60;
+                }
             }
 
             return true;
@@ -906,6 +1044,30 @@ namespace Vintagestory.GameContent
             public int Score;
             public int MainConsumed;
             public int OffhandConsumed;
+            public bool RequirementsMet;
+        }
+
+        private bool HeldStackMatchesAnyRequiredCode(JsonItemStack[] requiredItems, ItemStack heldStack)
+        {
+            if (requiredItems == null || requiredItems.Length == 0 || heldStack == null)
+            {
+                return false;
+            }
+
+            foreach (JsonItemStack jsonStack in requiredItems)
+            {
+                if (jsonStack?.Code == null)
+                {
+                    continue;
+                }
+
+                if (jsonStack.Code.FirstCodePart() == heldStack.Collectible?.Code.FirstCodePart())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private bool TryMatchProcessingItem(JsonItemStack[] requiredItems, JsonObject[] processingItemByKey, ItemStack heldStack, out int consumedQty)
@@ -944,25 +1106,25 @@ namespace Vintagestory.GameContent
             }
 
 
-            if(processingItemByKey == null || processingItemByKey.Length == 0)
-            {
-                return false;
-            }
+            //if(processingItemByKey == null || processingItemByKey.Length == 0)
+            //{
+            //    return false;
+            //}
 
-            foreach(JsonObject jsonObj in processingItemByKey) {
-                if (heldStack.Collectible.Attributes["CraftingTags"].Exists && heldStack.Collectible.Attributes["CraftingTags"].AsArray<String>(null).Contains<string>(jsonObj["tag"].ToString()))
-                {
-                    continue;
-                }
+            //foreach(JsonObject jsonObj in processingItemByKey) {
+            //    if (heldStack.Collectible.Attributes["CraftingTags"].Exists && heldStack.Collectible.Attributes["CraftingTags"].AsArray<String>(null).Contains<string>(jsonObj["tag"].ToString()))
+            //    {
+            //        continue;
+            //    }
 
-                if (heldStack.StackSize < jsonObj["quantity"].AsInt())
-                {
-                    continue;
-                }
+            //    if (heldStack.StackSize < jsonObj["quantity"].AsInt())
+            //    {
+            //        continue;
+            //    }
 
-                consumedQty = jsonObj["quantity"].AsInt();
-                return true;
-            }
+            //    consumedQty = jsonObj["quantity"].AsInt();
+            //    return true;
+            //}
 
             return false;
         }
@@ -1034,7 +1196,7 @@ namespace Vintagestory.GameContent
         }
 
         // Token: 0x060013CE RID: 5070 RVA: 0x000A8430 File Offset: 0x000A6630
-        public virtual bool canProcessOnSurfaceMaterial(BlockEntityContainer be, IPlayer byPlayer)
+        public virtual bool canProcessOnSurfaceMaterial(BlockEntityContainer be, IPlayer byPlayer, ProcessableProperties curProcess)
         {
             if (curProcess.RequiredSurfaceMaterials == null)
             {
@@ -1044,7 +1206,7 @@ namespace Vintagestory.GameContent
             return curProcess.RequiredSurfaceMaterials.Contains(belowMaterial);
         }
 
-        public virtual bool canProcessOnCraftingSurface(BlockEntityContainer be, IPlayer byPlayer)
+        public virtual bool canProcessOnCraftingSurface(BlockEntityContainer be, IPlayer byPlayer, ProcessableProperties curProcess)
         {
             if (curProcess.RequiredCraftingSurfaceByTag == null)
             {
@@ -1064,17 +1226,41 @@ namespace Vintagestory.GameContent
             
         }
 
+        private void StopProcessingAnimations(IPlayer byPlayer, ActiveGroundProcess activeProcess)
+        {
+            byPlayer.Entity.StopAnimation("sneakidle");
+
+            if (!string.IsNullOrEmpty(activeProcess?.AnimationCode))
+            {
+                byPlayer.Entity.StopAnimation(activeProcess.AnimationCode);
+            }
+        }
+
         public Dictionary<string, float> soundFrames = new Dictionary<string, float>
         {
             {"smithingwide", 15f },
-
+            {"smithing", 15f},
+            {"pickaxe", 15f },
+            {"hammerhit", 15f },
+            {"breakhand", 10f /*19f*/ },
+            {"breaktool", 14f },
+            {"AxeChop", 23f },
+            {"AxeHit", 34f },
+            {"Scythe", 26f },
+            {"Shears", 22f },
+            {"Hoe", 10f },
+            {"Falx", 15f },
+            {"Sickle", 20f },
+            {"Dig", 15f },
+            {"hammerandchisel", 15f },
+            {"knifescrape", 10f }
         };
 
         public class ProcessableProperties
         {
             public string Name = "unnamed";
             public string FromModID = "modidnotprovided";
-            public float ProcessTime = 1;
+            public float ProcessTime = 4;
             public BlockDropItemStack[] ProcessedStacks = null;
             public AssetLocation ProcessingSound = "";
             public string ProcessingAnimationCode = "";
@@ -1105,12 +1291,10 @@ namespace Vintagestory.GameContent
             public JsonItemStack[] OffHandProcessingItemsByCode = null;
             public JsonObject[] OffHandProcessingItemsByKey = null;
             //public JsonObject[] GroundStorageProcessItems = null;
-            public int ConsumedOffHandProcessItem = 0;
-            public int ConsumedMainHandProcessItem = 0;
             public string interactionHelpCode = "";
             public string handbookProcessIntoTitle = "";
             public string handbookCreatedByTitle = "";
-            public EnumEntityAction[] RequiredActions = new EnumEntityAction[] { EnumEntityAction.Sneak };
+            public EnumEntityAction[] RequiredActions = null;
             
             public ProcessableProperties(JsonObject newProcess) {
                 if (newProcess == null)
@@ -1135,7 +1319,7 @@ namespace Vintagestory.GameContent
                     ProcessingAnimationCode = newProcess["processingAnimationCode"]?.ToString() ?? ProcessingAnimationCode;
                     //The target frame in the animation when the sound will play and particles will be produced.
                     ProcessingAnimationTargetFrame = newProcess["processingAnimationTargetFrame"]?.AsFloat() ?? ProcessingAnimationTargetFrame;
-                    //This item will attempt to be placed in the GroundStorage or (if a block) will replace the ground storage based on PlaceRemainingItemAsBlock.
+                    //This item will attemept to be placed in the GroundStorage or (if a block) will replace the ground storage based on PlaceRemainingItemAsBlock.
                     //Will TryGiveItemStack otherwise.
                     RemainingItem = newProcess["remainingItem"].Exists ? newProcess["remainingItem"].AsObject<JsonItemStack>() : null;
                     //The number of items that will be consumed from the groundStorage if GroundStorageProcessItems[] is null.
@@ -1218,9 +1402,6 @@ namespace Vintagestory.GameContent
                     //A list of tags and stacksizes that indicate valid processing items for the offhand and the quantities desired.
                     OffHandProcessingItemsByKey = newProcess["offHandProcessingItemsByKey"].Exists ? newProcess["offHandProcessingItemsByKey"].AsObject<JsonObject[]>() : OffHandProcessingItemsByKey;
                     //This number is set once the itemstack held in the offhand has been determined. It is not set as part of describing the process.
-                    ConsumedOffHandProcessItem = newProcess["consumedOffHandProcessItem"].Exists ? newProcess["consumedOffHandProcessItem"].AsInt(0) : ConsumedOffHandProcessItem;
-                    //This number is set once the itemstack held in the main hand has been determined. It is not set as part of describing the process.
-                    ConsumedMainHandProcessItem = newProcess["consumedMainHandProcessItem"].Exists ? newProcess["consumedMainHandProcessItem"].AsInt(0) : ConsumedMainHandProcessItem;
 
                     //(Unimplemented) GroundStorageProcessItems is A list of up to four itemstacks that will be looked for in a target groundstorage.
                     //If all items are present in the indicated quantities, will produce a desired output. This can require an exact quantity per itemstack or simply a minimum quantity,
@@ -1264,9 +1445,24 @@ namespace Vintagestory.GameContent
                 }
             }
         }
-
+        private readonly Dictionary<string, ActiveGroundProcess> activeProcessByEntityId = new();
         private List<ProcessableProperties> validProcesses;
-        private ProcessableProperties curProcess;
+    }
+
+    internal class ActiveGroundProcess
+    {
+        public ProcessableProperties Process;
+        public string AnimationCode;
+        public int MainhandConsumed;
+        public int OffhandConsumed;
+
+        public ActiveGroundProcess(ProcessableProperties Process, int QtyConsumedMainItem, int QtyConsumedOffHandItem)
+        {
+            this.Process = Process;
+            this.AnimationCode = Process.ProcessingAnimationCode;
+            this.MainhandConsumed = QtyConsumedMainItem;
+            this.OffhandConsumed =QtyConsumedOffHandItem;
+        }
     }
 
 }

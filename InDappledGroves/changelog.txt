@@ -3,6 +3,7 @@
 	- Implemented ability to require exact number of items in a groundstorage (Such as 8 planks)
 	- Allowed to place remaining item as a block, replacing the ground storage and creating a chest in its place, for instance.
 	- Allowed recipes to require multiple actions (FloorSitting and Sprinting, or the classic Sprinting and Crouching)
+	- Implemented in-world tool crafting via ground storage.
 
 1.22-v3.0.1-rc.5
 	- Fixed issue with old bark baskets causing crashes when in inventories.

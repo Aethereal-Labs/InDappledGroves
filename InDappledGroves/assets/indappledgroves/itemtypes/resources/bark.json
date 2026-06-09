@@ -60,16 +60,11 @@
 								}
 							],
 							"consumedGroundStorageStackQty": 4,
-							"processedStacks": [
-								{
-									"type": "block",
-									"code": "indappledgroves:barkbundle-{bark}-dry",
-									"quantity": {
-										"avg": 1,
-										"var": 0
-									}
-								}
-							],
+							"RemainingItem": {
+										"type": "block",
+										"code": "indappledgroves:barkbundle-{bark}-dry",
+										"quantity": 1
+							},
 							"fromModId": "indappledgroves",
 							"processTime": 4,
 							"processingSound": "game:sounds/walk/grass*",
@@ -115,8 +110,8 @@
 					"validProcesses": [
 						{
 							"name": "createbarkbasket",
-							"processTime": 8,
-							"MainHandProcessingTimeByCode": [
+							"processTime": 4,
+							"MainHandProcessingItemsByCode": [
 								{
 									"type": "item",
 									"code": "game:cattailtops",
@@ -145,6 +140,7 @@
 									}
 								}
 							],
+							"PlaceRemainingItemAsBlock": true,
 							"fromModId": "indappledgroves",
 							"toolOffHand": "knife",
 							"processingSound": "game:sounds/walk/grass*",

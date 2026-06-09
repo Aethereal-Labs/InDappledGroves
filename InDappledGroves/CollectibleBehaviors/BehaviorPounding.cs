@@ -25,7 +25,6 @@ namespace InDappledGroves.CollectibleBehaviors
         {
             base.Initialize(properties);
         }
-
         public BehaviorPounding(CollectibleObject collObj) : base(collObj)
         {
             this.collObj = collObj;

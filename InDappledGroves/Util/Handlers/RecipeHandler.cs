@@ -281,7 +281,7 @@ namespace InDappledGroves.Util.Handlers
 
             toolModeMod = heldCollectible.GetBehavior<BehaviorIDGTool>().GetToolModeMod(activehotbarslot.Itemstack);
             EntityPlayer entityPlayer = player.Entity;
-            //entityPlayer.StartAnimation(recipe.Animation);
+            entityPlayer.StartAnimation(recipe.Animation);
 
             if (player.Entity.Api.Side == EnumAppSide.Server)
             {
@@ -312,8 +312,9 @@ namespace InDappledGroves.Util.Handlers
                             beworkstation.ProcessModifierSlot.Itemstack.Collectible.DamageItem(player.Entity.Api.World, player.Entity, beworkstation.ProcessModifierSlot, 1);
                         }
                     }
-                    CompleteRecipe(api, player);
+                    
                     heldCollectible.DamageItem(player.Entity.Api.World, entityPlayer, entityPlayer.RightHandItemSlot, recipeValues.baseToolDamage);
+                    CompleteRecipe(api, player);
                     beworkstation.MarkDirty();
                     return true;
                 }
