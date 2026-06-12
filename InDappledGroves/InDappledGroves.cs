@@ -71,7 +71,6 @@ namespace InDappledGroves
             api.RegisterCollectibleBehaviorClass("woodhewer", typeof(BehaviorWoodHewing));
             api.RegisterCollectibleBehaviorClass("idgtool", typeof(BehaviorIDGTool));
             api.RegisterCollectibleBehaviorClass("pounder", typeof(BehaviorPounding));
-            api.RegisterCollectibleBehaviorClass("alcmygroundstoredprocessable", typeof(ALCMYCollectibleBehaviorGroundStoredProcessable));
             //Register BlockBehaviors
             api.RegisterBlockBehaviorClass("Submergible", typeof(BehaviorSubmergible));
             api.RegisterBlockBehaviorClass("IDGPickup", typeof(BehaviorIDGPickup));

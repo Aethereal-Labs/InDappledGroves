@@ -1,9 +1,0 @@
-[
-  {
-    // Otherwise, just disable the recipe when the mod is not loaded
-    "file": "recipes/grid/tool/wormgrunter.json",
-    "op": "add",
-    "path": "/enabled",
-    "value": false    
-  }
-]

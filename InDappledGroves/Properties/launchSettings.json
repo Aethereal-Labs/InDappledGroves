@@ -3,7 +3,7 @@
     "1.22-Launcher": {
       "commandName": "Executable",
       "executablePath": "C:\\Users\\vinte\\AppData\\Roaming\\Vintagestory\\1.22\\vintagestory.exe",
-      "commandLineArgs": "--dataPath=\"C:\\Users\\vinte\\AppData\\Roaming\\VintagestoryData_Modding\" --addModPath=\"C:\\Users\\vinte\\source\\repos\\InDappledGroves\\InDappledGroves\\bin\\Debug\" --addOrigin=\"C:\\Users\\vinte\\source\\repos\\InDappledGroves\\InDappledGroves\\assets\"",
+      "commandLineArgs": "--dataPath=\"C:\\Users\\vinte\\AppData\\Roaming\\VintagestoryData_Modding\" --addModPath=\"C:\\Users\\vinte\\source\\repos\\InDappledGroves\\InDappledGroves\\bin\\Debug\" \"C:\\Users\\vinte\\source\\repos\\ALCMyCore\\ALCMyCore\\bin\\Debug\" \"C:\\Users\\vinte\\source\\repos\\FromGoldenCombs\\FromGoldenCombs\\bin\\Debug\" --addOrigin=\"C:\\Users\\vinte\\source\\repos\\InDappledGroves\\InDappledGroves\\assets\"",
       "workingDirectory": "C:\\Users\\vinte\\AppData\\Roaming\\Vintagestory\\1.22"
     },
     "1.22-LaunchServer": {

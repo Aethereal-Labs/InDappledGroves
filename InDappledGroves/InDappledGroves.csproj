@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <LangVersion>10</LangVersion>
+    <TargetFramework>net10.00</TargetFramework>
+    <LangVersion>14</LangVersion>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+	<OutputPath>C:\Users\vinte\source\repos\InDappledGroves\InDappledGroves\bin\Debug\InDappledGroves</OutputPath>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net4.6.1|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -14,6 +19,9 @@
     <None Remove="Launcher\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="assets\game\patches\alcmycraftingsurfacespatches.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="assets\game\patches\animations\mixsubstratehand.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -2028,6 +2036,11 @@
     <Folder Include="assets\indappledgroves\compatibility\game\itemtypes\resource\" />
     <Folder Include="assets\indappledgroves\compatibility\game\recipes\grid\tool\" />
     <Folder Include="assets\indappledgroves\textures\wood\debarked\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ALCMyCore\ALCMyCore\ALCMyCore.csproj">
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
