@@ -3,6 +3,7 @@
     "op": "replace",
     "path": "/class",
     "value": "idgtreeseed",
-    "file": "game:itemtypes/resource/treeseed.json"
+    "file": "game:itemtypes/resource/treeseed.json",
+    "side": "server"
   }
 ]

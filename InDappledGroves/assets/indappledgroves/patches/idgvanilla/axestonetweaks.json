@@ -3,14 +3,16 @@
   {
     "op": "add",
     "path": "/behaviors/-",
-    "value": {"name": "idgtool"},
+    "value": { "name": "idgtool" },
     "file": "game:itemtypes/tool/axe-stone.json",
+    "side": "server"
   },
   {
     "op": "add",
     "path": "/behaviors/-",
-    "value": {"name": "woodsplitter"},
+    "value": { "name": "woodsplitter" },
     "file": "game:itemtypes/tool/axe-stone.json",
+    "side": "server"
   },
   {
     "op": "add",
