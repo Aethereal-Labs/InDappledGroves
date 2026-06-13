@@ -19,9 +19,6 @@
     <None Remove="Launcher\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="assets\game\patches\alcmycraftingsurfacespatches.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="assets\game\patches\animations\mixsubstratehand.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -2036,6 +2033,7 @@
     <Folder Include="assets\indappledgroves\compatibility\game\itemtypes\resource\" />
     <Folder Include="assets\indappledgroves\compatibility\game\recipes\grid\tool\" />
     <Folder Include="assets\indappledgroves\textures\wood\debarked\" />
+    <Folder Include="Util\Properties\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ALCMyCore\ALCMyCore\ALCMyCore.csproj">

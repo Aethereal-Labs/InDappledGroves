@@ -33,7 +33,7 @@
 			{
 				"name": "alcmygroundstoredprocessable",
 				"properties": {
-					"validProcesses": [
+					"processes": [
 						{
 							"name": "createbarkbundle",
 							"fromModID": "indappledgroves",
@@ -54,25 +54,17 @@
 									"quantity": 1
 								}
 							],
-							"MainHandProcessingItemByTag": [
-								{
-									"tag": "plantfiber", "quantity":	1
-								}
-							],
 							"consumedGroundStorageStackQty": 4,
-							"RemainingItem": {
-										"type": "block",
-										"code": "indappledgroves:barkbundle-{bark}-dry",
-										"quantity": 1
-							},
-							"fromModId": "indappledgroves",
-							"processTime": 4,
-							"processingSound": "game:sounds/walk/grass*",
-							"processingAnimationCode": "knifescrape",
-							"craftingSurfaceErrorLangCode": "indappledgroves:wrongcraftingsurface",
-							"interactionHelpCode": "indappledgroves:createbarkbundle",
-							"handbookProcessIntoTitle": "indappledgroves:createbarkbundletitle",
-							"handbookCreatedByTitle": "handbook-createdby-idgcreatebundle"
+							"processedStacks": [
+								{
+									"type": "block",
+									"code": "indappledgroves:barkbundle-{bark}-dry",
+									"quantity": {
+										"avg": 1,
+										"var": 0
+									}
+								}
+							]
 						}
 					]
 				}
@@ -107,7 +99,7 @@
 			{
 				"name": "alcmygroundstoredprocessable",
 				"properties": {
-					"validProcesses": [
+					"processes": [
 						{
 							"name": "createbarkbasket",
 							"processTime": 4,
