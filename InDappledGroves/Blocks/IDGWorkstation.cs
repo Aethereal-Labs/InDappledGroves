@@ -46,7 +46,7 @@ namespace InDappledGroves.Blocks
                     else if (!beworkstation.InputSlot.Empty && heldCollectible != null && heldCollectible.HasBehavior<BehaviorIDGTool>())
                     {
                         result = beworkstation.handleRecipe(heldCollectible, secondsUsed, world, byPlayer, blockSel);
-                        byPlayer.Entity.StartAnimation(beworkstation.recipeHandler.recipe?.Animation);
+                        //byPlayer.Entity.StartAnimation(beworkstation.recipeHandler.recipe?.Animation);
                     }
             }
             return result;

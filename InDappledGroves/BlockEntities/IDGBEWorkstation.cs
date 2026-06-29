@@ -238,7 +238,7 @@ namespace InDappledGroves.BlockEntities
             
             recipecomplete = recipeHandler.processRecipe(heldCollectible, slot, byPlayer, blockSel.Position, this, secondsUsed);
             WeatherSystemBase modSystem = this.Api.ModLoader.GetModSystem<WeatherSystemBase>(true);
-            double windspeed = (modSystem != null) ? modSystem.WeatherDataSlowAccess.GetWindSpeed(byPlayer.Entity.SidedPos.XYZ) : 0.0;
+            double windspeed = (modSystem != null) ? modSystem.WeatherDataSlowAccess.GetWindSpeed(byPlayer.Entity.Pos.XYZ) : 0.0;
             
             
             if (recipecomplete) recipeHandler.clearRecipe();

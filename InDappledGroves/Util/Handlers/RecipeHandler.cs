@@ -275,13 +275,18 @@ namespace InDappledGroves.Util.Handlers
                 }
 
                 recipe = retrRecipe;
+
+                if (!string.IsNullOrEmpty(recipe.Animation))
+                {
+                    player.Entity.StartAnimation(recipe.Animation);
+                }
             }
 
             if (recipeValues == null) GetRecipeValues(workstationtype, beworkstation.InputSlot.Itemstack, recipe);
 
             toolModeMod = heldCollectible.GetBehavior<BehaviorIDGTool>().GetToolModeMod(activehotbarslot.Itemstack);
-            EntityPlayer entityPlayer = player.Entity;
-            entityPlayer.StartAnimation(recipe.Animation);
+            //EntityPlayer entityPlayer = player.Entity;
+            //entityPlayer.StartAnimation(recipe.Animation);
 
             if (player.Entity.Api.Side == EnumAppSide.Server)
             {
@@ -313,7 +318,7 @@ namespace InDappledGroves.Util.Handlers
                         }
                     }
                     
-                    heldCollectible.DamageItem(player.Entity.Api.World, entityPlayer, entityPlayer.RightHandItemSlot, recipeValues.baseToolDamage);
+                    heldCollectible.DamageItem(player.Entity.Api.World, player.Entity, player.Entity.RightHandItemSlot, recipeValues.baseToolDamage);
                     CompleteRecipe(api, player);
                     beworkstation.MarkDirty();
                     return true;
@@ -383,7 +388,7 @@ namespace InDappledGroves.Util.Handlers
             {
                 if (beworkstation.InputSlot.Empty) return false;
                 beworkstation.InputSlot.Itemstack = null;
-                byPlayer.Entity.StopAnimation(recipe.Animation);
+                //byPlayer.Entity.StopAnimation(recipe.Animation);
                 SpawnOutput(byPlayer.Entity, byPlayer.Entity.BlockSelection.Position);
                 clearRecipe();
                 return false; //If no stack is returned, clear stack
@@ -393,7 +398,7 @@ namespace InDappledGroves.Util.Handlers
                 //TODO: Determine if check needed to prevent spawning of excess resources
                 beworkstation.InputSlot.Itemstack = null;
                 ReturnStackPut(returnStack.Clone(), beworkstation);
-                byPlayer.Entity.StopAnimation(recipe.Animation);
+                //byPlayer.Entity.StopAnimation(recipe.Animation);
                 SpawnOutput(byPlayer.Entity, byPlayer.Entity.BlockSelection.Position);
                 clearRecipe();
                 return true; //If a stack is returned from the recipe, allow process to continue after resetting dmg accumulation
