@@ -263,7 +263,7 @@ namespace InDappledGroves.CollectibleBehaviors
                     AddVelocity = new Vec3f(0.8f, 1.2f, 0.8f),
                     MinSize = 0.2f,
                     MaxSize = 0.5f,
-                    Color = slot.Itemstack.Collectible.GetRandomColor(api as ICoreClientAPI, Inventory[0].Itemstack) | unchecked((int)0xFF000000)
+                    Color = slot.Itemstack.Collectible.GetRandomColor(api as ICoreClientAPI, tempInv[0].Itemstack) | unchecked((int)0xFF000000)
                 };
                 byEntity.World.SpawnParticles(p, null);
             }

@@ -1,4 +1,6 @@
-﻿1.22-v3.0.1-rc.6
+﻿1.22-v3.0.2
+
+1.22-v3.0.1-rc.6
 	- Fixed animation continuing when tool breaks when finishing recipe.
 	- Implemented ability to require exact number of items in a groundstorage (Such as 8 planks)
 	- Allowed to place remaining item as a block, replacing the ground storage and creating a chest in its place, for instance.
